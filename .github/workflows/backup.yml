@@ -1,0 +1,28 @@
+name: Sauvegarde des données
+on:
+  schedule: [{ cron: '41 3 * * *' }]
+  workflow_dispatch: {}
+permissions:
+  contents: write
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Exporter les tables
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node scripts/backup.mjs "$RUNNER_TEMP/dump"
+      - name: Publier sur la branche privée backup-data
+        run: |
+          git config user.name "diasporact-backup"
+          git config user.email "backup@users.noreply.github.com"
+          git fetch origin backup-data || true
+          if git show-ref --verify --quiet refs/remotes/origin/backup-data; then git checkout -B backup-data origin/backup-data; else git checkout --orphan backup-data; fi
+          git rm -rf --quiet . || true
+          cp -r "$RUNNER_TEMP/dump/." .
+          git add -A
+          if git diff --cached --quiet; then echo "Aucun changement"; else git commit -m "Sauvegarde $(date -u +%F)"; git push origin backup-data; fi
