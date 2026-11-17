@@ -10,6 +10,7 @@ create table canals (
   ico text not null default 'hash',
   name_fr text not null, name_ar text not null,
   desc_fr text not null default '', desc_ar text not null default '',
+  wa_link text check (wa_link is null or wa_link ~ '^https://chat\.whatsapp\.com/[A-Za-z0-9]+'),
   sort int not null default 0
 );
 
@@ -23,7 +24,6 @@ create table profiles (
   matching boolean not null default false,    -- visible dans la recherche de compétences
   base text,
   show_honor boolean not null default true,   -- apparaît dans « À l'honneur »
-  speaker boolean not null default false,
   is_admin boolean not null default false,
   is_ref boolean not null default false,      -- référent entraide
   created_at timestamptz not null default now()
@@ -185,6 +185,9 @@ $$ select is_admin() or exists (select 1 from canal_members where canal_id = c a
 create or replace function is_any_mod() returns boolean language sql stable security definer set search_path = public as
 $$ select is_admin() or exists (select 1 from canal_members where user_id = me() and status = 'member' and is_moderator) $$;
 
+create or replace function is_ref() returns boolean language sql stable security definer set search_path = public as
+$$ select is_admin() or coalesce((select is_ref from profiles where auth_uid = auth.uid()), false) $$;
+
 create or replace function project_canal(p uuid) returns text language sql stable security definer set search_path = public as
 $$ select canal_id from projects where id = p $$;
 
@@ -194,10 +197,19 @@ grant execute on function ping() to anon, authenticated;
 
 -- ============ Vues publiques (pseudo uniquement, jamais d'email : il n'y en a pas) ============
 create view public_profiles with (security_invoker = false) as
-  select id, pseudo, country, show_honor, speaker, is_ref from profiles;
+  select id, pseudo, country, show_honor, is_admin, is_ref from profiles;
 create view skills_directory with (security_invoker = false) as
   select id, pseudo, country, skills from profiles where matching;
 grant select on public_profiles, skills_directory to authenticated;
+
+create view canal_stats with (security_invoker = false) as
+  select canal_id, count(*) as members from canal_members where status = 'member' group by canal_id;
+create view canal_mods with (security_invoker = false) as
+  select m.canal_id, p.pseudo, m.is_moderator, m.is_relay from canal_members m join profiles p on p.id = m.user_id
+  where m.status = 'member' and (m.is_moderator or m.is_relay);
+create view ann_read_counts with (security_invoker = false) as
+  select ann_id, count(*) as n from ann_reads group by ann_id;
+grant select on canal_stats, canal_mods, ann_read_counts to authenticated;
 
 create view engagement with (security_invoker = false) as
 select p.id as user_id,
@@ -233,7 +245,14 @@ begin
     return json_build_object('ok', true, 'kind', 'recovery');
   end if;
 
-  if exists (select 1 from profiles where auth_uid = uid) then raise exception 'already_registered'; end if;
+  select id into pid from profiles where auth_uid = uid;
+  if pid is not null then      -- déjà inscrit : un lien de canal ajoute simplement l'adhésion
+    if inv.kind <> 'join' or inv.canal_id is null then raise exception 'already_registered'; end if;
+    insert into canal_members(canal_id, user_id, status) values (inv.canal_id, pid, 'member')
+      on conflict (canal_id, user_id) do update set status = 'member';
+    update invites set uses = uses + 1 where code = p_code;
+    return json_build_object('ok', true, 'kind', 'join', 'canal', inv.canal_id);
+  end if;
   if ps !~ '^[a-z0-9][a-z0-9._-]{2,23}$' then raise exception 'bad_pseudo'; end if;
   if exists (select 1 from profiles where pseudo = ps) then raise exception 'pseudo_taken'; end if;
 
@@ -371,6 +390,23 @@ begin
 end $$;
 grant execute on function decide_badge(uuid, boolean) to authenticated;
 
+create or replace function set_canal_wa(p_canal text, p_link text) returns void language plpgsql security definer set search_path = public as $$
+begin
+  if not is_mod(p_canal) then raise exception 'forbidden'; end if;
+  update canals set wa_link = nullif(trim(p_link), '') where id = p_canal;
+end $$;
+grant execute on function set_canal_wa(text, text) to authenticated;
+
+create or replace function join_team(p_project uuid) returns void language plpgsql security definer set search_path = public as $$
+begin
+  if not is_member(project_canal(p_project)) then raise exception 'forbidden'; end if;
+  insert into project_team(project_id, user_id) values (p_project, me()) on conflict do nothing;
+  insert into notifications(user_id, kind, ref, body)
+    select owner_id, 'joined', p_project::text, (select pseudo from profiles where id = me())
+    from projects where id = p_project and owner_id <> me();
+end $$;
+grant execute on function join_team(uuid) to authenticated;
+
 -- Compte : suppression à la demande du membre (anonymise ses contenus via cascade partielle)
 create or replace function delete_my_account() returns void language plpgsql security definer set search_path = public as $$
 begin
@@ -388,16 +424,42 @@ begin
 end $$;
 create trigger task_assigned after insert or update of assignee_id on tasks for each row execute function trg_task_assigned();
 
+-- Destinataires d'un projet : propriétaire + suiveurs, selon le niveau de suivi choisi (all / mine = jalons seulement / none)
+create or replace function project_audience(p_project uuid, p_levels text[]) returns setof uuid language sql stable security definer set search_path = public as $$
+  select u from (
+    select owner_id as u from projects where id = p_project
+    union select user_id from follows where project_id = p_project and level = any(p_levels)
+  ) s
+  where not exists (select 1 from follows f where f.project_id = p_project and f.user_id = s.u and f.level <> all(p_levels))
+$$;
+
 create or replace function trg_comment_notify() returns trigger language plpgsql security definer set search_path = public as $$
 begin
   insert into notifications(user_id, kind, ref, body)
-  select distinct u, 'comment', new.project_id::text, (select title from projects where id = new.project_id)
-  from (select owner_id as u from projects where id = new.project_id
-        union select user_id from follows where project_id = new.project_id and level = 'all') s
-  where u <> new.author_id;
+  select u, 'comment', new.project_id::text, (select title from projects where id = new.project_id)
+  from project_audience(new.project_id, array['all']) u where u <> new.author_id;
   return new;
 end $$;
 create trigger comment_notify after insert on comments for each row execute function trg_comment_notify();
+
+create or replace function trg_milestone_notify() returns trigger language plpgsql security definer set search_path = public as $$
+begin
+  if new.done and not old.done then
+    insert into notifications(user_id, kind, ref, body)
+    select u, 'milestone', new.project_id::text, new.title
+    from project_audience(new.project_id, array['all','mine']) u where u <> coalesce(me(), '00000000-0000-0000-0000-000000000000');
+  end if;
+  return new;
+end $$;
+create trigger milestone_notify after update of done on milestones for each row execute function trg_milestone_notify();
+
+create or replace function trg_proposal_notify() returns trigger language plpgsql security definer set search_path = public as $$
+begin
+  insert into notifications(user_id, kind, ref, body)
+  values (new.to_user, 'proposal', new.project_id::text, (select title from projects where id = new.project_id));
+  return new;
+end $$;
+create trigger proposal_notify after insert on proposals for each row execute function trg_proposal_notify();
 
 -- ============ Sécurité au niveau des lignes (RLS) ============
 alter table canals enable row level security;
@@ -426,7 +488,7 @@ create policy canals_admin on canals for all to authenticated using (is_admin())
 create policy profiles_self_read on profiles for select to authenticated using (auth_uid = auth.uid() or is_admin());
 create policy profiles_self_update on profiles for update to authenticated using (auth_uid = auth.uid()) with check (auth_uid = auth.uid());
 revoke update on profiles from authenticated;
-grant update (country, lang, skills, matching, base, show_honor, speaker) on profiles to authenticated;
+grant update (country, lang, skills, matching, base, show_honor) on profiles to authenticated;
 
 -- Adhésions : lisibles pour soi, les modérateurs du canal et les membres du canal
 create policy cm_read on canal_members for select to authenticated
@@ -467,8 +529,8 @@ create policy prop_read on proposals for select to authenticated using (from_use
 create policy prop_insert on proposals for insert to authenticated with check (from_user = me() and is_member(project_canal(project_id)));
 create policy prop_update on proposals for update to authenticated using (to_user = me()) with check (to_user = me());
 
--- Entraide : visible de tout membre inscrit
-create policy help_read on helps for select to authenticated using (me() is not null);
+-- Entraide : visible de l'auteur, de la personne qui la prend en charge, des référents et des modérateurs
+create policy help_read on helps for select to authenticated using (author_id = me() or claimed_by = me() or is_ref() or is_any_mod());
 create policy help_insert on helps for insert to authenticated with check (author_id = me() and status = 'open' and claimed_by is null);
 create policy help_delete on helps for delete to authenticated using (author_id = me() or is_any_mod());
 

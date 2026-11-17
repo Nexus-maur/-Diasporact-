@@ -1,5 +1,5 @@
-const V = 'hcd-v1';
-const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
+const V = 'dp-v2';
+const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './vendor/supabase.js'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(V).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
@@ -29,7 +29,7 @@ self.addEventListener('fetch', e => {
   }
 
   // Fichiers de l'app et polices : copie en cache, mise à jour en arrière-plan
-  if (u.origin === location.origin || u.host === 'fonts.googleapis.com' || u.host === 'fonts.gstatic.com') {
+  if (u.origin === location.origin || u.host === 'fonts.googleapis.com' ||  u.host === 'fonts.gstatic.com') {
     e.respondWith(
       caches.match(r).then(hit => {
         const net = fetch(r)

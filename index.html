@@ -12,6 +12,8 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
+<script src="config.js"></script>
+<script src="vendor/supabase.js"></script>
 <style>:root{color-scheme:light;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}</style>
 
 
@@ -366,112 +368,25 @@ now:'الآن',min:'منذ {n} د',hour:'منذ {n} س',day:'منذ {n} ي',ai_t
 
 /* ============ Données de démonstration (fictives) ============ */
 var CANALS=[
- {id:'edu',ico:'book',n:{fr:'Éducation & jeunesse',ar:'التعليم والشباب'},d:{fr:'Bourses, mentorat, écoles et projets pour la jeunesse mauritanienne.',ar:'منح وإرشاد ومدارس ومشاريع لفائدة الشباب الموريتاني.'},mod:'aissata.lyon',count:214},
- {id:'inv',ico:'chart',n:{fr:'Investissement & entrepreneuriat',ar:'الاستثمار وريادة الأعمال'},d:{fr:'Créer, financer et développer des activités entre la diaspora et la Mauritanie.',ar:'إنشاء الأنشطة وتمويلها وتطويرها بين الجالية وموريتانيا.'},mod:'cheikh.bx',count:342},
- {id:'san',ico:'heart',n:{fr:'Santé & solidarité',ar:'الصحة والتضامن'},d:{fr:'Missions médicales, collectes et soutien aux familles.',ar:'بعثات طبية وحملات جمع وإسناد للأسر.'},mod:'khadija.madrid',count:128},
- {id:'adm',ico:'file',n:{fr:'Démarches & installation',ar:'الإجراءات والاستقرار'},d:{fr:'Papiers, installation à l’étranger, retour au pays.',ar:'الأوراق والاستقرار في الخارج والعودة إلى الوطن.'},mod:'oumar.bxl',count:187},
- {id:'num',ico:'chip',n:{fr:'Numérique & innovation',ar:'الرقمنة والابتكار'},d:{fr:'Outils, compétences et startups technologiques.',ar:'أدوات ومهارات ومؤسسات ناشئة تقنية.'},mod:'mariem.paris',count:256},
- {id:'cul',ico:'palm',n:{fr:'Culture & patrimoine',ar:'الثقافة والتراث'},d:{fr:'Mémoire, langues, arts et événements culturels.',ar:'الذاكرة واللغات والفنون والفعاليات الثقافية.'},mod:'baba.nouakchott',count:96}
+ {id:'edu',ico:'book',n:{fr:'Éducation & jeunesse',ar:'التعليم والشباب'},d:{fr:'Bourses, mentorat, écoles et projets pour la jeunesse mauritanienne.',ar:'منح وإرشاد ومدارس ومشاريع لفائدة الشباب الموريتاني.'}},
+ {id:'inv',ico:'chart',n:{fr:'Investissement & entrepreneuriat',ar:'الاستثمار وريادة الأعمال'},d:{fr:'Créer, financer et développer des activités entre la diaspora et la Mauritanie.',ar:'إنشاء الأنشطة وتمويلها وتطويرها بين الجالية وموريتانيا.'}},
+ {id:'san',ico:'heart',n:{fr:'Santé & solidarité',ar:'الصحة والتضامن'},d:{fr:'Missions médicales, collectes et soutien aux familles.',ar:'بعثات طبية وحملات جمع وإسناد للأسر.'}},
+ {id:'adm',ico:'file',n:{fr:'Démarches & installation',ar:'الإجراءات والاستقرار'},d:{fr:'Papiers, installation à l’étranger, retour au pays.',ar:'الأوراق والاستقرار في الخارج والعودة إلى الوطن.'}},
+ {id:'num',ico:'chip',n:{fr:'Numérique & innovation',ar:'الرقمنة والابتكار'},d:{fr:'Outils, compétences et startups technologiques.',ar:'أدوات ومهارات ومؤسسات ناشئة تقنية.'}},
+ {id:'cul',ico:'palm',n:{fr:'Culture & patrimoine',ar:'الثقافة والتراث'},d:{fr:'Mémoire, langues, arts et événements culturels.',ar:'الذاكرة واللغات والفنون والفعاليات الثقافية.'}}
 ];
 var DOMAINS=['adm','jur','ins','ret','san'];
-var TAKEN=['admin','conseil','moderateur','ahmed.lille','sidi.paris','aissata.lyon','cheikh.bx','khadija.madrid','oumar.bxl','mariem.paris','baba.nouakchott','fatimetou.rennes','lemine.montreal','zeinebou.geneve','baba.liege'];
-function ago(m){return Date.now()-m*60000;}
-var BASE={
- projects:[
-  {id:'ecole-boghe',canal:'edu',t:{fr:'École numérique de Boghé',ar:'المدرسة الرقمية في بوغي'},owner:'sidi.paris',status:'progress',
-   obj:'Équiper une salle informatique de 20 postes et former 6 enseignants avant la rentrée 2027.',needs:['Ingénieur réseau','Dons de matériel','Financement : 4 000 €'],
-   ms:[{t:'Cahier des charges validé',date:'2026-11-20',done:true},{t:'Collecte de matériel',date:'2027-02-15',done:false},{t:'Installation sur place',date:'2027-06-30',done:false},{t:'Formation des enseignants',date:'2027-08-30',done:false}],
-   tasks:[{id:'k1',t:'Cahier des charges technique',status:'done',who:'sidi.paris'},{id:'k2',t:'Contacter trois fournisseurs de matériel',status:'doing',who:'ahmed.lille'},{id:'k3',t:'Rédiger la convention avec la direction de l’école',status:'doing',who:'sidi.paris'},{id:'k4',t:'Recenser les besoins de formation des enseignants',status:'todo',who:null},{id:'k5',t:'Choisir la solution d’alimentation électrique (solaire)',status:'todo',who:null}],
-   team:['sidi.paris','ahmed.lille','mariem.paris'],
-   cmts:[{by:'mariem.paris',t:'Je peux m’occuper de la partie réseau. Qui a les plans de la salle ?',at:ago(180)},{by:'sidi.paris',t:'Je les envoie cette semaine à ceux qui rejoignent l’équipe.',at:ago(95)}]},
-  {id:'mentors',canal:'edu',t:{fr:'Réseau de mentors pour étudiants en France',ar:'شبكة مرشدين للطلاب الموريتانيين في فرنسا'},owner:'aissata.lyon',status:'recruit',
-   obj:'Associer 100 étudiants récemment arrivés à un mentor de leur domaine d’études.',needs:['Mentors (ingénieurs, médecins, juristes)','Développeur web bénévole'],
-   ms:[{t:'Lancement pilote (30 étudiants)',date:'2027-01-15',done:false},{t:'Bilan de la première promotion',date:'2027-06-30',done:false}],
-   tasks:[{id:'k1',t:'Définir les critères de mise en relation',status:'todo',who:null},{id:'k2',t:'Créer le formulaire d’inscription des mentors',status:'todo',who:null},{id:'k3',t:'Recruter les 20 premiers mentors',status:'doing',who:'aissata.lyon'}],
-   team:['aissata.lyon'],cmts:[{by:'aissata.lyon',t:'Nous cherchons surtout des profils santé et ingénierie pour le pilote.',at:ago(1500)}]},
-  {id:'dattes',canal:'inv',t:{fr:'Export de dattes de l’Adrar vers l’Europe',ar:'تصدير تمور أدرار نحو أوروبا'},owner:'cheikh.bx',status:'progress',
-   obj:'Livrer un premier lot test de 500 kg à un distributeur européen.',needs:['Logisticien export','Contact en grande distribution'],
-   ms:[{t:'Étude de marché',date:'2026-10-15',done:true},{t:'Premier lot test (500 kg)',date:'2027-03-01',done:false}],
-   tasks:[{id:'k1',t:'Cartographier les coopératives de l’Adrar',status:'done',who:'cheikh.bx'},{id:'k2',t:'Obtenir les normes d’étiquetage européennes',status:'doing',who:'oumar.bxl'},{id:'k3',t:'Négocier un premier lot test',status:'todo',who:null}],
-   team:['cheikh.bx','oumar.bxl'],cmts:[]},
-  {id:'guide-retour',canal:'adm',t:{fr:'Guide pratique du retour et de l’investissement',ar:'دليل عملي للعودة والاستثمار'},owner:'oumar.bxl',status:'progress',
-   obj:'Publier un guide FR/AR des démarches pour revenir s’installer ou investir.',needs:['Relecteurs juridiques','Traducteurs FR/AR'],
-   ms:[{t:'Première version complète',date:'2026-12-10',done:false},{t:'Publication FR/AR',date:'2027-02-01',done:false}],
-   tasks:[{id:'k1',t:'Rassembler les démarches par administration',status:'doing',who:'oumar.bxl'},{id:'k2',t:'Relecture juridique',status:'todo',who:null},{id:'k3',t:'Traduction en arabe',status:'todo',who:null}],
-   team:['oumar.bxl'],cmts:[]},
-  {id:'caravane',canal:'san',t:{fr:'Caravane médicale à Kiffa',ar:'قافلة طبية إلى كيفة'},owner:'khadija.madrid',status:'recruit',
-   obj:'Organiser deux semaines de consultations gratuites avec des médecins volontaires de la diaspora.',needs:['Médecins volontaires (2 semaines)','Collecte de médicaments','Financement du transport'],
-   ms:[{t:'Liste des volontaires arrêtée',date:'2027-01-31',done:false},{t:'Départ de la caravane',date:'2027-04-10',done:false}],
-   tasks:[{id:'k1',t:'Recenser les médecins volontaires',status:'doing',who:'khadija.madrid'},{id:'k2',t:'Obtenir l’accord de l’hôpital local',status:'todo',who:null}],
-   team:['khadija.madrid'],cmts:[]},
-  {id:'annuaire',canal:'num',t:{fr:'Annuaire des compétences de la diaspora',ar:'دليل كفاءات الجالية'},owner:'mariem.paris',status:'progress',
-   obj:'Cartographier les compétences disponibles pour faciliter les mises en relation entre projets et membres.',needs:['Développeur front-end','Designer'],
-   ms:[{t:'Maquettes validées',date:'2026-12-05',done:false}],
-   tasks:[{id:'k1',t:'Définir les champs du profil',status:'done',who:'mariem.paris'},{id:'k2',t:'Maquettes de la recherche',status:'doing',who:'mariem.paris'}],
-   team:['mariem.paris'],cmts:[]}
- ],
- helps:[
-  {id:'h1',who:'fatimetou.rennes',dom:'adm',country:'France',urgent:true,status:'open',by:null,txt:'Mon passeport expire dans deux mois. Quelles pièces faut-il fournir pour le renouveler et quels sont les délais habituels ?'},
-  {id:'h2',who:'lemine.montreal',dom:'jur',country:'Canada',urgent:false,status:'doing',by:'oumar.bxl',txt:'Comment faire reconnaître un diplôme obtenu à Nouakchott pour postuler au Québec ?'},
-  {id:'h3',who:'ahmed.lille',dom:'ins',country:'France',urgent:false,status:'solved',by:'aissata.lyon',txt:'Je cherche des conseils pour ouvrir un compte bancaire à mon arrivée.'},
-  {id:'h4',who:'zeinebou.geneve',dom:'ret',country:'Suisse',urgent:false,status:'open',by:null,txt:'Quelles sont les étapes pour créer une société en Mauritanie depuis l’étranger ?'},
-  {id:'h5',who:'baba.liege',dom:'adm',country:'Belgique',urgent:true,status:'open',by:null,txt:'Comment faire légaliser un acte de naissance pour un dossier de mariage ?'}
- ],
- anns:[
-  {id:'a1',canal:'all',t:{fr:'Assemblée générale de la diaspora en visioconférence',ar:'الجمعية العامة للجالية عبر الاتصال المرئي'},body:'Diasporact réunit les représentants des canaux le 12 décembre 2026 à 19 h (heure de Nouakchott). Le lien de connexion sera partagé dans chaque canal.',date:'2026-11-09',until:'2026-12-12',reads:482},
-  {id:'a2',canal:'edu',t:{fr:'Appel à mentors pour la rentrée universitaire',ar:'نداء لمرشدين للموسم الجامعي'},body:'Nous cherchons des professionnels disponibles deux heures par mois pour accompagner des étudiants mauritaniens en France. Inscription depuis la fiche du projet.',date:'2026-11-05',until:'',reads:96},
-  {id:'a3',canal:'inv',t:{fr:'Session de présentation de projets',ar:'جلسة عرض المشاريع'},body:'Les porteurs de projets peuvent présenter leur dossier à la communauté d’investisseurs du canal. Dépôt des fiches avant le 5 décembre.',date:'2026-11-02',until:'2026-12-05',reads:143},
-  {id:'a4',canal:'adm',t:{fr:'Guide du retour : relectures ouvertes',ar:'دليل العودة: فتح باب المراجعة'},body:'Le projet de guide est ouvert aux relectures. Les référents recueillent vos retours.',date:'2026-10-28',until:'',reads:120},
-  {id:'a5',canal:'san',t:{fr:'Collecte de matériel médical',ar:'حملة جمع المعدات الطبية'},body:'Les dons sont centralisés par les relais locaux du canal avant l’expédition.',date:'2026-10-30',until:'',reads:64},
-  {id:'a6',canal:'num',t:{fr:'Atelier : outils numériques pour les associations',ar:'ورشة: أدوات رقمية للجمعيات'},body:'Un atelier pratique en ligne présente les outils gratuits pour gérer une association à distance.',date:'2026-11-07',until:'',reads:77},
-  {id:'a7',canal:'cul',t:{fr:'Appel à contributions : mémoire orale',ar:'نداء للمساهمة: الذاكرة الشفوية'},body:'Le canal collecte des témoignages enregistrés auprès des aînés de la diaspora.',date:'2026-11-01',until:'',reads:51}
- ],
- reqs:{edu:[{p:'fatimetou.rennes'},{p:'lemine.montreal'},{p:'zeinebou.geneve'}]}
-};
+
+
+
 
 /* ---- Textes bilingues, annuaire, fiches pratiques (fictifs) ---- */
-(function(){
-  var AR_ANN={a1:'يجمع Diasporact ممثلي القنوات في 12 ديسمبر 2026 عند الساعة 19:00 (بتوقيت نواكشوط). سيُنشر رابط الاتصال في كل قناة.',
-   a2:'نبحث عن مهنيين متاحين ساعتين في الشهر لمرافقة طلاب موريتانيين في فرنسا. التسجيل من صفحة المشروع.',
-   a3:'يمكن لحاملي المشاريع عرض ملفاتهم على مجتمع المستثمرين في القناة. آخر أجل لإيداع الملفات 5 ديسمبر.',
-   a4:'مشروع الدليل مفتوح للمراجعة. يجمع المرجعيون ملاحظاتكم.',
-   a5:'تُجمع التبرعات لدى مراكز القناة المحلية قبل الشحن.',
-   a6:'تقدّم ورشة عملية عبر الإنترنت الأدوات المجانية لإدارة جمعية عن بُعد.',
-   a7:'تجمع القناة شهادات مسجلة من كبار السن في الجالية.'};
-  BASE.anns.forEach(function(a){a.body={fr:a.body,ar:AR_ANN[a.id],orig:(a.id==='a2'||a.id==='a7')?'ar':'fr'};});
-  var AR_OBJ={'ecole-boghe':'تجهيز قاعة معلوماتية بـ20 حاسوباً وتدريب 6 معلمين قبل الدخول المدرسي 2027.',
-   mentors:'ربط 100 طالب وصلوا حديثاً بمرشد من مجال دراستهم.',
-   dattes:'تسليم دفعة تجريبية أولى بوزن 500 كغ إلى موزّع أوروبي.',
-   'guide-retour':'نشر دليل بالفرنسية والعربية لإجراءات العودة إلى الاستقرار أو الاستثمار.',
-   caravane:'تنظيم أسبوعين من الاستشارات المجانية مع أطباء متطوعين من الجالية.',
-   annuaire:'رسم خريطة للكفاءات المتاحة لتسهيل الربط بين المشاريع والأعضاء.'};
-  BASE.projects.forEach(function(p){p.obj={fr:p.obj,ar:AR_OBJ[p.id],orig:'fr'};});
-  BASE.helps[2].reply={by:'aissata.lyon',txt:'Bonjour, ouvrez le compte dès votre arrivée avec une pièce d’identité et un justificatif d’adresse (une attestation d’hébergement suffit souvent). Comparez deux ou trois banques.'};
-})();
-var MEMBERS=[
- {p:'ibrahima.nantes',c:'France',sk:['ingénieur réseau','télécoms'],open:true},
- {p:'cheikhna.toulouse',c:'France',sk:['développement web','design graphique'],open:true},
- {p:'aminetou.paris',c:'France',sk:['médecin généraliste'],open:true},
- {p:'moussa.geneve',c:'Suisse',sk:['juriste','traduction arabe-français'],open:true},
- {p:'sidiya.bxl',c:'Belgique',sk:['logistique export','douane'],open:true},
- {p:'meryem.montreal',c:'Canada',sk:['comptabilité','finance'],open:true},
- {p:'discret.lyon',c:'France',sk:['développement web'],open:false}
-];
+
+
 var CONCEPTS=[['net',/r[ée]seau|informatique|ing[ée]nieur|t[ée]l[ée]com/i],['dev',/d[ée]velopp|web|front|num[ée]rique/i],['des',/design|graphi/i],['med',/m[ée]decin|sant[ée]|m[ée]dic/i],['log',/logisti|export|transport|douane/i],['jur',/juridi|juriste|droit|avocat/i],['tra',/traduct|arabe/i],['fin',/financ|comptab|banque/i],['mkt',/distribution|commerc|vente/i]];
-var DOMAIN_KW=[['adm',/passeport|papier|titre de s[ée]jour|consulat|acte de|l[ée]galis/i],['jur',/dipl[ôo]me|reconna|juridi|droit|avocat|contrat/i],['ins',/banc|compte|logement|install|arriv[ée]e/i],['ret',/soci[ée]t[ée]|retour|investi|cr[ée]er une/i],['san',/sant[ée]|m[ée]decin|h[ôo]pital|assurance maladie/i]];
-var FAQ=[
- {id:'f-pass',dom:'adm',kw:/passeport|passport|renouvel/i,by:'oumar.bxl',t:{fr:'Renouveler son passeport',ar:'تجديد جواز السفر'},
-  s:{fr:'Prenez rendez-vous auprès de votre consulat ou ambassade de Mauritanie. Les pièces demandées (ancien passeport, photos, justificatif de résidence…) et les délais varient selon le poste : confirmez-les sur le site officiel avant de vous déplacer.',ar:'احجزوا موعداً لدى قنصليتكم أو سفارة موريتانيا. تختلف الوثائق المطلوبة (جواز السفر القديم، صور، إثبات الإقامة…) والآجال حسب المقر: تأكدوا منها في الموقع الرسمي قبل التنقل.'}},
- {id:'f-leg',dom:'adm',kw:/l[ée]galis|acte|apostille/i,by:'oumar.bxl',t:{fr:'Faire légaliser un acte',ar:'تصديق وثيقة'},
-  s:{fr:'La légalisation dépend du pays qui a émis l’acte et du pays où il sera utilisé. Renseignez-vous d’abord auprès du service qui exige le document, puis auprès du consulat concerné.',ar:'يتوقف التصديق على البلد الذي أصدر الوثيقة والبلد الذي ستُستعمل فيه. استفسروا أولاً لدى الجهة التي تطلب الوثيقة ثم لدى القنصلية المعنية.'}},
- {id:'f-soc',dom:'ret',kw:/soci[ée]t[ée]|entreprise|cr[ée]er une/i,by:'cheikh.bx',t:{fr:'Créer une société depuis l’étranger',ar:'إنشاء شركة من الخارج'},
-  s:{fr:'Les formalités se font auprès des organismes de création d’entreprise du pays. Faites-vous accompagner par un professionnel local pour la forme juridique, le capital et la fiscalité, et vérifiez les textes en vigueur.',ar:'تتم الإجراءات لدى هيئات إنشاء المؤسسات في البلد. استعينوا بمهني محلي لاختيار الشكل القانوني ورأس المال والجباية، وتحققوا من النصوص السارية.'}},
- {id:'f-dip',dom:'jur',kw:/dipl[ôo]me|reconna/i,by:'aissata.lyon',t:{fr:'Faire reconnaître un diplôme',ar:'معادلة شهادة'},
-  s:{fr:'Contactez l’organisme officiel de reconnaissance des diplômes du pays d’accueil : il indique les pièces (copies certifiées, traductions) et les délais. Gardez les originaux et faites traduire par un traducteur agréé si demandé.',ar:'اتصلوا بالهيئة الرسمية لمعادلة الشهادات في بلد الإقامة: ستحدد الوثائق (نسخ مصدّقة، ترجمات) والآجال. احتفظوا بالأصول واستعينوا بمترجم معتمد عند الطلب.'}},
- {id:'f-bank',dom:'ins',kw:/banc|compte/i,by:'aissata.lyon',t:{fr:'Ouvrir un compte bancaire à l’arrivée',ar:'فتح حساب بنكي عند الوصول'},
-  s:{fr:'Munissez-vous d’une pièce d’identité et d’un justificatif d’adresse. Comparez plusieurs banques (frais, conditions pour les nouveaux arrivants) avant de choisir.',ar:'أحضروا وثيقة هوية وإثبات عنوان. قارنوا بين عدة بنوك (الرسوم وشروط القادمين الجدد) قبل الاختيار.'}}
-];
-var CHAT_SAMPLE='Sidi.paris : Salam tout le monde, on pourrait collecter des livres pour la bibliothèque de Kaédi ?\nMariem.paris : Super idée ! Combien de livres on vise ?\nAhmed.lille : Je peux contacter les librairies de Lille pour des dons.\nSidi.paris : C’est décidé, on vise 500 livres avant mars.\nKhadija.madrid : Il faudra un transporteur pour le conteneur.\nMariem.paris : Je m’occupe de la liste des titres prioritaires.\nOumar.bxl : Qui connaît quelqu’un à Kaédi pour réceptionner ?\nAhmed.lille : D’accord pour moi, je lui demande demain.\nSidi.paris : Ok pour le conteneur partagé avec l’association de Rennes ?';
+
+
+
 
 /* ---- Badges ---- */
 var ENG=[
@@ -482,42 +397,31 @@ var ENG=[
  {id:'connector',ico:'people',m:'links',lv:[1,3,8],n:{fr:'Connecteur',ar:'همزة وصل'},d:{fr:'Proposer à des membres de contribuer à un projet',ar:'اقتراح المساهمة في مشروع على أعضاء'}}
 ];
 var EXPERT={med:{fr:'Santé',ar:'الصحة'},jur:{fr:'Juridique',ar:'القانون'},net:{fr:'Ingénierie & numérique',ar:'الهندسة والرقمنة'},log:{fr:'Logistique',ar:'اللوجستيك'},fin:{fr:'Finance & comptabilité',ar:'المالية والمحاسبة'},edu:{fr:'Éducation',ar:'التعليم'}};
-var ROLE_MAP={'aissata.lyon':{mod:['edu']},'cheikh.bx':{mod:['inv']},'khadija.madrid':{mod:['san']},'oumar.bxl':{mod:['adm'],ref:true},'mariem.paris':{mod:['num']},'baba.nouakchott':{mod:['cul'],relay:true},
- 'aminetou.paris':{expert:'med'},'moussa.geneve':{expert:'jur'},'ibrahima.nantes':{expert:'net'},'sidiya.bxl':{expert:'log'},'sidi.paris':{relay:true}};
-var STATS={'sidi.paris':{cn:['edu','num'],reads:20,tasks:12,proj:2,help:3,links:2},'mariem.paris':{cn:['edu','num'],reads:18,tasks:9,proj:1,help:1,links:1},'aissata.lyon':{cn:['edu','adm'],reads:25,tasks:7,proj:1,help:6,links:3},'oumar.bxl':{cn:['edu','adm','inv'],reads:22,tasks:5,proj:1,help:11,links:0},'cheikh.bx':{cn:['edu','inv'],reads:12,tasks:6,proj:2,help:2,links:4},'khadija.madrid':{cn:['edu','san'],reads:15,tasks:8,proj:1,help:4,links:2}};
+
+
 function loadTheme(){try{return localStorage.getItem('hcd-theme')==='dark'?'dark':'light';}catch(e){return 'light';}}
 function saveTheme(v){try{localStorage.setItem('hcd-theme',v);}catch(e){}}
-function clone(o){return JSON.parse(JSON.stringify(o));}
-function genCode(){var w=['DUNE','ADRAR','PALME','DATTE','SABLE','OASIS','ACACIA','TENTE','PUITS','MIEL','THE','LUNE'];function r(n){return Math.floor(Math.random()*n);}return w[r(w.length)]+'-'+(1000+r(9000))+'-'+w[r(w.length)];}
-function inviteCode(){return Math.random().toString(36).slice(2,6);}
+
+
+
 
 /* ============ État ============ */
-var S;
-function initState(keep){
-  return {
-    lang:keep?keep.lang:'fr',theme:keep?keep.theme:loadTheme(),
-    me:{pseudo:null,code:null,mod:[],ref:[],speaker:false,skills:[],matching:false,base:null,showHonor:true},
-    mem:{},route:{name:'inv1',params:{}},stack:[],
-    draft:{pseudo:'',canals:['edu'],invite:'edu'},
-    hideStart:false,projQ:'',follow:{},badgeReqs:[{id:'br1',p:'meryem.montreal',type:'expert:fin',note:'Experte-comptable, 12 ans d’expérience'}],grants:{},earned:{},tr:{},proposed:{},faqx:[],digestFreq:'daily',chatDraft:'',chatResult:null,chatLoading:false,applied:{},read:{},push:false,digest:true,projTab:'mine',canalTab:{},showCode:false,
-    notifs:[],invites:{edu:'educ-'+inviteCode()},
-    projects:clone(BASE.projects),helps:clone(BASE.helps),anns:clone(BASE.anns),reqs:clone(BASE.reqs)
-  };
-}
-S=initState();
+
+
+
 
 /* ============ Utilitaires ============ */
-function t(k,v){var s=(I18N[S.lang]&&I18N[S.lang][k]);if(s==null)s=I18N.fr[k];if(s==null)s=k;if(v){for(var x in v){s=s.split('{'+x+'}').join(v[x]);}}return s;}
-function T(k,v){return esc(t(k,v));}
-function c(o){return o?(o[S.lang]||o.fr||''):'';}
-function C(o){return esc(c(o));}
-function canalOf(id){return CANALS.filter(function(x){return x.id===id;})[0];}
-function projOf(id){return S.projects.filter(function(x){return x.id===id;})[0];}
-function annOf(id){return S.anns.filter(function(x){return x.id===id;})[0];}
-function mem(id){return S.mem[id]||null;}
-function isMember(id){return S.mem[id]==='member';}
-function isMod(id){return S.me.mod.indexOf(id)>-1;}
-function hasAccount(){return !!S.me.pseudo;}
+
+
+
+
+
+
+
+
+
+
+
 function fmt(d){try{return new Date(d+'T12:00:00').toLocaleDateString(S.lang==='ar'?'ar-u-nu-latn':'fr-FR',{day:'numeric',month:'short',year:'numeric'});}catch(e){return d;}}
 function rel(at){var m=Math.floor((Date.now()-at)/60000);if(m<1)return t('now');if(m<60)return t('min',{n:m});if(m<1440)return t('hour',{n:Math.floor(m/60)});return t('day',{n:Math.floor(m/1440)});}
 function dataAttrs(o){return Object.keys(o||{}).map(function(k){return 'data-'+k+'="'+esc(o[k])+'"';}).join(' ');}
@@ -554,11 +458,8 @@ function av(p,sz){var h=0;for(var i=0;i<p.length;i++)h=(h*31+p.charCodeAt(i))%3;
 function chip(txt,cls){return '<span class="chip '+(cls||'')+'">'+txt+'</span>';}
 function projStatus(p){return p.status==='recruit'?chip(T('st_recruit'),'yellow'):p.status==='done'?chip(T('st_done')):chip(T('st_progress'),'green');}
 function progress(p){var d=p.tasks.filter(function(k){return k.status==='done';}).length,n=p.tasks.length;return {d:d,n:n,pct:n?Math.round(d/n*100):0};}
-function visibleAnns(){
-  var ids=Object.keys(S.mem).filter(function(k){return S.mem[k]==='member';});
-  return S.anns.filter(function(a){return a.canal==='all'||ids.indexOf(a.canal)>-1;});
-}
-function notify(fr,ar,route,params,type){S.notifs.unshift({id:'n'+Date.now()+Math.random(),type:type||'info',fr:fr,ar:ar,route:route||null,params:params||{},read:false,at:Date.now()});}
+
+
 function unread(){return S.notifs.filter(function(n){return !n.read;}).length;}
 var toastTimer;
 function toast(m){var el=$('#toast');el.textContent=m;el.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(function(){el.hidden=true;},3200);}
@@ -576,30 +477,17 @@ var TABS=[['home','home','nav_home'],['canals','hash','nav_canals'],['projects',
 function go(name,params,replace){if(!replace){var v0=$('#view');if(v0)S.route._y=v0.scrollTop;S.stack.push(S.route);}S.route={name:name,params:params||{}};render(true);}
 function tab(name){S.stack=[];S.route={name:name,params:{}};render(true);}
 function back(){var r=S.stack.pop();S.route=r||(hasAccount()?{name:'home',params:{}}:{name:'inv1',params:{}});render(true);if(r&&r._y)$('#view').scrollTop=r._y;}
-function tabOf(r){return {home:'home',canals:'canals',canal:'canals',projects:'projects',project:'projects',newProject:'projects',help:'help',newHelp:'help',alerts:'alerts',chat:'projects'}[r]||'';}
+function tabOf(r){return {home:'home',canals:'canals',canal:'canals',projects:'projects',project:'projects',newProject:'projects',help:'help',newHelp:'help',alerts:'alerts'}[r]||'';}
 
 
 /* ============ IA (simulée dans le prototype) ============ */
-function aiTag(){return '<span class="chip ai">'+ic('spark',13)+T('ai_tag')+'</span>';}
-function chatBtn(){return '<button class="btn block" data-act="new-chat">'+ic('spark',18)+T('chat_btn')+'</button>';}
-function micBtn(id){return '<button type="button" class="btn sm" data-act="dictate" data-id="'+id+'">'+ic('mic',16)+T('dictate')+'</button>';}
-function trBlock(key,o){
-  if(typeof o==='string')return '<p>'+esc(o)+'</p>';
-  var need=o.orig!==S.lang,on=need&&S.tr[key],shown=on?S.lang:o.orig;
-  var h='<p dir="'+(shown==='ar'?'rtl':'ltr')+'" lang="'+shown+'">'+esc(o[shown]||o.fr||'')+'</p>';
-  if(need)h+='<div class="tr-meta">'+(on?chip(ic('globe',13)+T('tr_auto'),'yellow')+'<button class="lnk" data-act="tr" data-k="'+esc(key)+'">'+T('tr_orig')+'</button>':'<button class="btn sm" data-act="tr" data-k="'+esc(key)+'">'+ic('globe',14)+T('tr_do')+'</button>')+'</div>';
-  return h;
-}
+
+
+
+
 function concepts(x){return CONCEPTS.filter(function(k){return k[1].test(x);}).map(function(k){return k[0];});}
 function overlap(a,b){return a.filter(function(x){return b.indexOf(x)>-1;});}
-function matchNeed(pj){
-  var out=[],used={};
-  pj.needs.forEach(function(n){var cn=concepts(n);if(!cn.length)return;
-    for(var i=0;i<MEMBERS.length;i++){var m=MEMBERS[i];if(!m.open||used[m.p]||pj.team.indexOf(m.p)>-1||pj.owner===m.p)continue;
-      var sk=m.sk.filter(function(x){return overlap(cn,concepts(x)).length;})[0];
-      if(sk){used[m.p]=1;out.push({need:n,m:m,skill:sk});break;}}});
-  return out.slice(0,4);
-}
+
 function mySkillProjects(){
   if(!S.me.matching||!S.me.skills.length)return [];
   var cm=concepts(S.me.skills.join(' ')),out=[];
@@ -607,152 +495,38 @@ function mySkillProjects(){
     var n=p.needs.filter(function(x){return overlap(cm,concepts(x)).length;})[0];if(n)out.push({p:p,need:n});});
   return out;
 }
-function matchSection(pj,inTeam){
-  if(!inTeam)return '';
-  var sg=matchNeed(pj);
-  return '<section class="card ai-card stack s8" id="match"><div class="row between wrap"><h2 class="h3">'+T('match_title')+'</h2>'+aiTag()+'</div><p class="muted small">'+T('match_note')+'</p>'+
-  (sg.length?sg.map(function(g){var done=S.proposed[pj.id+'|'+g.m.p];
-    return '<div class="li" style="align-items:flex-start">'+av(g.m.p)+'<span class="grow"><span class="t">@'+esc(g.m.p)+'</span>'+pBadges(g.m.p)+' <span class="muted small">· '+esc(g.m.c)+'</span><br><span class="muted small">'+T('match_why',{s:g.skill,n:g.need})+'</span></span>'+
-    (done?chip(ic('check',14)+T('match_done'),'green'):'<button class="btn sm" data-act="propose" data-id="'+esc(pj.id)+'" data-p="'+esc(g.m.p)+'">'+T('match_prop')+'</button>')+'</div>';}).join(''):'<p class="empty">'+T('match_none')+'</p>')+'</section>';
-}
+
 function skillsSection(){
   return '<section class="card stack s8"><h2 class="h3">'+T('sk_title')+'</h2>'+toggle('toggle-matching',S.me.matching,T('sk_opt'),T('sk_opt_note'))+
   '<form data-form="skills" class="stack s8"><div class="field"><label for="sk-in">'+T('sk_in')+'</label><input type="text" id="sk-in" maxlength="120" autocomplete="off" value="'+esc(S.me.skills.join(', '))+'"></div><button class="btn sm" type="submit">'+T('sk_save')+'</button></form></section>';
 }
-function digestLines(){
-  var L=[];
-  S.projects.forEach(function(p){p.tasks.forEach(function(k){if(k.who===S.me.pseudo&&k.status!=='done')L.push(t('dg_task',{x:k.t,p:c(p.t)}));});});
-  visibleAnns().filter(function(a){return !S.read[a.id];}).slice(0,2).forEach(function(a){L.push(t('dg_ann',{x:c(a.t)}));});
-  S.projects.filter(function(p){return hasAccount()&&isMember(p.canal)&&myProject(p);}).slice(0,2).forEach(function(p){var pr=progress(p);L.push(t('dg_proj',{x:c(p.t),a:pr.d,b:pr.n}));});
-  if(S.me.ref.length){var n=refQueue().filter(function(h){return h.status==='open';}).length;if(n)L.push(t('dg_help',{x:n}));}
-  S.me.mod.forEach(function(id){var n=(S.reqs[id]||[]).length;if(n)L.push(t('dg_reqs',{x:n}));});
-  S.helps.filter(function(h){return h.who===S.me.pseudo&&h.status==='doing'&&h.by;}).forEach(function(h){L.push(t('dg_myhelp',{x:h.by}));});
-  return L.slice(0,7);
-}
-function digestCard(){
-  if(!S.digest)return '';
-  var L=digestLines();
-  return '<section class="card ai-card stack s8"><div class="row between wrap"><h2 class="h3">'+T('dg_title')+'</h2>'+aiTag()+'</div><p class="muted small">'+T('dg_sub')+'</p>'+
-  '<ul class="dg">'+(L.length?L.map(function(x){return '<li>'+esc(x)+'</li>';}).join(''):'<li>'+T('dg_none')+'</li>')+'</ul>'+
-  '<div class="lbl">'+T('dg_freq')+'</div><div class="seg">'+['daily','weekly'].map(function(v){return '<button aria-pressed="'+(S.digestFreq===v)+'" data-act="dg-freq" data-v="'+v+'">'+T('dg_'+v)+'</button>';}).join('')+'</div>'+
-  '<p class="muted small">'+T('dg_note')+'</p><button class="btn sm" data-act="dg-wa">'+ic('chat',16)+T('dg_wa')+'</button></section>';
-}
-function openDigestWA(){
-  var L=digestLines();
-  openSheet(t('dg_wa'),'<div class="stack s8"><div class="bubble" dir="auto">'+esc(t('dg_title')+' · @'+S.me.pseudo+'\n'+L.map(function(x){return '• '+x;}).join('\n'))+'</div><div class="lcard" dir="ltr"><b>Diasporact</b><br><span class="muted small">diasporact.example/d/'+esc(S.me.pseudo)+'</span></div><p class="row">'+aiTag()+'</p><p class="muted small">'+T('dg_wa_note')+'</p><p class="muted small">'+T('ai_sim')+'</p></div>');
-}
+
+
+
 /* Discussion -> projet */
-function analyzeChat(txt){
-  var msgs=txt.split(/\n+/).map(function(l){return l.trim();}).filter(Boolean).map(function(l){var m=l.match(/^([^:]{1,30}?)\s*:\s*(.+)$/);return m?{a:m[1].trim().toLowerCase().replace(/\s+/g,'.'),t:m[2].trim()}:{a:'',t:l};});
-  var R={title:'',obj:'',needs:[],actions:[],decisions:[],questions:[]};
-  function clean(x){return x.replace(/[.\s]+$/,'');}
-  msgs.forEach(function(m){
-    if(/je prends|je peux|je m[’']occupe|je lui demande|je contacte|il faut|il faudra/i.test(m.t))R.actions.push({t:clean(m.t),who:m.a,sel:true});
-    else if(/\?/.test(m.t))R.questions.push(m.t);
-    else if(/c[’']est d[ée]cid[ée]|on d[ée]cide|d[’']accord|ok pour|valid[ée]/i.test(m.t))R.decisions.push(m.t);
-  });
-  var all=msgs.map(function(m){return m.t;}).join(' ');
-  R.title=/ka[ée]di/i.test(all)&&/livre/i.test(all)?'Collecte de livres pour la bibliothèque de Kaédi':(msgs[0]?clean(msgs[0].t).replace(/\?$/,'').slice(0,70):'');
-  R.obj=R.decisions[0]||(msgs[0]?msgs[0].t:'');
-  [[/transport|conteneur|exp[ée]di/i,'Transport'],[/livre|\bdons?\b|mat[ée]riel/i,'Dons'],[/financ|€|euro|budget/i,'Financement'],[/traduct/i,'Traduction'],[/m[ée]decin|sant[ée]/i,'Médecins'],[/r[ée]ceptionn|conna[iî]t quelqu/i,'Relais local pour réceptionner']].forEach(function(x){if(x[0].test(all))R.needs.push(x[1]);});
-  return R;
-}
-function crAdd(k){return '<div class="row"><input type="text" id="cr-add-'+k+'" maxlength="160" autocomplete="off" placeholder="'+T('cr_add_ph')+'" class="grow"><button type="button" class="btn sm" data-act="cr-add" data-k="'+k+'">'+ic('plus',16)+T('cr_add')+'</button></div>';}
-function crSections(R){
-  var h=(!R.actions.length&&!R.decisions.length&&!R.questions.length)?'<div class="banner">'+ic('spark',18)+'<span>'+T('cr_empty_hint')+'</span></div>':'';
-  h+='<section class="stack s8"><h2 class="h2">'+T('cr_actions')+'</h2>'+(R.actions.length?R.actions.map(function(a,i){return '<label class="pick" for="ca-'+i+'"><span class="grow"><span class="t">'+esc(a.t)+'</span>'+(a.who?'<br><span class="muted small">'+(a.who===S.me.pseudo?'@'+esc(a.who):T('cr_by',{x:a.who}))+'</span>':'')+'</span><input type="checkbox" class="cr-act" id="ca-'+i+'" value="'+i+'"'+(a.sel===false?'':' checked')+'></label>';}).join(''):'<p class="empty">'+T('cr_none')+'</p>')+crAdd('actions')+'</section>';
-  ['decisions','questions'].forEach(function(k){h+='<section class="stack s8"><h2 class="h2">'+T('cr_'+k)+'</h2>'+(R[k].length?'<ul class="dg">'+R[k].map(function(x,i){return '<li>'+esc(x)+' <button type="button" class="lnk" data-act="cr-del" data-k="'+k+'" data-i="'+i+'" aria-label="'+T('cr_del')+'">×</button></li>';}).join('')+'</ul>':'<p class="empty">'+T('cr_none')+'</p>')+crAdd(k)+'</section>';});
-  return h;
-}
-function syncChat(){
-  var R=S.chatResult;if(!R||!$('#cr-title'))return;
-  R.title=$('#cr-title').value;R.obj=$('#cr-obj').value;R.canal=$('#cr-canal').value;
-  R.needs=$('#cr-needs').value.split(',').map(function(x){return x.trim();}).filter(Boolean);
-  [].forEach.call(document.querySelectorAll('.cr-act'),function(i){R.actions[+i.value].sel=i.checked;});
-}
-function vChat(){
-  var h='<h1 class="page">'+T('chat_btn')+'</h1>';
-  if(!Object.keys(S.mem).filter(isMember)[0])return h+'<div class="banner">'+ic('lock',18)+'<span>'+T('canal_locked')+'</span></div>';
-  if(S.chatLoading)return h+'<div class="card stack s8" aria-live="polite"><p class="row">'+aiTag()+'</p><p class="muted">'+T('chat_loading')+'</p><div class="bar"><i style="--w:60%"></i></div></div>';
-  var R=S.chatResult;
-  if(R){
-    h+='<p class="row">'+aiTag()+'</p><p class="muted small">'+T('ai_sim')+'</p><form data-form="chatproj" class="stack" novalidate>'+
-    '<div class="field"><label for="cr-canal">'+T('f_canal')+'</label><select id="cr-canal">'+fieldCanalOptions(R.canal||Object.keys(S.mem).filter(isMember)[0])+'</select></div>'+
-    '<div class="field"><label for="cr-title">'+T('f_title')+'</label><input type="text" id="cr-title" maxlength="80" autocomplete="off" value="'+esc(R.title)+'"></div>'+
-    '<div class="field"><label for="cr-obj">'+T('objective')+'</label><textarea id="cr-obj" maxlength="300">'+esc(R.obj)+'</textarea></div>'+
-    '<div class="field"><label for="cr-needs">'+T('f_needs')+'</label><input type="text" id="cr-needs" maxlength="160" autocomplete="off" value="'+esc(R.needs.join(', '))+'"></div>'+
-    crSections(R)+
-    '<p class="fb err" id="cr-err"></p><div class="row"><button type="button" class="btn grow" data-act="chat-reset">'+T('chat_back')+'</button><button type="submit" class="btn primary grow">'+T('cr_create')+'</button></div></form>';
-    return h;
-  }
-  return h+'<p class="lead">'+T('chat_intro')+'</p><div class="banner info">'+ic('lock',18)+'<span>'+T('chat_consent')+'</span></div><div class="field"><label for="ch-txt" hidden>'+T('chat_btn')+'</label><textarea id="ch-txt" class="chat-ta" placeholder="'+T('chat_ph')+'">'+esc(S.chatDraft)+'</textarea></div>'+
-  '<div class="row wrap"><button type="button" class="btn sm" data-act="chat-sample">'+T('chat_sample')+'</button>'+micBtn('ch-txt')+'</div><p class="muted small">'+T('ai_sim')+'</p><button class="btn primary block" data-act="chat-analyze">'+ic('spark',18)+T('chat_go')+'</button>';
-}
+
+
+
+
+
 /* Entraide : fiches, suggestions, brouillon */
-function allFaq(){return FAQ.concat(S.faqx);}
-function openFaq(id){var f=allFaq().filter(function(x){return x.id===id;})[0];if(!f)return;
-  openSheet(c(f.t),'<div class="stack s8"><p class="row">'+chip(T('dm_'+f.dom))+chip(T('faq_by',{x:f.by}),'green')+'</p><p style="white-space:pre-line">'+C(f.s)+'</p><p class="muted small">'+T('faq_note')+'</p></div>');}
+
+
 function replyHtml(hq){return '<div class="reply"><p class="who">'+T('reply_from',{x:hq.reply.by})+'</p><p>'+esc(hq.reply.txt)+'</p></div>';}
-function draftBtn(hq){return '<button class="btn sm" data-act="draft" data-id="'+hq.id+'">'+ic('spark',16)+T('draft_btn')+'</button>';}
-function openDraft(id){
-  var h=S.helps.filter(function(x){return x.id===id;})[0];if(!h)return;
-  var f=allFaq().filter(function(x){return (x.kw&&x.kw.test(h.txt))||x.dom===h.dom;})[0];
-  var txt=t('draft_hi',{x:h.who})+'\n\n'+(f?c(f.s):t('draft_generic'))+'\n\n'+t('draft_bye',{x:S.me.pseudo});
-  openSheet(t('draft_title'),'<form data-form="draftsend" data-id="'+esc(id)+'" class="stack s8"><p class="row">'+aiTag()+'</p><p class="muted small">'+T('draft_note')+'</p><textarea id="dr-txt" rows="9">'+esc(txt)+'</textarea><label class="pick" for="dr-faq"><span class="grow t">'+T('draft_faq')+'</span><input type="checkbox" id="dr-faq"></label><button class="btn primary block" type="submit">'+T('draft_send')+'</button></form>');
-}
-function updateHelpAI(){
-  var box=$('#nh-ai'),tx=$('#nh-txt');if(!box||!tx)return;
-  var v=tx.value;if(v.trim().length<12){box.innerHTML='';return;}
-  var dm=DOMAIN_KW.filter(function(x){return x[1].test(v);})[0],cur=$('#nh-dom').value;dm=dm&&dm[0]!==cur?dm[0]:null;
-  var urg=/urgent|expire|d[ée]lai|demain|cette semaine|vite/i.test(v)&&$('#nh-urg').value!=='1';
-  var fq=allFaq().filter(function(f){return f.kw&&f.kw.test(v);}).slice(0,2);
-  if(!dm&&!urg&&!fq.length){box.innerHTML='';return;}
-  box.innerHTML='<div class="card ai-card stack s8"><div class="row between wrap"><h3 class="h3">'+T('ai_help_t')+'</h3>'+aiTag()+'</div>'+
-   (dm?'<button type="button" class="btn sm" data-act="ai-dom" data-v="'+dm+'">'+T('ai_help_dom',{x:t('dm_'+dm)})+'</button>':'')+
-   (urg?'<button type="button" class="btn sm" data-act="ai-urg">'+T('ai_help_urg')+'</button>':'')+
-   (fq.length?'<p class="muted small">'+T('ai_help_faq')+'</p>'+fq.map(function(f){return '<div class="li"><span class="grow t">'+C(f.t)+'</span><button type="button" class="btn sm" data-act="open-faq" data-id="'+f.id+'">'+T('ai_help_view')+'</button></div>';}).join('')+'<button type="button" class="btn sm primary" data-act="faq-solved">'+T('ai_help_ok')+'</button>':'')+
-   '<p class="muted small">'+T('ai_help_note')+'</p></div>';
-}
+
+
+
 /* Saisie vocale (réelle si le navigateur la propose, sinon simulée) */
-function dictate(id){
-  var el=$('#'+id);if(!el)return;
-  function put(x){el.value=(el.value?el.value+' ':'')+x;el.dispatchEvent(new Event('input',{bubbles:true}));}
-  function sim(){put(t(id==='cmt-text'?'voice_demo_c':id==='nh-txt'?'voice_demo_h':'voice_demo_x'));toast(t('voice_sim'));}
-  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){sim();return;}
-  try{var r=new SR();r.lang=S.lang==='ar'?'ar-SA':'fr-FR';r.onresult=function(e){put(e.results[0][0].transcript);};r.onerror=sim;r.start();toast(t('voice_listen'));}catch(e){sim();}
-}
+
 
 
 /* ============ Badges ============ */
-function statsOf(p){
-  var me=p===S.me.pseudo,b=(me?S.me.base:STATS[p])||{};
-  var st={reads:b.reads||0,tasks:b.tasks||0,proj:b.proj||0,help:b.help||0,links:b.links||0};
-  if(me){
-    st.reads+=Object.keys(S.read).filter(function(k){return S.read[k];}).length;
-    S.projects.forEach(function(pr){st.tasks+=pr.tasks.filter(function(k){return k.who===p&&k.status==='done';}).length;if(pr.owner===p&&pr.id.charAt(0)==='p'&&/^p\d/.test(pr.id))st.proj++;});
-    st.help+=S.helps.filter(function(h){return h.by===p&&h.status==='solved';}).length;
-    st.links+=Object.keys(S.proposed).length;
-  }
-  return st;
-}
+
 function lvl(b,st){var n=0;b.lv.forEach(function(x,i){if(st[b.m]>=x)n=i+1;});return n;}
 function pts(st){return st.tasks*3+st.help*5+st.proj*4+st.reads+st.links*2;}
 function dots(n,max){var o='';for(var i=0;i<max;i++)o+=i<n?'●':'○';return '<span class="dots" aria-label="'+T('bd_lvl',{n:n})+'">'+o+'</span>';}
-function checkBadges(silent){
-  if(!hasAccount())return false;
-  var st=statsOf(S.me.pseudo),ch=false;
-  ENG.forEach(function(b){var n=lvl(b,st),prev=S.earned[b.id]||0;
-    if(n>prev){S.earned[b.id]=n;if(!silent){var f=b.n.fr+' · '+n,a=b.n.ar+' · '+n;notify(I18N.fr.n_badge.replace('{x}',f),I18N.ar.n_badge.replace('{x}',a),'me',{},'info');toast(t('n_badge',{x:c(b.n)+' · '+n}));ch=true;}}});
-  return ch;
-}
-function roleOf(p){
-  var r={};
-  if(p===S.me.pseudo){if(S.me.mod.length)r.mod=S.me.mod;if(S.me.ref.length)r.ref=true;if(S.me.speaker)r.speaker=true;}
-  else{var m=ROLE_MAP[p]||{};for(var k in m)r[k]=m[k];}
-  var g=S.grants[p]||{};if(g.expert)r.expert=g.expert;if(g.relay)r.relay=true;
-  return r;
-}
+
+
 function bdg(ico,label,cls){return '<span class="bdg '+cls+'">'+ic(ico,11)+esc(label)+'</span>';}
 function roleList(p){
   var r=roleOf(p),o=[];
@@ -777,13 +551,7 @@ function badgesSection(){
     return '<div class="li" style="align-items:flex-start"><span class="ico" style="'+(n?'':'opacity:.45')+'">'+ic(b.ico,18)+'</span><span class="grow"><span class="t">'+C(b.n)+'</span> '+dots(n,3)+'<br><span class="muted small">'+C(b.d)+' · '+(nx?T('bd_next',{a:st[b.m],b:nx}):T('bd_max'))+'</span></span></div>';}).join('')+
   toggle('toggle-honor',S.me.showHonor,T('bd_honor'),T('bd_honor_note'))+'</section>';
 }
-function honorHtml(id){
-  var list=Object.keys(STATS).filter(function(p){return STATS[p].cn.indexOf(id)>-1;}).map(function(p){return {p:p,st:statsOf(p)};});
-  if(S.me.showHonor&&hasAccount()&&isMember(id))list.push({p:S.me.pseudo,st:statsOf(S.me.pseudo)});
-  list=list.filter(function(x){return pts(x.st)>0;}).sort(function(a,b){return pts(b.st)-pts(a.st);}).slice(0,3);
-  return '<section><h2 class="h2">'+T('hn_title')+'</h2><p class="muted small" style="margin-bottom:8px">'+T('hn_sub')+'</p>'+
-  (list.length?'<div class="card list">'+list.map(function(x){return '<div class="li" style="align-items:flex-start">'+av(x.p)+'<span class="grow"><span class="t">@'+esc(x.p)+'</span>'+pBadges(x.p)+'<br><span class="muted small">'+T('hn_line',{t:x.st.tasks,h:x.st.help,p:x.st.proj})+'</span></span></div>';}).join('')+'</div>':'<p class="empty">'+T('hn_none')+'</p>')+'<p class="muted small" style="margin-top:8px">'+T('hn_note')+'</p></section>';
-}
+
 function badgeReqHtml(){
   var rq=S.badgeReqs.filter(function(r){return r.p!==S.me.pseudo;});
   return '<section><h2 class="h2">'+T('bd_reqs')+(rq.length?'<span class="count">'+rq.length+'</span>':'')+'</h2>'+(rq.length?'<div class="card list">'+rq.map(function(r){return '<div class="li" style="align-items:flex-start">'+av(r.p)+'<span class="grow"><span class="t">@'+esc(r.p)+'</span><br><span class="small">'+esc(typeLabel(r.type))+'</span><br><span class="muted small">'+esc(r.note)+'</span></span><span class="stack s8"><button class="btn sm primary" data-act="badge-grant" data-id="'+r.id+'">'+T('bd_grant')+'</button><button class="btn sm" data-act="badge-deny" data-id="'+r.id+'">'+T('refuse')+'</button></span></div>';}).join('')+'</div>':'<p class="empty">'+T('bd_none_req')+'</p>')+'</section>';
@@ -797,23 +565,8 @@ function openBadgeReq(){
 /* ============ Confort d'usage ============ */
 function tabBadge(k,un){var n=0;if(k==='alerts')n=un;else if(k==='help'&&S.me.ref.length)n=refQueue().filter(function(h){return h.status==='open';}).length;else if(k==='canals')S.me.mod.forEach(function(id){n+=(S.reqs[id]||[]).length;});return n?'<span class="badge">'+n+'</span>':'';}
 function confirmSheet(title,msg,act,id){openSheet(title,'<p>'+esc(msg)+'</p><div class="row"><button class="btn grow" data-act="close-sheet">'+T('cancel')+'</button><button class="btn primary grow" data-act="'+act+'" data-id="'+esc(id||'')+'">'+T('cf_ok')+'</button></div>');}
-function tilesHtml(){
-  if(!Object.keys(S.mem).some(isMember))return '';
-  var ts=[['life','new-help','th_help'],['folder','new-project','th_proj'],['spark','new-chat','th_chat'],S.me.speaker?['mega','publish-ann','publish_ann']:['hash','tab','th_canals']];
-  return '<section><h2 class="h2">'+T('act_title')+'</h2><div class="tiles">'+ts.map(function(x){return '<button class="tile" data-act="'+x[1]+'"'+(x[1]==='tab'?' data-tab="canals"':'')+'><span class="ico">'+ic(x[0],20)+'</span>'+T(x[2])+'</button>';}).join('')+'</div></section>';
-}
-function startCard(){
-  if(S.hideStart)return '';
-  var mem=Object.keys(S.mem),isM=mem.some(isMember),pend=!isM&&mem.length>0;
-  var it=[
-   {d:isM,t:pend?t('fs_1p'):t('fs_1'),a:'tab',tab:'canals'},
-   {d:Object.keys(S.read).length>0||!!(S.me.base&&S.me.base.reads>0),t:t('fs_2'),a:'scroll-ann'},
-   {d:S.projects.some(function(p){return p.owner===S.me.pseudo||p.tasks.some(function(k){return k.who===S.me.pseudo;});}),t:t('fs_3'),a:'tab',tab:'projects'},
-   {d:S.me.skills.length>0,t:t('fs_4'),a:'go-me'}];
-  var n=it.filter(function(x){return x.d;}).length;if(n===it.length)return '';
-  return '<section class="stack s8"><div class="row between"><h2 class="h2" style="margin:0">'+T('fs_title')+'</h2><button class="lnk" data-act="hide-start">'+T('fs_hide')+'</button></div><p class="muted small">'+T('fs_sub')+'</p><div class="bar" aria-hidden="true"><i style="--w:'+Math.round(n/it.length*100)+'%"></i></div><p class="muted small">'+T('fs_prog',{a:n,b:it.length})+'</p>'+
-  '<div class="card list">'+it.map(function(x,i){return '<button class="li'+(x.d?' done':'')+'" data-act="'+x.a+'"'+(x.tab?' data-tab="'+x.tab+'"':'')+'><span class="ico">'+(x.d?ic('check',18):'<b>'+(i+1)+'</b>')+'</span><span class="grow t">'+esc(x.t)+'</span><span class="flip muted">'+ic('chev',18)+'</span></button>';}).join('')+'</div></section>';
-}
+
+
 function projListHtml(){
   var list=S.projects.filter(function(p){return isMember(p.canal);}),shown=S.projTab==='mine'?list.filter(myProject):list,q=(S.projQ||'').trim().toLowerCase();
   if(q)shown=shown.filter(function(p){return (p.t.fr+' '+p.t.ar+' '+p.needs.join(' ')+' '+c(canalOf(p.canal).n)).toLowerCase().indexOf(q)>-1;});
@@ -821,17 +574,7 @@ function projListHtml(){
   return shown.map(projCard).join('');
 }
 /* ============ Vues ============ */
-function annCard(a,ro){
-  var n=a.reads+(S.read[a.id]?1:0);
-  var h='<article class="card ann"><div class="row between"><span class="row">'+chip(T('official'),'red')+(a.canal!=='all'?chip(C(canalOf(a.canal).n)):'')+'</span><span class="muted small">'+esc(fmt(a.date))+'</span></div>';
-  h+='<h3>'+C(a.t)+'</h3>'+trBlock('a:'+a.id,a.body);
-  if(a.until)h+='<p class="muted small">'+T('until',{d:fmt(a.until)})+'</p>';
-  h+='<div class="row between wrap"><span class="muted small">'+n+' '+T('reads')+'</span>';
-  if(!ro){h+='<span class="row">';
-    h+=S.read[a.id]?chip(ic('check',14)+T('read_done'),'green'):'<button class="btn sm" data-act="read" data-id="'+esc(a.id)+'">'+T('read_btn')+'</button>';
-    h+='<button class="btn sm" data-act="share" data-kind="ann" data-id="'+esc(a.id)+'" aria-label="'+T('share')+'">'+ic('share',16)+'</button></span>';}
-  return h+'</div></article>';
-}
+
 function projCard(p){
   var pr=progress(p),k=canalOf(p.canal);
   return '<button class="card pcard" data-act="open-project" data-id="'+esc(p.id)+'"><div class="row between wrap">'+chip(C(k.n))+projStatus(p)+'</div><h3>'+C(p.t)+'</h3>'+
@@ -854,7 +597,7 @@ function vHome(){
   h+='</section><section id="ann-sec"><h2 class="h2">'+T('ann_title')+'</h2><div class="stack">'+anns.map(function(a){return annCard(a,false);}).join('')+'</div></section>';
   if(rec.length)h+='<section><h2 class="h2">'+T('recruit_title')+'</h2><div class="stack">'+rec.map(projCard).join('')+'</div></section>';
   var sp=mySkillProjects();
-  if(sp.length)h+='<section><div class="row between wrap"><h2 class="h2" style="margin:0">'+T('match_home')+'</h2>'+aiTag()+'</div><div class="stack" style="margin-top:8px">'+sp.map(function(x){return '<div>'+projCard(x.p)+'<p class="muted small" style="margin-top:4px">'+T('match_home_why',{n:x.need})+'</p></div>';}).join('')+'</div></section>';
+  if(sp.length)h+='<section><div class="row between wrap"><h2 class="h2" style="margin:0">'+T('match_home')+'</h2></div><div class="stack" style="margin-top:8px">'+sp.map(function(x){return '<div>'+projCard(x.p)+'<p class="muted small" style="margin-top:4px">'+T('match_home_why',{n:x.need})+'</p></div>';}).join('')+'</div></section>';
   return h;
 }
 function statusChip(id){var s=mem(id);return s==='member'?chip(T('canal_member'),'green'):s==='pending'?chip(T('canal_pending'),'yellow'):'';}
@@ -867,18 +610,18 @@ function vCanal(p){
   var k=canalOf(p.id),st=mem(p.id);
   var tabs=[['ann','tab_ann']];if(st==='member'){tabs.push(['proj','tab_proj'],['help','tab_help'],['honor','tab_honor']);}if(isMod(p.id))tabs.push(['mod','tab_mod']);
   var cur=p.tab||S.canalTab[p.id]||'ann';if(!tabs.some(function(x){return x[0]===cur;}))cur='ann';S.canalTab[p.id]=cur;
-  var h='<section class="card stack s8"><div class="row"><span class="ico-lg">'+ic(k.ico,22)+'</span><div class="grow"><h2 class="h3">'+C(k.n)+'</h2><p class="muted small">'+k.count+' '+T('canal_members')+' · '+T('canal_mod')+' @'+esc(k.mod)+'</p></div>'+statusChip(p.id)+'</div><p>'+C(k.d)+'</p>';
-  h+='<button class="btn block" data-act="wa-group">'+ic('chat',18)+T('canal_wa')+'</button><p class="muted small">'+T('canal_wa_note')+'</p></section>';
+  var h='<section class="card stack s8"><div class="row"><span class="ico-lg">'+ic(k.ico,22)+'</span><div class="grow"><h2 class="h3">'+C(k.n)+'</h2><p class="muted small">'+k.count+' '+T('canal_members')+(k.mod?' · '+T('canal_mod')+' @'+esc(k.mod):'')+'</p></div>'+statusChip(p.id)+'</div><p>'+C(k.d)+'</p>';
+  h+='<button class="btn block" data-act="wa-group" data-id="'+k.id+'">'+ic('chat',18)+T('canal_wa')+'</button><p class="muted small">'+T('canal_wa_note')+'</p></section>';
   if(!st)h+='<button class="btn primary block" data-act="join" data-id="'+k.id+'">'+T('canal_join')+'</button>';
   if(st==='pending')h+='<div class="banner">'+ic('clock',18)+'<span>'+T('canal_pending_banner',{m:k.mod})+'</span></div>';
   h+='<div class="tabs" role="tablist">'+tabs.map(function(x){return '<button role="tab" aria-selected="'+(cur===x[0])+'" data-act="canal-tab" data-id="'+k.id+'" data-tab="'+x[0]+'">'+T(x[1])+'</button>';}).join('')+'</div>';
   if(cur==='ann'){var as=S.anns.filter(function(a){return a.canal===k.id||a.canal==='all';});h+='<div class="stack">'+(as.length?as.map(function(a){return annCard(a,st!=='member');}).join(''):'<p class="empty">'+T('no_ann')+'</p>')+'</div>';if(!st)h+='<p class="muted small">'+T('canal_locked')+'</p>';}
-  if(cur==='proj'){var ps=S.projects.filter(function(x){return x.canal===k.id;});h+='<button class="btn block" data-act="new-project" data-id="'+k.id+'">'+ic('plus',18)+T('new_project')+'</button>'+chatBtn()+'<div class="stack">'+(ps.length?ps.map(projCard).join(''):'<p class="empty">'+T('no_proj')+'</p>')+'</div>';}
+  if(cur==='proj'){var ps=S.projects.filter(function(x){return x.canal===k.id;});h+='<button class="btn block" data-act="new-project" data-id="'+k.id+'">'+ic('plus',18)+T('new_project')+'</button><div class="stack">'+(ps.length?ps.map(projCard).join(''):'<p class="empty">'+T('no_proj')+'</p>')+'</div>';}
   if(cur==='help'){h+='<button class="btn primary block" data-act="new-help">'+ic('plus',18)+T('new_help')+'</button><p class="muted small">'+ic('lock',14)+' '+T('help_priv')+'</p>';}
   if(cur==='honor')h+=honorHtml(k.id);
   if(cur==='mod'){var rq=S.reqs[k.id]||[];
-    h+='<section><h2 class="h2">'+T('mod_reqs')+(rq.length?'<span class="count">'+rq.length+'</span>':'')+'</h2>'+(rq.length?'<div class="card list">'+rq.map(function(r){return '<div class="li">'+av(r.p)+'<span class="grow t">@'+esc(r.p)+'</span><button class="btn sm primary" data-act="accept" data-id="'+k.id+'" data-p="'+esc(r.p)+'">'+T('accept')+'</button><button class="btn sm" data-act="refuse" data-id="'+k.id+'" data-p="'+esc(r.p)+'">'+T('refuse')+'</button></div>';}).join('')+'</div>':'<p class="empty">'+T('mod_none')+'</p>')+'</section>';
-    h+='<section class="card stack s8"><h2 class="h3">'+T('invite_link')+'</h2><p class="linkbox" dir="ltr">diasporact.example/i/'+esc(S.invites[k.id]||(S.invites[k.id]=k.id+'-'+inviteCode()))+'</p><p class="muted small">'+T('invite_exp')+'</p><div class="row wrap"><button class="btn sm" data-act="copy-link" data-id="'+k.id+'">'+ic('copy',16)+T('copy')+'</button><button class="btn sm" data-act="share" data-kind="invite" data-id="'+k.id+'">'+ic('share',16)+T('share')+'</button><button class="btn sm danger" data-act="rotate-link" data-id="'+k.id+'">'+T('invite_rotate')+'</button></div></section>';}
+    h+='<section><h2 class="h2">'+T('mod_reqs')+(rq.length?'<span class="count">'+rq.length+'</span>':'')+'</h2>'+(rq.length?'<div class="card list">'+rq.map(function(r){return '<div class="li">'+av(r.p)+'<span class="grow t">@'+esc(r.p)+'</span><button class="btn sm primary" data-act="accept" data-id="'+k.id+'" data-p="'+esc(r.p)+'" data-uid="'+esc(r.id)+'">'+T('accept')+'</button><button class="btn sm" data-act="refuse" data-id="'+k.id+'" data-p="'+esc(r.p)+'" data-uid="'+esc(r.id)+'">'+T('refuse')+'</button></div>';}).join('')+'</div>':'<p class="empty">'+T('mod_none')+'</p>')+'</section>';
+    h+=modTools(k);}
   if(cur==='mod')h+=badgeReqHtml();
   return h;
 }
@@ -887,7 +630,7 @@ function vProjects(){
   var list=S.projects.filter(function(p){return isMember(p.canal);});
   var mine=list.filter(myProject);var shown=S.projTab==='mine'?mine:list;
   var h='<div class="seg" role="tablist"><button role="tab" aria-selected="'+(S.projTab==='mine')+'" data-act="proj-tab" data-tab="mine">'+T('proj_mine')+'</button><button role="tab" aria-selected="'+(S.projTab==='all')+'" data-act="proj-tab" data-tab="all">'+T('proj_all')+'</button></div>';
-  h+='<button class="btn primary block" data-act="new-project">'+ic('plus',18)+T('new_project')+'</button>'+chatBtn();
+  h+='<button class="btn primary block" data-act="new-project">'+ic('plus',18)+T('new_project')+'</button>';
   h+='<input type="text" id="proj-q" inputmode="search" autocomplete="off" aria-label="'+esc(t('search_proj'))+'" placeholder="'+esc(t('search_proj'))+'" value="'+esc(S.projQ)+'"><div class="stack" id="proj-list">'+projListHtml()+'</div>';
   return h;
 }
@@ -902,11 +645,11 @@ function vProject(p){
   }
   var f=S.follow[pj.id]||'all',inTeam=pj.team.indexOf(S.me.pseudo)>-1||pj.owner===S.me.pseudo;
   h+='<div class="row wrap"><button class="btn sm" data-act="follow-sheet" data-id="'+pj.id+'">'+ic('bell',16)+T('follow')+' · '+T('fo_'+(f==='milestones'?'mil':f))+'</button><button class="btn sm" data-act="share" data-kind="project" data-id="'+pj.id+'">'+ic('share',16)+T('share')+'</button>';
-  if(inTeam)h+=chip(T('in_team'),'green');else if(S.applied[pj.id])h+=chip(ic('check',14)+T('applied'),'green');else h+='<button class="btn sm primary" data-act="apply" data-id="'+pj.id+'">'+T('apply')+'</button>';
+  if(inTeam)h+=chip(T('in_team'),'green');else h+='<button class="btn sm primary" data-act="apply" data-id="'+pj.id+'">'+T('apply')+'</button>';
   h+='</div>';
   h+='<section><h2 class="h2">'+T('needs')+'</h2><div class="chips">'+pj.needs.map(function(n){return chip(esc(n),'yellow');}).join('')+'</div></section>';
   h+=matchSection(pj,inTeam);
-  h+='<section class="card"><h2 class="h2">'+T('milestones')+'</h2>'+pj.ms.map(function(m){return '<div class="ms"><span class="dot'+(m.done?' done':'')+'"></span><span class="grow">'+esc(m.t)+'</span><span class="muted small">'+esc(fmt(m.date))+'</span></div>';}).join('')+'</section>';
+  h+='<section class="card"><h2 class="h2">'+T('milestones')+'</h2>'+pj.ms.map(function(m){return '<div class="ms"><span class="dot'+(m.done?' done':'')+'"></span><span class="grow">'+esc(m.t)+'</span><span class="muted small">'+(m.date?esc(fmt(m.date)):'')+'</span>'+(canEdit(pj)?'<button class="lnk" data-act="ms-toggle" data-id="'+pj.id+'" data-ms="'+m.id+'" data-done="'+(m.done?1:0)+'" aria-label="'+(m.done?'↺':'✓')+'">'+(m.done?'↺':'✓')+'</button>':'')+'</div>';}).join('')+'</section>';
   var order={doing:0,todo:1,done:2};
   h+='<section class="card"><h2 class="h2">'+T('tasks')+'</h2>'+pj.tasks.slice().sort(function(a,b){return order[a.status]-order[b.status];}).map(function(k2){
     var act='';
@@ -915,50 +658,16 @@ function vProject(p){
     else if(k2.who===S.me.pseudo)act='<button class="btn sm primary" data-act="finish" data-id="'+pj.id+'" data-task="'+k2.id+'">'+T('mark_done')+'</button>';
     return '<div class="tk"><span class="dot '+k2.status+'"></span><span class="grow"><span class="t">'+esc(k2.t)+'</span><br><span class="muted small">'+(k2.who?'@'+esc(k2.who):T('unassigned'))+'</span></span>'+act+'</div>';}).join('')+'</section>';
   h+='<section class="card"><h2 class="h2">'+T('comments')+'</h2>'+(pj.cmts.length?pj.cmts.map(function(m){return '<div class="cmt">'+av(m.by)+'<div class="grow"><p class="who">@'+esc(m.by)+pBadges(m.by)+' <span class="muted small" style="font-weight:400">'+esc(rel(m.at))+'</span></p><p>'+esc(m.t)+'</p></div></div>';}).join(''):'')+
-    '<form data-form="comment" data-id="'+pj.id+'" class="stack s8" style="margin-top:8px"><label class="lbl" for="cmt-text" hidden>'+T('comments')+'</label><textarea id="cmt-text" maxlength="280" rows="2" placeholder="'+T('cmt_ph')+'"></textarea><div class="row between"><span id="cmt-n" class="muted small">0/280</span><span class="row">'+micBtn('cmt-text')+'<button class="btn sm primary" type="submit">'+T('publish')+'</button></span></div></form></section>';
+    '<form data-form="comment" data-id="'+pj.id+'" class="stack s8" style="margin-top:8px"><label class="lbl" for="cmt-text" hidden>'+T('comments')+'</label><textarea id="cmt-text" maxlength="280" rows="2" placeholder="'+T('cmt_ph')+'"></textarea><div class="row between"><span id="cmt-n" class="muted small">0/280</span><span class="row"><button class="btn sm primary" type="submit">'+T('publish')+'</button></span></div></form></section>';
+  h+=manageSection(pj);
   h+='<section><h2 class="h2">'+T('team')+'</h2><div class="chips">'+pj.team.map(function(m){return '<span class="chip">'+av(m,20)+'@'+esc(m)+'</span>'+pBadges(m);}).join('')+'</div></section>';
   return h;
 }
-function helpCard(hq,mode){
-  var stc=hq.status==='open'?chip(T('hs_open'),'red'):hq.status==='doing'?chip(T('hs_doing'),'yellow'):chip(T('hs_solved'),'green');
-  var h='<article class="card stack s8"><div class="row between wrap"><span class="row">'+chip(T('dm_'+hq.dom))+(hq.urgent?chip(T('u_urgent'),'urgent'):'')+'</span>'+stc+'</div>';
-  h+='<p>'+esc(hq.txt)+'</p><p class="muted small">'+(mode==='ref'?'@'+esc(hq.who)+' · ':'')+esc(hq.country)+(hq.by?' · '+T('by',{x:hq.by}):'')+'</p>';
-  if(hq.reply)h+=replyHtml(hq);
-  if(mode==='ref'&&hq.status!=='solved')h+=draftBtn(hq);
-  if(mode==='ref'&&hq.status==='open')h+='<button class="btn sm primary" data-act="claim" data-id="'+hq.id+'">'+T('claim')+'</button>';
-  if(hq.status==='doing'&&(hq.who===S.me.pseudo||hq.by===S.me.pseudo))h+='<button class="btn sm" data-act="solve" data-id="'+hq.id+'">'+ic('check',16)+T('solve')+'</button>';
-  return h+'</article>';
-}
-function vHelp(){
-  var mine=S.helps.filter(function(x){return x.who===S.me.pseudo;}),q=refQueue().filter(function(x){return x.status!=='solved';});
-  var h='<button class="btn primary block" data-act="new-help">'+ic('plus',18)+T('new_help')+'</button><p class="muted small row">'+ic('lock',14)+' '+T('help_priv')+'</p>';
-  if(S.me.ref.length)h+='<section><h2 class="h2">'+T('help_todo')+(q.length?'<span class="count">'+q.length+'</span>':'')+'</h2><p class="muted small" style="margin-bottom:8px">'+S.me.ref.map(function(d){return esc(t('dm_'+d));}).join(' · ')+'</p><div class="stack">'+(q.length?q.map(function(x){return helpCard(x,'ref');}).join(''):'<p class="empty">'+T('help_none')+'</p>')+'</div></section>';
-  h+='<section><h2 class="h2">'+T('help_mine')+'</h2><div class="stack">'+(mine.length?mine.map(function(x){return helpCard(x,'mine');}).join(''):'<p class="empty">'+T('help_none')+'</p>')+'</div></section>';
-  h+='<section><h2 class="h2">'+T('faq_title')+'</h2><p class="muted small" style="margin-bottom:8px">'+T('faq_sub')+'</p><div class="card list">'+allFaq().map(function(f){return '<button class="li" data-act="open-faq" data-id="'+f.id+'"><span class="ico">'+ic('book',18)+'</span><span class="grow"><span class="t">'+C(f.t)+'</span><br><span class="muted small">'+T('dm_'+f.dom)+'</span></span><span class="flip muted">'+ic('chev',18)+'</span></button>';}).join('')+'</div></section>';
-  return h;
-}
+
+
 function toggle(id,on,label,note){return '<div class="li" style="padding:12px 0"><span class="grow"><span class="t">'+label+'</span><br><span class="muted small">'+note+'</span></span><button class="sw" role="switch" aria-checked="'+on+'" aria-label="'+label+'" data-act="'+id+'"></button></div>';}
-function vAlerts(){
-  var h='<section class="card"><h2 class="h3">'+T('alerts_title')+'</h2>'+toggle('toggle-push',S.push,T('push'),T('push_note'))+'<div style="border-top:1px solid var(--line)"></div>'+toggle('toggle-digest',S.digest,T('digest'),T('digest_note'))+'</section>';
-  h+=digestCard();
-  h+='<div class="row between"><h2 class="h2" style="margin:0">'+T('nav_alerts')+'</h2>'+(unread()?'<button class="btn sm" data-act="mark-all">'+T('mark_all')+'</button>':'')+'</div>';
-  h+=S.notifs.length?'<div class="card list">'+S.notifs.map(function(n){return '<button class="li" data-act="alert-open" data-id="'+esc(n.id)+'"><span class="ico" style="'+(n.read?'background:var(--surface2);color:var(--ink2)':'')+'">'+ic(n.type==='task'?'check':n.type==='ann'?'mega':n.type==='help'?'life':n.type==='canal'?'hash':'folder',18)+'</span><span class="grow"><span class="t" style="'+(n.read?'font-weight:400':'')+'">'+esc(n[S.lang]||n.fr)+'</span><br><span class="muted small">'+esc(rel(n.at))+'</span></span>'+(n.read?'':'<span class="chip green" aria-label="new">•</span>')+'</button>';}).join('')+'</div>':'<p class="empty">'+T('no_alerts')+'</p>';
-  return h;
-}
-function vMe(){
-  var roles=[chip(T('r_member'))];S.me.mod.forEach(function(id){roles.push(chip(T('r_mod',{x:c(canalOf(id).n)}),'green'));});
-  if(S.me.ref.length)roles.push(chip(T('r_ref',{x:S.me.ref.map(function(d){return t('dm_'+d);}).join(', ')}),'yellow'));
-  if(S.me.speaker)roles.push(chip(T('r_speaker'),'red'));
-  var mine=Object.keys(S.mem).map(function(id){return '<div class="li"><span class="grow t">'+C(canalOf(id).n)+'</span>'+statusChip(id)+'</div>';}).join('');
-  return '<section class="row">'+av(S.me.pseudo,52)+'<div class="grow"><h1 class="page" style="font-size:22px">@'+esc(S.me.pseudo)+'</h1></div></section>'+
-  '<section><h2 class="h2">'+T('roles')+'</h2><div class="chips">'+roles.join('')+'</div></section>'+
-  (mine?'<section><h2 class="h2">'+T('my_canals')+'</h2><div class="card list">'+mine+'</div></section>':'')+
-  badgesSection()+skillsSection()+
-  '<section class="card stack s8"><h2 class="h3">'+T('recov')+'</h2><p class="code" dir="ltr">'+(S.showCode?esc(S.me.code||''):'••••-••••-••••')+'</p><div class="row wrap"><button class="btn sm" data-act="reveal-code">'+ic('eye',16)+(S.showCode?T('hide'):T('show'))+'</button><button class="btn sm" data-act="copy-code">'+ic('copy',16)+T('copy')+'</button></div><p class="muted small">'+T('recov_note')+'</p></section>'+
-  '<section class="stack s8"><div class="lbl">'+T('lang')+'</div><div class="seg"><button aria-pressed="'+(S.lang==='fr')+'" data-act="lang" data-v="fr">Français</button><button aria-pressed="'+(S.lang==='ar')+'" data-act="lang" data-v="ar">العربية</button></div>'+
-  '<div class="lbl">'+T('theme')+'</div><div class="seg">'+['light','dark'].map(function(v){return '<button aria-pressed="'+(S.theme===v)+'" data-act="theme" data-v="'+v+'">'+T('th_'+v)+'</button>';}).join('')+'</div></section>'+
-  '<button class="btn block danger" data-act="logout">'+T('logout')+'</button>';
-}
+
+
 function fieldCanalOptions(sel){return Object.keys(S.mem).filter(isMember).map(function(id){return '<option value="'+id+'"'+(id===sel?' selected':'')+'>'+C(canalOf(id).n)+'</option>';}).join('');}
 function vNewProject(p){
   var sel=p.canal||Object.keys(S.mem).filter(isMember)[0];
@@ -971,50 +680,26 @@ function vNewProject(p){
   '<div class="field"><label for="np-due">'+T('f_due')+'</label><input type="date" id="np-due"></div>'+
   '<p class="fb err" id="np-err"></p><div class="row"><button type="button" class="btn grow" data-act="back">'+T('cancel')+'</button><button type="submit" class="btn primary grow">'+T('publish')+'</button></div></form>';
 }
-function vNewHelp(){
-  return '<h1 class="page">'+T('new_help')+'</h1><form data-form="help" class="stack" novalidate>'+
-  '<div class="field"><label for="nh-dom">'+T('domain')+'</label><select id="nh-dom">'+DOMAINS.map(function(d){return '<option value="'+d+'">'+T('dm_'+d)+'</option>';}).join('')+'</select></div>'+
-  '<div class="field"><label for="nh-country">'+T('country')+'</label><input type="text" id="nh-country" maxlength="40" autocomplete="off"></div>'+
-  '<div class="field"><label for="nh-urg">'+T('urgency')+'</label><select id="nh-urg"><option value="0">'+T('u_normal')+'</option><option value="1">'+T('u_urgent')+'</option></select></div>'+
-  '<div class="field"><label for="nh-txt">'+T('situation')+'</label><textarea id="nh-txt" maxlength="500"></textarea></div>'+
-  '<div class="row">'+micBtn('nh-txt')+'</div><div id="nh-ai" aria-live="polite"></div>'+
-  '<p class="muted small row">'+ic('lock',14)+' '+T('help_priv')+'</p><p class="fb err" id="nh-err"></p>'+
-  '<div class="row"><button type="button" class="btn grow" data-act="back">'+T('cancel')+'</button><button type="submit" class="btn primary grow">'+T('send')+'</button></div></form>';
-}
+
 /* Parcours d'arrivée */
-function vInv1(){
-  var k=canalOf(S.draft.invite),as=S.anns.filter(function(a){return a.canal===k.id||a.canal==='all';});
-  return '<section class="hero">'+logoSvg()+'<p class="eyebrow">'+T('inv_from')+'</p><h1>'+T('inv_title')+'</h1><p>'+T('inv_sub',{canal:c(k.n)})+'</p></section>'+
-  '<section class="card stack s8"><div class="row"><span class="ico-lg">'+ic(k.ico,20)+'</span><div class="grow"><h2 class="h3">'+C(k.n)+'</h2><p class="muted small">'+k.count+' '+T('canal_members')+'</p></div></div><p>'+C(k.d)+'</p></section>'+
-  '<section><h2 class="h2">'+T('inv_preview')+'</h2><p class="muted small" style="margin-bottom:8px">'+T('inv_preview_sub')+'</p><div class="stack">'+as.slice(0,2).map(function(a){return annCard(a,true);}).join('')+'</div></section>'+
-  '<form data-form="pseudo" class="stack" novalidate><div class="field"><label for="pseudo">'+T('pseudo_label')+'</label><div class="pfx" dir="ltr">@<input type="text" id="pseudo" maxlength="20" autocomplete="off" autocapitalize="none" spellcheck="false" value="'+esc(S.draft.pseudo)+'"></div><p class="muted small">'+T('pseudo_help')+'</p><p class="fb" id="pseudo-fb" aria-live="polite"></p></div><button type="submit" class="btn primary block" id="pseudo-go" disabled>'+T('continue')+'</button></form>';
-}
-function vInv2(){
-  return '<h1 class="page">'+T('pick_title')+'</h1><p class="lead">'+T('pick_sub')+'</p><form data-form="canals" class="stack" novalidate><div class="stack s8">'+
-  CANALS.map(function(k){return '<label class="pick" for="pc-'+k.id+'"><span class="ico">'+ic(k.ico,20)+'</span><span class="grow"><span class="t">'+C(k.n)+'</span><br><span class="muted small">'+C(k.d)+'</span>'+(k.id===S.draft.invite?'<br>'+chip(T('pick_invited'),'green'):'')+'</span><input type="checkbox" id="pc-'+k.id+'" value="'+k.id+'"'+(S.draft.canals.indexOf(k.id)>-1?' checked':'')+'></label>';}).join('')+
-  '</div><button type="submit" class="btn primary block" id="pick-go">'+T('pick_send')+'</button></form>';
-}
-function vInv3(){
-  var pend=Object.keys(S.mem).filter(function(id){return S.mem[id]==='pending';});
-  return '<h1 class="page">'+T('code_title')+'</h1><p class="lead">'+T('code_sub')+'</p><p class="code" dir="ltr">'+esc(S.me.code)+'</p><button class="btn block" data-act="copy-code">'+ic('copy',18)+T('copy')+'</button>'+
-  '<section><h2 class="h2">'+T('code_sent')+'</h2><div class="chips">'+pend.map(function(id){return chip(ic('clock',14)+C(canalOf(id).n),'yellow');}).join('')+'</div></section>'+
-  '<label class="pick" for="noted"><span class="grow t">'+T('code_noted')+'</span><input type="checkbox" id="noted"></label><button class="btn primary block" id="enter" data-act="enter" disabled>'+T('code_enter')+'</button>';
-}
-var VIEWS={home:vHome,canals:vCanals,canal:vCanal,projects:vProjects,project:vProject,newProject:vNewProject,help:vHelp,newHelp:vNewHelp,alerts:vAlerts,me:vMe,chat:vChat,inv1:vInv1,inv2:vInv2,inv3:vInv3};
+
+
+
+
 function titleFor(r,p){
   switch(r){case 'canals':return t('nav_canals');case 'projects':return t('nav_projects');case 'help':return t('nav_help');case 'alerts':return t('nav_alerts');
-    case 'canal':return c(canalOf(p.id).n);case 'project':return projOf(p.id)?c(projOf(p.id).t):'';case 'newProject':return t('new_project');case 'newHelp':return t('new_help');case 'me':return t('my_account');case 'chat':return t('from_chat');default:return t('app_short');}
+    case 'canal':return c(canalOf(p.id).n);case 'project':return projOf(p.id)?c(projOf(p.id).t):'';case 'newProject':return t('new_project');case 'newHelp':return t('new_help');case 'me':return t('my_account');default:return t('app_short');}
 }
 
 /* ============ Rendu ============ */
 function render(resetScroll){
   var acct=hasAccount(),r=S.route.name,p=S.route.params||{};
-  if(!acct&&['inv1','inv2','inv3','project'].indexOf(r)<0){S.route={name:'inv1',params:{}};r='inv1';p={};}
+  if(!acct&&['load','inv0','inv1','invRec'].indexOf(r)<0){S.route={name:'inv0',params:{}};r='inv0';p={};}
   root.lang=S.lang;root.dir=S.lang==='ar'?'rtl':'ltr';
   root.setAttribute('data-theme',S.theme==='dark'?'dark':'light');
   var tc=document.querySelector('meta[name="theme-color"]');if(tc)tc.setAttribute('content',S.theme==='dark'?'#0E1511':'#FFFFFF');
-  var onb=r.indexOf('inv')===0,detail=['canal','project','newProject','newHelp','me','inv2','chat'].indexOf(r)>-1&&(S.stack.length>0||(r==='project'&&!acct));
-  var tb=(detail?'<button class="icon-btn flip" data-act="back" aria-label="'+T('back')+'">'+ic('back',22)+'</button>':logoSvg())+'<h1>'+esc(titleFor(r,p))+'</h1><button class="demo-chip" data-act="demo">'+T('demo')+'</button><button class="icon-btn lang-btn" data-act="toggle-lang" aria-label="'+esc(S.lang==='ar'?'Français':'العربية')+'">'+(S.lang==='ar'?'FR':'ع')+'</button><button class="icon-btn" data-act="toggle-theme" aria-label="'+esc(S.theme==='dark'?t('th_light'):t('th_dark'))+'">'+ic(S.theme==='dark'?'sun':'moon',20)+'</button>'+(acct&&!onb?'<button class="icon-btn me-btn" data-act="go-me" aria-label="'+T('my_account')+'">'+av(S.me.pseudo,32)+'</button>':'');
+  var onb=r.indexOf('inv')===0||r==='load',detail=['canal','project','newProject','newHelp','me'].indexOf(r)>-1&&S.stack.length>0;
+  var tb=(detail?'<button class="icon-btn flip" data-act="back" aria-label="'+T('back')+'">'+ic('back',22)+'</button>':logoSvg())+'<h1>'+esc(titleFor(r,p))+'</h1><button class="icon-btn lang-btn" data-act="toggle-lang" aria-label="'+esc(S.lang==='ar'?'Français':'العربية')+'">'+(S.lang==='ar'?'FR':'ع')+'</button><button class="icon-btn" data-act="toggle-theme" aria-label="'+esc(S.theme==='dark'?t('th_light'):t('th_dark'))+'">'+ic(S.theme==='dark'?'sun':'moon',20)+'</button>'+(acct&&!onb?'<button class="icon-btn me-btn" data-act="go-me" aria-label="'+T('my_account')+'">'+av(S.me.pseudo,32)+'</button>':'');
   $('#topbar').innerHTML=tb;
   var view=$('#view'),y=view.scrollTop;
   view.innerHTML=(VIEWS[r]||vHome)(p);
@@ -1027,24 +712,10 @@ function render(resetScroll){
 function mount(r){
   var tbs=document.querySelector('.tabs'),at=tbs&&tbs.querySelector('[aria-selected="true"]');if(at&&root.dir!=='rtl')tbs.scrollLeft=at.offsetLeft-tbs.clientWidth/2+at.offsetWidth/2;
   if(r==='inv1'){updatePseudo();}
-  if(r==='inv2'){updatePick();}
 }
-function checkPseudo(v){
-  v=v.trim().toLowerCase();if(!v)return {st:'empty',v:v};
-  if(!/^[a-z0-9._-]{3,20}$/.test(v))return {st:'bad',v:v};
-  if(TAKEN.indexOf(v)>-1)return {st:'taken',v:v,sug:[v+'.mr',v+'_2026'].filter(function(s){return s.length<=20&&TAKEN.indexOf(s)<0;})};
-  return {st:'ok',v:v};
-}
-function updatePseudo(){
-  var inp=$('#pseudo');if(!inp)return;var r=checkPseudo(inp.value),fb=$('#pseudo-fb'),go=$('#pseudo-go');S.draft.pseudo=inp.value;
-  fb.className='fb';
-  if(r.st==='ok'){fb.classList.add('ok');fb.textContent='✓ '+t('pseudo_ok',{p:r.v});}
-  else if(r.st==='bad'){fb.classList.add('err');fb.textContent=t('pseudo_bad');}
-  else if(r.st==='taken'){fb.classList.add('err');fb.innerHTML=esc(t('pseudo_taken',{p:r.v}))+' '+r.sug.map(function(s){return '<button type="button" class="chip" data-act="sug" data-v="'+esc(s)+'">@'+esc(s)+'</button>';}).join(' ');}
-  else fb.textContent='';
-  go.disabled=r.st!=='ok';
-}
-function updatePick(){var n=document.querySelectorAll('#view input[type=checkbox]:checked').length,b=$('#pick-go');if(b)b.disabled=n<1;}
+
+
+
 
 /* ============ Fenêtres ============ */
 var lastFocus=null;
@@ -1055,235 +726,577 @@ function openSheet(title,body,cls){
   r.hidden=false;var f=r.querySelector('.sheet-b button,.sheet-b input,.sheet-b textarea,.sheet-b select');if(f)f.focus();
 }
 function closeSheet(silent){var r=$('#sheets');r.hidden=true;r.innerHTML='';if(!silent&&lastFocus&&lastFocus.focus){try{lastFocus.focus();}catch(e){}}}
-function shareMessage(kind,id){
-  if(kind==='project'){var p=projOf(id),pr=progress(p);return {text:c(p.t)+' : '+pr.d+'/'+pr.n+(S.lang==='ar'?' مهام منجزة. تابع التقدم وشارك: ':' tâches terminées. Suivez l’avancement et participez : ')+'https://diasporact.example/p/'+p.id,title:c(p.t),sub:T('tasks_count',{a:pr.d,b:pr.n}),url:'diasporact.example/p/'+p.id};}
-  if(kind==='ann'){var a=annOf(id);return {text:(S.lang==='ar'?'إعلان رسمي: ':'Annonce officielle : ')+c(a.t)+(S.lang==='ar'?'. اقرأ وأكّد القراءة: ':'. Lire et confirmer la lecture : ')+'https://diasporact.example/a/'+a.id,title:c(a.t),sub:T('official'),url:'diasporact.example/a/'+a.id};}
-  var k=canalOf(id),code=S.invites[id];return {text:(S.lang==='ar'?'انضموا إلى قناة «':'Rejoignez le canal « ')+c(k.n)+(S.lang==='ar'?'» على Diasporact: ':' » sur Diasporact : ')+'https://diasporact.example/i/'+code,title:c(k.n),sub:T('app_name'),url:'diasporact.example/i/'+code};
-}
+
 function openShare(kind,id){
   var m=shareMessage(kind,id);S._msg=m.text;
   openSheet(t('share_title'),'<p class="muted small">'+T('share_prev')+'</p><div class="chat"><div class="bub out"><p>'+esc(m.text.split('https://')[0])+'</p><div class="lc"><b>'+esc(m.title)+'</b><span class="muted small">'+esc(m.sub)+'</span><span class="url" dir="ltr">'+esc(m.url)+'</span></div></div></div>'+
    '<div class="row wrap"><button class="btn grow" data-act="copy-msg">'+ic('copy',18)+T('share_copy')+'</button><a class="btn primary grow" target="_blank" rel="noopener" href="https://wa.me/?text='+encodeURIComponent(m.text)+'">'+ic('chat',18)+T('share_open')+'</a></div><p class="muted small">'+T('share_note')+'</p>');
 }
-function openWA(){
-  var invited=hasAccount()?canalOf('edu'):canalOf(S.draft.invite);
-  openSheet(t('wa_title'),
-  '<p class="muted small">'+T('wa_note')+'</p><div class="chat" dir="ltr" style="text-align:start">'+
-  '<div class="bub"><p class="who">@lemine.montreal</p><p>Quelqu’un connaît un bon site pour comparer les frais de transfert vers Nouakchott ?</p></div>'+
-  '<div class="bub"><p class="who">@aissata.lyon</p><p>Je t’envoie ça en privé. Sinon pour les projets, regardez l’outil Diasporact :</p>'+
-   '<div class="lc"><b>'+esc(c(invited.n))+'</b><span class="muted small">'+esc(t('app_name'))+'</span><span class="url">diasporact.example/i/'+esc(S.invites.edu||'educ-7f3k')+'</span><button data-act="wa-invite" type="button">'+T('wa_open')+'</button></div></div>'+
-  '<div class="bub"><p class="who">@sidi.paris</p><p>Point d’étape sur le projet de la salle informatique :</p>'+
-   '<div class="lc"><b>'+esc(c(projOf('ecole-boghe').t))+'</b><span class="muted small">Jalon atteint : cahier des charges validé</span><span class="url">diasporact.example/p/ecole-boghe</span><button data-act="wa-project" type="button">'+T('wa_open')+'</button></div></div>'+
-  '<div class="bub"><p class="who">@mariem.paris</p><p>Super. Je prends la partie réseau.</p></div></div>','tall');
-}
+
 function openFollow(id){
   var cur=S.follow[id]||'all';
   openSheet(t('follow_title'),['all','milestones','none'].map(function(v){var k=v==='milestones'?'mil':v;return '<button class="rad" role="radio" aria-checked="'+(cur===v)+'" data-act="pick-follow" data-id="'+id+'" data-v="'+v+'"><span class="o"></span><span class="grow"><span class="t">'+T('fo_'+k)+'</span><br><span class="muted small">'+T('fo_'+k+'_d')+'</span></span></button>';}).join(''));
 }
-function openAnnForm(){
-  openSheet(t('publish_ann'),'<form data-form="ann" class="stack" novalidate><div class="field"><label for="an-t">'+T('f_title')+'</label><input type="text" id="an-t" maxlength="90" autocomplete="off"></div><div class="field"><label for="an-b">'+T('f_body')+'</label><textarea id="an-b" maxlength="400"></textarea></div><div class="field"><label for="an-c">'+T('f_target')+'</label><select id="an-c"><option value="all">'+T('f_all')+'</option>'+CANALS.map(function(k){return '<option value="'+k.id+'">'+C(k.n)+'</option>';}).join('')+'</select></div><div class="field"><label for="an-u">'+T('f_until')+'</label><input type="date" id="an-u"></div><p class="fb err" id="an-err"></p><button type="submit" class="btn primary block">'+T('publish')+'</button></form>');
-}
-function openDemo(){
-  openSheet('Outils de démonstration','<div dir="ltr" lang="fr" class="stack"><p class="muted small">Prototype avec données fictives. Ces outils servent à présenter les parcours ; ils n’existeront pas dans la version réelle.</p>'+
-  '<div class="stack s8"><div class="lbl">Voir l’outil comme…</div>'+
-  '<button class="btn" data-act="preset" data-v="visitor">Nouveau visiteur (arrivée par lien)</button><button class="btn" data-act="preset" data-v="member">Membre</button><button class="btn" data-act="preset" data-v="mod">Modérateur du canal Éducation</button><button class="btn" data-act="preset" data-v="ref">Référent (administratif, juridique)</button><button class="btn" data-act="preset" data-v="speaker">Porte-parole officiel</button></div>'+
-  '<div class="stack s8"><div class="lbl">Simuler</div>'+
-  '<button class="btn" data-act="sim-wa">'+ic('chat',18)+'Voir le groupe WhatsApp</button><button class="btn" data-act="sim-accept">Le modérateur accepte mes demandes</button><button class="btn" data-act="sim-milestone">Un jalon est atteint (École numérique de Boghé)</button><button class="btn" data-act="sim-comment">Un commentaire est ajouté (École numérique de Boghé)</button></div>'+
-  '<p class="muted small">Les titres et libellés sont traduits en arabe ; les textes longs de démonstration restent en français.</p></div>');
-}
+
+
 
 /* ============ Actions ============ */
-function preset(kind){
-  var keep={lang:S.lang,theme:S.theme};S=initState(keep);
-  if(kind==='visitor'){render(true);return;}
-  S.me.pseudo='ahmed.lille';S.me.code=genCode();S.me.skills=['développement web','gestion de projet'];S.me.matching=true;S.me.base={reads:4,tasks:6,proj:1,help:2,links:0};
-  ['edu','inv','num'].forEach(function(id){S.mem[id]='member';});
-  if(kind==='mod')S.me.mod=['edu'];
-  if(kind==='ref'){S.me.ref=['adm','jur'];S.mem.adm='member';}
-  if(kind==='speaker')S.me.speaker=true;
-  S.notifs=[
-   {id:'s1',type:'task',fr:I18N.fr.n_task.replace('{x}','Contacter trois fournisseurs de matériel'),ar:I18N.ar.n_task.replace('{x}','التواصل مع ثلاثة موردين للمعدات'),route:'project',params:{id:'ecole-boghe'},read:false,at:ago(40)},
-   {id:'s2',type:'info',fr:I18N.fr.n_mil.replace('{x}','Cahier des charges validé'),ar:I18N.ar.n_mil.replace('{x}','اعتماد دفتر الشروط'),route:'project',params:{id:'ecole-boghe'},read:false,at:ago(210)},
-   {id:'s3',type:'ann',fr:I18N.fr.n_ann.replace('{x}',BASE.anns[0].t.fr),ar:I18N.ar.n_ann.replace('{x}',BASE.anns[0].t.ar),route:'home',params:{},read:true,at:ago(2900)}];
-  checkBadges(true);
-  S.stack=[];S.route={name:'home',params:{}};render(true);
-}
-function addMember(id,pseudo){
-  S.reqs[id]=(S.reqs[id]||[]).filter(function(r){return r.p!==pseudo;});
-}
-var ACT={
- tab:function(d){tab(d.tab);},
- back:function(){back();},
- 'go-me':function(){go('me');},
- demo:function(){openDemo();},
- 'close-sheet':function(){closeSheet();},
- 'open-canal':function(d){go('canal',{id:d.id,tab:d.tab});},
- 'open-project':function(d){go('project',{id:d.id});},
- join:function(d){var k=canalOf(d.id);S.mem[d.id]='pending';toast(t('t_pending',{m:k.mod}));render();},
- 'canal-tab':function(d){S.canalTab[d.id]=d.tab;S.route.params.tab=d.tab;render();},
- 'proj-tab':function(d){S.projTab=d.tab;render();},
- read:function(d){S.read[d.id]=true;render();},
- share:function(d){openShare(d.kind,d.id);},
- 'copy-msg':function(){doCopy(S._msg||'');},
- 'copy-link':function(d){doCopy('https://diasporact.example/i/'+S.invites[d.id]);},
- 'copy-code':function(){doCopy(S.me.code||'');},
- 'reveal-code':function(){S.showCode=!S.showCode;render();},
- 'rotate-link':function(d){confirmSheet(t('cf_rotate'),t('cf_rotate_t'),'rotate-link-ok',d.id);},
- 'rotate-link-ok':function(d){closeSheet(true);S.invites[d.id]=d.id+'-'+inviteCode();toast(t('t_new_link'));render();},
- accept:function(d){addMember(d.id,d.p);toast(t('t_accepted',{p:d.p}));render();},
- refuse:function(d){addMember(d.id,d.p);toast(t('t_refused',{p:d.p}));render();},
- take:function(d){var p=projOf(d.id),k=p.tasks.filter(function(x){return x.id===d.task;})[0];k.who=S.me.pseudo;k.status='doing';if(p.team.indexOf(S.me.pseudo)<0)p.team.push(S.me.pseudo);toast(t('t_took'));render();},
- finish:function(d){var p=projOf(d.id),k=p.tasks.filter(function(x){return x.id===d.task;})[0];k.status='done';toast(t('t_done'));render();},
- apply:function(d){var p=projOf(d.id);S.applied[d.id]=true;toast(t('t_applied',{o:p.owner}));render();},
- 'follow-sheet':function(d){openFollow(d.id);},
- 'pick-follow':function(d){S.follow[d.id]=d.v;closeSheet();render();},
- 'new-project':function(d){go('newProject',{canal:d.id});},
- 'new-help':function(){go('newHelp');},
- claim:function(d){var h=S.helps.filter(function(x){return x.id===d.id;})[0];h.status='doing';h.by=S.me.pseudo;toast(t('t_claimed',{p:h.who}));render();},
- solve:function(d){var h=S.helps.filter(function(x){return x.id===d.id;})[0];h.status='solved';toast(t('t_solved'));render();},
- 'toggle-push':function(){S.push=!S.push;if(S.push)toast(t('t_push_on'));render();},
- 'toggle-digest':function(){S.digest=!S.digest;render();},
- 'mark-all':function(){S.notifs.forEach(function(n){n.read=true;});render();},
- 'alert-open':function(d){var n=S.notifs.filter(function(x){return x.id===d.id;})[0];n.read=true;if(n.route&&n.route!=='home')go(n.route,n.params);else render();},
- lang:function(d){S.lang=d.v;render();},
- theme:function(d){S.theme=d.v==='dark'?'dark':'light';saveTheme(S.theme);render();},
- 'toggle-theme':function(){S.theme=S.theme==='dark'?'light':'dark';saveTheme(S.theme);render();},
- logout:function(){confirmSheet(t('logout'),t('cf_logout'),'logout-ok','');},
- 'logout-ok':function(){closeSheet(true);preset('visitor');},
- 'publish-ann':function(){openAnnForm();},
- sug:function(d){var i=$('#pseudo');i.value=d.v;updatePseudo();i.focus();},
- enter:function(){S.stack=[];S.route={name:'home',params:{}};render(true);},
- 'wa-group':function(){openWA();},
- 'wa-invite':function(){closeSheet(true);S.stack=[];if(hasAccount()){S.route={name:'canal',params:{id:'edu'}};render(true);}else{S.route={name:'inv1',params:{}};render(true);}},
- 'wa-project':function(){closeSheet(true);S.stack=[];S.route={name:'project',params:{id:'ecole-boghe'}};render(true);},
- preset:function(d){closeSheet(true);preset(d.v);},
- 'sim-wa':function(){openWA();},
- 'sim-accept':function(){closeSheet(true);var any=false;Object.keys(S.mem).forEach(function(id){if(S.mem[id]==='pending'){S.mem[id]='member';any=true;var k=canalOf(id);notify(I18N.fr.n_acc.replace('{x}',k.n.fr),I18N.ar.n_acc.replace('{x}',k.n.ar),'canal',{id:id},'canal');}});toast(any?t('nav_alerts')+' · '+t('now'):'—');render();},
- 'sim-milestone':function(){closeSheet(true);simUpdate('milestone');},
- 'sim-comment':function(){closeSheet(true);simUpdate('comment');},
- 'new-chat':function(){S.chatResult=null;go('chat');},
- 'chat-sample':function(){S.chatDraft=CHAT_SAMPLE;render();},
- 'chat-analyze':function(){
-   var el=$('#ch-txt');if(el)S.chatDraft=el.value;
-   if(!S.chatDraft.trim()){toast(t('chat_empty'));return;}
-   S.chatLoading=true;render();
-   setTimeout(function(){S.chatResult=analyzeChat(S.chatDraft);S.chatLoading=false;if(S.route.name==='chat')render(true);},900);
- },
- 'cr-add':function(d){syncChat();var R=S.chatResult,el=$('#cr-add-'+d.k),v=el?el.value.trim():'';if(!v)return;if(d.k==='actions')R.actions.push({t:v,who:S.me.pseudo,sel:true});else R[d.k].push(v);render();var n=$('#cr-add-'+d.k);if(n)n.focus();},
- 'cr-del':function(d){syncChat();S.chatResult[d.k].splice(+d.i,1);render();},
- 'chat-reset':function(){S.chatResult=null;render(true);},
- tr:function(d){S.tr[d.k]=!S.tr[d.k];render();},
- dictate:function(d){dictate(d.id);},
- propose:function(d){S.proposed[d.id+'|'+d.p]=true;toast(t('match_sent',{x:d.p}));render();},
- 'toggle-matching':function(){S.me.matching=!S.me.matching;render();},
- 'dg-freq':function(d){S.digestFreq=d.v;render();},
- 'dg-wa':function(){openDigestWA();},
- 'ai-dom':function(d){var e=$('#nh-dom');if(e)e.value=d.v;updateHelpAI();},
- 'ai-urg':function(){var e=$('#nh-urg');if(e)e.value='1';updateHelpAI();},
- 'faq-solved':function(){toast(t('ai_help_ok_t'));back();},
- 'open-faq':function(d){openFaq(d.id);},
- draft:function(d){openDraft(d.id);},
- 'toggle-lang':function(){S.lang=S.lang==='ar'?'fr':'ar';render();},
- 'hide-start':function(){S.hideStart=true;render();},
- 'scroll-ann':function(){var e=$('#ann-sec');if(e)e.scrollIntoView({behavior:'smooth',block:'start'});},
- 'badge-req':function(){openBadgeReq();},
- 'toggle-honor':function(){S.me.showHonor=!S.me.showHonor;render();},
- 'badge-grant':function(d){var r=S.badgeReqs.filter(function(x){return x.id===d.id;})[0];if(!r)return;var g=S.grants[r.p]=S.grants[r.p]||{};if(r.type==='relay')g.relay=true;else g.expert=r.type.split(':')[1];S.badgeReqs=S.badgeReqs.filter(function(x){return x!==r;});toast(t('bd_granted',{x:r.p}));render();},
- 'badge-deny':function(d){S.badgeReqs=S.badgeReqs.filter(function(x){return x.id!==d.id;});toast(t('bd_denied'));render();}
-};
-function simUpdate(kind){
-  var p=projOf('ecole-boghe'),f=S.follow[p.id]||'all';
-  if(!hasAccount()||!isMember(p.canal)){toast('—');return;}
-  if(f==='none'||(f==='milestones'&&kind!=='milestone')){toast(t('t_no_notif'));return;}
-  if(kind==='milestone'){var ms=p.ms.filter(function(m){return !m.done;})[0];if(ms){ms.done=true;notify(I18N.fr.n_mil.replace('{x}',ms.t),I18N.ar.n_mil.replace('{x}',c(p.t)),'project',{id:p.id},'info');}}
-  else{p.cmts.push({by:'mariem.paris',t:'Les plans de la salle sont partagés dans le dossier du projet.',at:Date.now()});notify(I18N.fr.n_cmt.replace('{x}',p.t.fr),I18N.ar.n_cmt.replace('{x}',p.t.ar),'project',{id:p.id},'info');}
-  toast(t('now')+' · '+t('nav_alerts'));render();
-}
-document.addEventListener('click',function(e){
-  var el=e.target.closest('[data-act]');if(!el)return;
-  var fn=ACT[el.dataset.act];if(!fn)return;
-  fn(el.dataset,el,e);
-  if(checkBadges())render();
-});
-document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('#sheets').hidden)closeSheet();if(e.key==='Enter'&&/^cr-add-/.test(e.target.id||'')){e.preventDefault();var b=document.querySelector('[data-act=cr-add][data-k='+e.target.id.slice(7)+']');if(b)b.click();}});
-document.addEventListener('input',function(e){
-  var id=e.target.id;
-  if(id==='pseudo')updatePseudo();
-  if(id==='proj-q'){S.projQ=e.target.value;var pl=$('#proj-list');if(pl)pl.innerHTML=projListHtml();}
-  if(id==='ch-txt')S.chatDraft=e.target.value;
-  if(id==='nh-txt')updateHelpAI();
-  if(id==='cmt-text'){var n=$('#cmt-n');if(n)n.textContent=e.target.value.length+'/280';}
-});
-document.addEventListener('change',function(e){
-  if(e.target.closest('[data-form="canals"]'))updatePick();
-  if(e.target.id==='nh-dom'||e.target.id==='nh-urg')updateHelpAI();
-  if(e.target.id==='noted'){var b=$('#enter');if(b)b.disabled=!e.target.checked;}
-});
-function need(id,errId,msgKey){var el=$('#'+id);if(!el||!el.value.trim()){var e=$('#'+errId);if(e)e.textContent=t(msgKey||'req');if(el)el.focus();return null;}return el.value.trim();}
-var FORMS={
- badgereq:function(){var n=$('#bq-note').value.trim();if(!n){$('#bq-note').focus();return;}S.badgeReqs.push({id:'br'+Date.now(),p:S.me.pseudo,type:$('#bq-type').value,note:n});closeSheet(true);toast(t('bd_sent'));render();},
- skills:function(){S.me.skills=$('#sk-in').value.split(',').map(function(x){return x.trim();}).filter(Boolean).slice(0,8);toast(t('sk_saved'));render();},
- draftsend:function(f){
-   var txt=$('#dr-txt').value.trim();if(!txt)return;
-   var h=S.helps.filter(function(x){return x.id===f.dataset.id;})[0];if(!h)return;
-   h.reply={by:S.me.pseudo,txt:txt};h.status='doing';h.by=S.me.pseudo;
-   if($('#dr-faq').checked)S.faqx.push({id:'x'+Date.now(),dom:h.dom,kw:null,by:S.me.pseudo,t:{fr:t('dm_'+h.dom),ar:t('dm_'+h.dom)},s:{fr:txt,ar:txt}});
-   closeSheet(true);toast(t('draft_sent',{x:h.who}));render();
- },
- chatproj:function(){
-   var title=need('cr-title','cr-err'),obj=title&&need('cr-obj','cr-err');if(!title||!obj)return;
-   var R=S.chatResult,needs=$('#cr-needs').value.split(',').map(function(x){return x.trim();}).filter(Boolean);
-   var acts=[].slice.call(document.querySelectorAll('.cr-act:checked')).map(function(i){return R.actions[+i.value];});
-   var tasks=acts.map(function(a,i){var mine=a.who===S.me.pseudo;return {id:'k'+(i+1),t:a.t+(a.who&&!mine?' ('+t('cr_by',{x:a.who})+')':''),status:mine?'doing':'todo',who:mine?S.me.pseudo:null};});
-   var cm=[];
-   if(R.decisions.length)cm.push({by:S.me.pseudo,t:(t('ch_decisions')+R.decisions.join(' · ')).slice(0,280),at:Date.now()});
-   if(R.questions.length)cm.push({by:S.me.pseudo,t:(t('ch_questions')+R.questions.join(' · ')).slice(0,280),at:Date.now()});
-   var id='p'+Date.now();
-   S.projects.unshift({id:id,canal:$('#cr-canal').value,t:{fr:title,ar:title},owner:S.me.pseudo,status:'recruit',obj:obj,needs:needs,ms:[],tasks:tasks,team:[S.me.pseudo],cmts:cm});
-   S.chatResult=null;S.chatDraft='';S.stack.pop();S.route={name:'project',params:{id:id}};render(true);toast(t('t_proj_pub'));openShare('project',id);
- },
- pseudo:function(){
-   var r=checkPseudo($('#pseudo').value);if(r.st!=='ok')return;
-   S.draft.pseudo=r.v; /* le compte n'existe qu'après l'envoi des demandes */
-   go('inv2');
- },
- canals:function(){
-   var ids=[].slice.call(document.querySelectorAll('#view input[type=checkbox]:checked')).map(function(x){return x.value;});if(!ids.length)return;
-   S.me.pseudo=S.draft.pseudo.trim().toLowerCase();S.me.code=genCode();
-   ids.forEach(function(id){S.mem[id]='pending';});
-   S.notifs=[];notify(I18N.fr.n_welcome,I18N.ar.n_welcome,'home',{},'info');
-   go('inv3');
- },
- comment:function(f){
-   var el=$('#cmt-text'),v=el.value.trim();if(!v)return;var p=projOf(f.dataset.id);
-   p.cmts.push({by:S.me.pseudo,t:v,at:Date.now()});render();
- },
- project:function(){
-   var title=need('np-title','np-err'),obj=title&&need('np-obj','np-err');if(!title||!obj)return;
-   var needs=$('#np-needs').value.split(',').map(function(s){return s.trim();}).filter(Boolean),canal=$('#np-canal').value,due=$('#np-due').value;
-   var id='p'+Date.now();
-   S.projects.unshift({id:id,canal:canal,t:{fr:title,ar:title},owner:S.me.pseudo,status:'recruit',obj:obj,needs:needs.length?needs:[],ms:due?[{t:title,date:due,done:false}]:[],tasks:[],team:[S.me.pseudo],cmts:[]});
-   S.stack.pop();S.route={name:'project',params:{id:id}};render(true);toast(t('t_proj_pub'));openShare('project',id);
- },
- help:function(){
-   var country=need('nh-country','nh-err'),txt=country&&need('nh-txt','nh-err');if(!country||!txt)return;
-   S.helps.unshift({id:'h'+Date.now(),who:S.me.pseudo,dom:$('#nh-dom').value,country:country,urgent:$('#nh-urg').value==='1',status:'open',by:null,txt:txt});
-   S.stack=[];S.route={name:'help',params:{}};render(true);toast(t('t_help_sent'));
- },
- ann:function(){
-   var title=need('an-t','an-err'),body=title&&need('an-b','an-err');if(!title||!body)return;
-   var id='a'+Date.now();S.anns.unshift({id:id,canal:$('#an-c').value,t:{fr:title,ar:title},body:body,date:new Date().toISOString().slice(0,10),until:$('#an-u').value,reads:0});
-   closeSheet(true);render();toast(t('t_ann_pub'));openShare('ann',id);
- }
-};
-document.addEventListener('submit',function(e){e.preventDefault();var f=e.target,fn=FORMS[f.getAttribute('data-form')];if(fn){fn(f);if(checkBadges())render();}});
+
+
+
+
+
+
+
+
+
+
+
 
 /* Hors ligne (version installable uniquement) */
 if('serviceWorker' in navigator&&document.querySelector('link[rel="manifest"]')){
   window.addEventListener('load',function(){navigator.serviceWorker.register('./sw.js').catch(function(){});});
 }
 
-render(true);
+/* ---- Textes de la version réelle ---- */
+Object.assign(I18N.fr,{
+loading:'Chargement…',e_generic:'Une erreur est survenue. Réessayez dans un instant.',e_invite:'Ce lien n’est plus valable. Demandez-en un nouveau au modérateur de votre canal.',
+e_taken:'Ce pseudo vient d’être pris. Choisissez-en un autre.',e_already:'Vous avez déjà un compte sur cet appareil.',e_denied:'Action non autorisée.',e_unknown:'Aucun membre avec ce pseudo.',
+e_net:'Connexion impossible. Vérifiez votre réseau et réessayez.',cfg_missing:'L’application n’est pas encore configurée (clés Supabase manquantes).',
+inv0_title:'Diasporact fonctionne sur invitation',inv0_sub:'Demandez le lien d’invitation au modérateur de votre canal dans le groupe WhatsApp, puis ouvrez-le, ou collez-le ci-dessous.',
+inv0_ph:'Collez le lien reçu',inv0_go:'Ouvrir le lien',inv0_bad:'Lien non reconnu.',
+pseudo_help:'Unique. 3 à 24 caractères : lettres, chiffres, point, tiret ou souligné.',pseudo_bad:'Utilisez 3 à 24 caractères : lettres, chiffres, point, tiret ou souligné.',pseudo_check:'Vérification…',
+country_label:'Pays de résidence (facultatif)',create_account:'Créer mon compte',
+rec_title:'Retrouver votre compte',rec_sub:'Ce lien de reconnexion vous rattache à votre compte sur cet appareil. Il ne fonctionne qu’une fois.',rec_go:'Retrouver mon compte',
+adm_first:'Premier administrateur',adm_first_sub:'Ce compte aura tous les droits d’administration.',
+joined:'Vous avez rejoint {x}.',welcome_in:'Bienvenue sur Diasporact.',
+recov:'Changer de téléphone',recov_note:'Votre compte est rattaché à cet appareil. Si vous changez de téléphone ou perdez l’accès, demandez un lien de reconnexion à un modérateur : il vous l’envoie sur WhatsApp.',
+del_account:'Supprimer mon compte',del_t:'Votre profil sera supprimé définitivement. Cette action ne peut pas être annulée.',t_deleted:'Compte supprimé.',
+adm_title:'Administration',adm_role:'Nommer un modérateur ou un relais',adm_pseudo:'Pseudo du membre',adm_canal:'Canal',adm_mod:'Modérateur du canal',adm_relay:'Relais local',adm_save:'Enregistrer',
+adm_ref:'Référent entraide',adm_ref_on:'Référent entraide (voit et traite les demandes)',t_saved:'Enregistré.',
+rc_title:'Lien de reconnexion',rc_help:'Pour un membre qui a changé d’appareil. Valable 7 jours, à usage unique.',rc_make:'Générer le lien',rc_ready:'Lien prêt',
+wa_set:'Groupe WhatsApp du canal',wa_set_ph:'https://chat.whatsapp.com/…',wa_none:'Le groupe WhatsApp de ce canal n’a pas encore été ajouté.',wa_bad:'Lien WhatsApp invalide.',
+inv_gen:'Générer le lien d’invitation',inv_none:'Aucun lien actif.',
+t_ms:'Jalon mis à jour.',add_task:'Ajouter une tâche',task_ph:'Nouvelle tâche',add_ms:'Ajouter un jalon',ms_ph:'Jalon',manage:'Gérer le projet',pj_status:'Statut du projet',
+reply_btn:'Répondre',reply_title:'Répondre à la demande',reply_ph:'Votre réponse',reply_send:'Envoyer et clore',help_priv:'Visible uniquement par vous et les référents entraide',help_priv_ref:'Visible uniquement par les référents entraide',
+n_joined:'@{x} a rejoint votre projet',n_prop:'On vous propose de contribuer au projet {x}',t_claimed2:'Demande prise en charge.',b_speaker:'Administrateur',r_speaker:'Administrateur',
+apply:'Rejoindre l’équipe',t_applied:'Vous faites partie de l’équipe.',t_sent_req:'Demande envoyée.',
+no_dir:'Aucun profil ne correspond pour le moment.',empty_canals:'Rejoignez un canal avec un lien d’invitation.',
+share_note:'Le message s’ouvre dans WhatsApp : vous choisissez le groupe.',invite_exp:'Le lien reste valable jusqu’à ce que vous en générez un nouveau.'
+});
+Object.assign(I18N.ar,{
+loading:'جارٍ التحميل…',e_generic:'حدث خطأ. أعد المحاولة بعد قليل.',e_invite:'هذا الرابط لم يعد صالحاً. اطلب رابطاً جديداً من مشرف قناتك.',
+e_taken:'هذا الاسم أُخذ للتو. اختر اسماً آخر.',e_already:'لديك حساب بالفعل على هذا الجهاز.',e_denied:'إجراء غير مسموح.',e_unknown:'لا يوجد عضو بهذا الاسم.',
+e_net:'تعذر الاتصال. تحقق من الشبكة وأعد المحاولة.',cfg_missing:'التطبيق غير مهيأ بعد (مفاتيح Supabase ناقصة).',
+inv0_title:'يعمل Diasporact بالدعوة',inv0_sub:'اطلب رابط الدعوة من مشرف قناتك في مجموعة واتساب، ثم افتحه أو الصقه أدناه.',
+inv0_ph:'الصق الرابط المستلم',inv0_go:'فتح الرابط',inv0_bad:'رابط غير معروف.',
+pseudo_help:'فريد. من 3 إلى 24 حرفاً: حروف وأرقام ونقطة وشرطة أو شرطة سفلية.',pseudo_bad:'استعمل من 3 إلى 24 حرفاً: حروف وأرقام ونقطة وشرطة أو شرطة سفلية.',pseudo_check:'جارٍ التحقق…',
+country_label:'بلد الإقامة (اختياري)',create_account:'إنشاء حسابي',
+rec_title:'استعادة حسابك',rec_sub:'يربط هذا الرابط حسابك بهذا الجهاز. يعمل مرة واحدة فقط.',rec_go:'استعادة حسابي',
+adm_first:'المشرف الأول',adm_first_sub:'سيملك هذا الحساب كل صلاحيات الإدارة.',
+joined:'انضممت إلى {x}.',welcome_in:'مرحباً بك في Diasporact.',
+recov:'تغيير الهاتف',recov_note:'حسابك مرتبط بهذا الجهاز. إذا غيّرت هاتفك أو فقدت الوصول، اطلب رابط إعادة اتصال من مشرف: يرسله إليك عبر واتساب.',
+del_account:'حذف حسابي',del_t:'سيُحذف ملفك نهائياً. لا يمكن التراجع عن هذا الإجراء.',t_deleted:'تم حذف الحساب.',
+adm_title:'الإدارة',adm_role:'تعيين مشرف أو مرجع محلي',adm_pseudo:'اسم العضو',adm_canal:'القناة',adm_mod:'مشرف القناة',adm_relay:'مرجع محلي',adm_save:'حفظ',
+adm_ref:'مرجع التضامن',adm_ref_on:'مرجع التضامن (يرى الطلبات ويعالجها)',t_saved:'تم الحفظ.',
+rc_title:'رابط إعادة الاتصال',rc_help:'لعضو غيّر جهازه. صالح 7 أيام ويُستعمل مرة واحدة.',rc_make:'إنشاء الرابط',rc_ready:'الرابط جاهز',
+wa_set:'مجموعة واتساب للقناة',wa_set_ph:'https://chat.whatsapp.com/…',wa_none:'لم تُضف مجموعة واتساب لهذه القناة بعد.',wa_bad:'رابط واتساب غير صالح.',
+inv_gen:'إنشاء رابط الدعوة',inv_none:'لا يوجد رابط نشط.',
+t_ms:'تم تحديث المرحلة.',add_task:'إضافة مهمة',task_ph:'مهمة جديدة',add_ms:'إضافة مرحلة',ms_ph:'مرحلة',manage:'إدارة المشروع',pj_status:'حالة المشروع',
+reply_btn:'الرد',reply_title:'الرد على الطلب',reply_ph:'ردّك',reply_send:'إرسال وإغلاق',help_priv:'لا يراه إلا أنت ومراجع التضامن',help_priv_ref:'لا يراه إلا مراجع التضامن',
+n_joined:'انضم @{x} إلى مشروعك',n_prop:'يُقترح عليك المساهمة في مشروع {x}',t_claimed2:'تم تولي الطلب.',b_speaker:'مشرف عام',r_speaker:'مشرف عام',
+apply:'الانضمام إلى الفريق',t_applied:'أصبحت عضواً في الفريق.',t_sent_req:'تم إرسال الطلب.',
+no_dir:'لا توجد ملفات مطابقة حالياً.',empty_canals:'انضم إلى قناة عبر رابط دعوة.',
+share_note:'تُفتح الرسالة في واتساب: تختار المجموعة.',invite_exp:'يبقى الرابط صالحاً حتى تنشئ رابطاً جديداً.'
+});
+
+/* ============ Accès Supabase ============ */
+var CFG=window.DIASPORACT_CONFIG||{};
+var sb=null;
+function client(){
+  if(sb)return sb;
+  if(!window.supabase||!CFG.url||!CFG.anonKey)return null;
+  sb=window.supabase.createClient(CFG.url,CFG.anonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});
+  return sb;
+}
+function q(p){return Promise.resolve(p).then(function(r){if(r.error)throw r.error;return r.data;});}
+function errMsg(e){
+  var m=String((e&&(e.message||e.error_description))||e||'');
+  if(/invalid_invite/.test(m))return t('e_invite');
+  if(/pseudo_taken|profiles_pseudo_key/.test(m))return t('e_taken');
+  if(/bad_pseudo/.test(m))return t('pseudo_bad');
+  if(/already_registered/.test(m))return t('e_already');
+  if(/unknown_pseudo/.test(m))return t('e_unknown');
+  if(/wa_link/.test(m))return t('wa_bad');
+  if(/forbidden|row-level security|permission denied/.test(m))return t('e_denied');
+  if(/Failed to fetch|NetworkError|Load failed/i.test(m))return t('e_net');
+  return t('e_generic');
+}
+function loadLang(){try{return localStorage.getItem('dp-lang')==='ar'?'ar':'fr';}catch(e){return 'fr';}}
+function saveLang(v){try{localStorage.setItem('dp-lang',v);}catch(e){}}
+function appUrl(path){return location.origin+location.pathname.replace(/index\.html$/,'')+'#/'+path;}
+
+/* ============ État ============ */
+var S={
+  lang:loadLang(),theme:loadTheme(),
+  me:{id:null,pseudo:null,mod:[],ref:[],admin:false,skills:[],matching:false,showHonor:true,country:''},
+  mem:{},route:{name:'load',params:{}},stack:[],busy:false,
+  auth:{code:null,peek:null,err:''},draft:{pseudo:'',country:''},
+  hideStart:false,projQ:'',projTab:'mine',canalTab:{},
+  follow:{},proposed:{},read:{},
+  projects:[],helps:[],anns:[],reqs:{},notifs:[],invites:{},cmem:{},
+  badgeReqs:[],grants:{},roles:{},eng:{},dir:[],pub:{}
+};
+function t(k,v){var s=(I18N[S.lang]&&I18N[S.lang][k]);if(s==null)s=I18N.fr[k];if(s==null)s=k;if(v){for(var x in v){s=s.split('{'+x+'}').join(v[x]);}}return s;}
+function T(k,v){return esc(t(k,v));}
+function c(o){return o?(o[S.lang]||o.fr||''):'';}
+function C(o){return esc(c(o));}
+function canalOf(id){return CANALS.filter(function(x){return x.id===id;})[0]||{id:id,ico:'hash',n:{fr:id,ar:id},d:{fr:'',ar:''},mod:'',count:0,wa:''};}
+function projOf(id){return S.projects.filter(function(x){return x.id===id;})[0];}
+function annOf(id){return S.anns.filter(function(x){return x.id===id;})[0];}
+function mem(id){return S.mem[id]||null;}
+function isMember(id){return S.mem[id]==='member'||S.me.admin;}
+function isMod(id){return S.me.admin||S.me.mod.indexOf(id)>-1;}
+function hasAccount(){return !!S.me.pseudo;}
+
+/* ============ Chargement des données ============ */
+var refreshing=null;
+function refresh(){
+  if(refreshing)return refreshing;
+  refreshing=doRefresh().then(function(r){refreshing=null;return r;},function(e){refreshing=null;throw e;});
+  return refreshing;
+}
+function doRefresh(){
+  var cl=client();
+  return cl.auth.getSession().then(function(r){
+    var ses=r.data&&r.data.session;if(!ses)return false;
+    return q(cl.from('profiles').select('*').eq('auth_uid',ses.user.id).maybeSingle()).then(function(meRow){
+      if(!meRow)return false;
+      var id=meRow.id;
+      return Promise.all([
+        q(cl.from('canals').select('*').order('sort')),q(cl.from('canal_stats').select('*')),q(cl.from('canal_mods').select('*')),
+        q(cl.from('public_profiles').select('*')),q(cl.from('canal_members').select('*')),
+        q(cl.from('projects').select('*').order('created_at',{ascending:false})),q(cl.from('milestones').select('*').order('due')),
+        q(cl.from('tasks').select('*')),q(cl.from('project_team').select('*')),q(cl.from('comments').select('*').order('created_at')),
+        q(cl.from('helps').select('*').order('created_at',{ascending:false})),q(cl.from('announcements').select('*').order('created_at',{ascending:false})),
+        q(cl.from('ann_reads').select('ann_id').eq('user_id',id)),q(cl.from('ann_read_counts').select('*')),
+        q(cl.from('notifications').select('*').order('created_at',{ascending:false}).limit(50)),
+        q(cl.from('badge_requests').select('*').eq('status','pending')),q(cl.from('badge_grants').select('*')),
+        q(cl.from('engagement').select('*')),q(cl.from('skills_directory').select('*')),
+        q(cl.from('follows').select('*').eq('user_id',id)),q(cl.from('proposals').select('*').eq('from_user',id)),
+        q(cl.from('invites').select('*').eq('active',true).eq('kind','join').order('created_at'))
+      ]).then(function(d){applyData(meRow,d);return true;});
+    });
+  });
+}
+function applyData(me,d){
+  var canals=d[0],stats=d[1],mods=d[2],pubs=d[3],cms=d[4],projs=d[5],mss=d[6],tks=d[7],team=d[8],cmts=d[9],helps=d[10],anns=d[11],myReads=d[12],rcount=d[13],notifs=d[14],breqs=d[15],grants=d[16],eng=d[17],dir=d[18],fol=d[19],props=d[20],invs=d[21];
+  var pp={};S.pubId={};S.honorOk={};pubs.forEach(function(p){pp[p.id]=p.pseudo;S.pubId[p.pseudo]=p.id;S.honorOk[p.pseudo]=p.show_honor!==false;});S.pub=pp;
+  /* canaux */
+  canals.forEach(function(row){var k=CANALS.filter(function(x){return x.id===row.id;})[0];
+    if(!k){k={id:row.id,ico:row.ico,n:{fr:row.name_fr,ar:row.name_ar},d:{fr:row.desc_fr,ar:row.desc_ar}};CANALS.push(k);}
+    var st=stats.filter(function(x){return x.canal_id===row.id;})[0],md=mods.filter(function(x){return x.canal_id===row.id&&x.is_moderator;})[0];
+    k.count=st?+st.members:0;k.mod=md?md.pseudo:'';k.wa=row.wa_link||'';});
+  /* moi */
+  S.me={id:me.id,pseudo:me.pseudo,country:me.country||'',skills:me.skills||[],matching:!!me.matching,showHonor:me.show_honor!==false,admin:!!me.is_admin,mod:[],ref:(me.is_ref||me.is_admin)?DOMAINS.slice():[]};
+  S.mem={};S.reqs={};S.cmem={};
+  cms.forEach(function(m){
+    if(m.user_id===me.id){if(m.status==='member'||m.status==='pending')S.mem[m.canal_id]=m.status;if(m.status==='member'&&m.is_moderator)S.me.mod.push(m.canal_id);}
+    else if(m.status==='pending'){(S.reqs[m.canal_id]=S.reqs[m.canal_id]||[]).push({p:pp[m.user_id],id:m.user_id});}
+    if(m.status==='member')(S.cmem[m.canal_id]=S.cmem[m.canal_id]||[]).push(pp[m.user_id]);
+  });
+  if(S.me.admin)CANALS.forEach(function(k){S.mem[k.id]='member';});
+  /* rôles affichés sous les pseudos */
+  S.roles={};function R(p){return S.roles[p]||(S.roles[p]={});}
+  mods.forEach(function(m){var r=R(m.pseudo);if(m.is_moderator)(r.mod=r.mod||[]).push(m.canal_id);if(m.is_relay)r.relay=true;});
+  pubs.forEach(function(p){if(p.is_ref)R(p.pseudo).ref=true;if(p.is_admin)R(p.pseudo).speaker=true;});
+  S.grants={};grants.forEach(function(g){var p=pp[g.user_id];if(!p)return;var o=S.grants[p]=S.grants[p]||{};if(g.type==='relay')o.relay=true;else o.expert=g.type.split(':')[1];});
+  S.badgeReqs=breqs.map(function(r){return {id:r.id,p:pp[r.user_id],type:r.type,note:r.note};});
+  S.eng={};eng.forEach(function(e){var p=pp[e.user_id];if(p)S.eng[p]={reads:+e.reads,tasks:+e.tasks,proj:+e.proj,help:+e.help,links:+e.links};});
+  S.dir=dir.filter(function(x){return x.id!==me.id;}).map(function(x){return {p:x.pseudo,c:x.country,sk:x.skills||[],open:true};});
+  /* projets */
+  S.projects=projs.map(function(p){
+    var tm=team.filter(function(x){return x.project_id===p.id;}).map(function(x){return pp[x.user_id];}).filter(Boolean),ow=pp[p.owner_id];
+    if(tm.indexOf(ow)<0)tm.unshift(ow);
+    return {id:p.id,canal:p.canal_id,t:{fr:p.title,ar:p.title_ar||p.title},owner:ow,status:p.status,
+      obj:{fr:p.objective,ar:p.objective_ar||p.objective,orig:p.orig_lang||'fr'},needs:p.needs||[],
+      ms:mss.filter(function(m){return m.project_id===p.id;}).map(function(m){return {id:m.id,t:m.title,date:m.due||'',done:m.done};}),
+      tasks:tks.filter(function(k){return k.project_id===p.id;}).map(function(k){return {id:k.id,t:k.title,status:k.status,who:k.assignee_id?pp[k.assignee_id]:null};}),
+      team:tm,cmts:cmts.filter(function(m){return m.project_id===p.id;}).map(function(m){return {id:m.id,by:pp[m.author_id],t:m.body,at:Date.parse(m.created_at)};})};
+  });
+  /* entraide */
+  S.helps=helps.map(function(h){return {id:h.id,who:pp[h.author_id],dom:h.domain,country:h.country,urgent:h.urgent,status:h.status,by:h.claimed_by?pp[h.claimed_by]:null,txt:h.body,reply:h.reply?{by:pp[h.claimed_by],txt:h.reply}:null};});
+  /* annonces */
+  var cnt={};rcount.forEach(function(x){cnt[x.ann_id]=+x.n;});
+  S.read={};myReads.forEach(function(x){S.read[x.ann_id]=true;});
+  S.anns=anns.map(function(a){return {id:a.id,canal:a.canal_id||'all',t:{fr:a.title,ar:a.title_ar||a.title},body:{fr:a.body,ar:a.body_ar||a.body,orig:a.orig_lang||'fr'},date:(a.created_at||'').slice(0,10),until:a.valid_until||'',reads:cnt[a.id]||0};});
+  /* notifications */
+  S.notifs=notifs.map(function(n){
+    function tx(l,key,x){return I18N[l][key].split('{x}').join(x==null?'':x);}
+    var o={id:n.id,type:'info',route:null,params:{},read:n.read,at:Date.parse(n.created_at)},k=n.kind,pj=projOf(n.ref)||{};
+    if(k==='welcome'){o.fr=tx('fr','n_welcome');o.ar=tx('ar','n_welcome');o.route='home';}
+    else if(k==='accepted'){var cn=canalOf(n.ref).n;o.type='canal';o.fr=tx('fr','n_acc',cn.fr);o.ar=tx('ar','n_acc',cn.ar);o.route='canal';o.params={id:n.ref};}
+    else if(k==='task'){o.type='task';o.fr=tx('fr','n_task',n.body);o.ar=tx('ar','n_task',n.body);o.route='project';o.params={id:n.ref};}
+    else if(k==='comment'){o.fr=tx('fr','n_cmt',n.body);o.ar=tx('ar','n_cmt',n.body);o.route='project';o.params={id:n.ref};}
+    else if(k==='milestone'){o.fr=tx('fr','n_mil',n.body);o.ar=tx('ar','n_mil',n.body);o.route='project';o.params={id:n.ref};}
+    else if(k==='proposal'){o.type='task';o.fr=tx('fr','n_prop',n.body);o.ar=tx('ar','n_prop',n.body);o.route='project';o.params={id:n.ref};}
+    else if(k==='joined'){o.fr=tx('fr','n_joined',n.body);o.ar=tx('ar','n_joined',n.body);o.route='project';o.params={id:n.ref};}
+    else if(k==='claimed'){o.type='help';o.fr=tx('fr','n_claim',n.body);o.ar=tx('ar','n_claim',n.body);o.route='help';}
+    else{o.fr=n.body;o.ar=n.body;}
+    return o;});
+  /* invitations actives (visibles seulement des modérateurs) */
+  S.invites={};invs.forEach(function(i){S.invites[i.canal_id]=i.code;});
+  /* suivi, propositions */
+  S.follow={};fol.forEach(function(f){S.follow[f.project_id]=f.level==='mine'?'milestones':f.level;});
+  S.proposed={};props.forEach(function(x){S.proposed[x.project_id+'|'+pp[x.to_user]]=true;});
+}
+/* Écriture : exécute l'appel, recharge les données, réaffiche. */
+function mut(fn,ok,after){
+  if(S.busy)return Promise.resolve();S.busy=true;
+  return Promise.resolve().then(fn).then(function(r){return refresh().then(function(){return r;});}).then(function(r){
+    S.busy=false;if(after)after(r);render();if(ok)toast(typeof ok==='function'?ok(r):t(ok));
+  }).catch(function(e){S.busy=false;toast(errMsg(e));render();});
+}
+
+/* ============ Vues et fonctions de la version réelle ============ */
+function trBlock(key,o){
+  var s=typeof o==='string'?o:(o[S.lang]||o.fr||'');
+  return '<p dir="'+(/[؀-ۿ]/.test(s)?'rtl':'ltr')+'" style="white-space:pre-line">'+esc(s)+'</p>';
+}
+function canEdit(p){return hasAccount()&&(p.owner===S.me.pseudo||isMod(p.canal));}
+function matchNeed(pj){
+  var out=[],used={};
+  pj.needs.forEach(function(n){var cn=concepts(n);if(!cn.length)return;
+    for(var i=0;i<S.dir.length;i++){var m=S.dir[i];if(used[m.p]||pj.team.indexOf(m.p)>-1||pj.owner===m.p)continue;
+      var sk=m.sk.filter(function(x){return overlap(cn,concepts(x)).length;})[0];
+      if(sk){used[m.p]=1;out.push({need:n,m:m,skill:sk});break;}}});
+  return out.slice(0,4);
+}
+function matchSection(pj,inTeam){
+  if(!inTeam)return '';
+  var sg=matchNeed(pj);
+  return '<section class="card stack s8" id="match"><h2 class="h3">'+T('match_title')+'</h2><p class="muted small">'+T('match_note')+'</p>'+
+  (sg.length?sg.map(function(g){var done=S.proposed[pj.id+'|'+g.m.p];
+    return '<div class="li" style="align-items:flex-start">'+av(g.m.p)+'<span class="grow"><span class="t">@'+esc(g.m.p)+'</span>'+pBadges(g.m.p)+' <span class="muted small">· '+esc(g.m.c||'')+'</span><br><span class="muted small">'+T('match_why',{s:g.skill,n:g.need})+'</span></span>'+
+    (done?chip(ic('check',14)+T('match_done'),'green'):'<button class="btn sm" data-act="propose" data-id="'+esc(pj.id)+'" data-p="'+esc(g.m.p)+'">'+T('match_prop')+'</button>')+'</div>';}).join(''):'<p class="empty">'+T('match_none')+'</p>')+'</section>';
+}
+function statsOf(p){var b=S.eng[p]||{};return {reads:b.reads||0,tasks:b.tasks||0,proj:b.proj||0,help:b.help||0,links:b.links||0};}
+function checkBadges(){return false;}
+function roleOf(p){var r={},b=S.roles[p]||{};if(b.speaker)r.speaker=true;if(b.mod&&b.mod.length)r.mod=b.mod;if(b.ref)r.ref=true;if(b.relay)r.relay=true;var g=S.grants[p]||{};if(g.expert)r.expert=g.expert;if(g.relay)r.relay=true;return r;}
+function honorHtml(id){
+  var list=(S.cmem[id]||[]).filter(function(p){return p&&(p===S.me.pseudo?S.me.showHonor:S.honorOk[p]!==false);}).map(function(p){return {p:p,st:statsOf(p)};});
+  list=list.filter(function(x){return pts(x.st)>0;}).sort(function(a,b){return pts(b.st)-pts(a.st);}).slice(0,3);
+  return '<section><h2 class="h2">'+T('hn_title')+'</h2><p class="muted small" style="margin-bottom:8px">'+T('hn_sub')+'</p>'+
+  (list.length?'<div class="card list">'+list.map(function(x){return '<div class="li" style="align-items:flex-start">'+av(x.p)+'<span class="grow"><span class="t">@'+esc(x.p)+'</span>'+pBadges(x.p)+'<br><span class="muted small">'+T('hn_line',{t:x.st.tasks,h:x.st.help,p:x.st.proj})+'</span></span></div>';}).join('')+'</div>':'<p class="empty">'+T('hn_none')+'</p>')+'<p class="muted small" style="margin-top:8px">'+T('hn_note')+'</p></section>';
+}
+function visibleAnns(){
+  var today=new Date().toISOString().slice(0,10);
+  return S.anns.filter(function(a){return (a.canal==='all'||isMember(a.canal))&&(!a.until||a.until>=today);});
+}
+function tilesHtml(){
+  if(!Object.keys(S.mem).some(isMember))return '';
+  var ts=[['life','new-help','th_help'],['folder','new-project','th_proj'],['hash','tab','th_canals']];
+  if(S.me.admin||S.me.mod.length)ts.push(['mega','publish-ann','publish_ann']);
+  return '<section><h2 class="h2">'+T('act_title')+'</h2><div class="tiles">'+ts.map(function(x){return '<button class="tile" data-act="'+x[1]+'"'+(x[1]==='tab'?' data-tab="canals"':'')+'><span class="ico">'+ic(x[0],20)+'</span>'+T(x[2])+'</button>';}).join('')+'</div></section>';
+}
+function startCard(){
+  if(S.hideStart)return '';
+  var isM=Object.keys(S.mem).some(isMember);
+  var it=[
+   {d:isM,t:t('fs_1'),a:'tab',tab:'canals'},
+   {d:Object.keys(S.read).length>0,t:t('fs_2'),a:'scroll-ann'},
+   {d:S.projects.some(function(p){return p.owner===S.me.pseudo||p.tasks.some(function(k){return k.who===S.me.pseudo;});}),t:t('fs_3'),a:'tab',tab:'projects'},
+   {d:S.me.skills.length>0,t:t('fs_4'),a:'go-me'}];
+  var n=it.filter(function(x){return x.d;}).length;if(n===it.length)return '';
+  return '<section class="stack s8"><div class="row between"><h2 class="h2" style="margin:0">'+T('fs_title')+'</h2><button class="lnk" data-act="hide-start">'+T('fs_hide')+'</button></div><p class="muted small">'+T('fs_sub')+'</p><div class="bar" aria-hidden="true"><i style="--w:'+Math.round(n/it.length*100)+'%"></i></div><p class="muted small">'+T('fs_prog',{a:n,b:it.length})+'</p>'+
+  '<div class="card list">'+it.map(function(x,i){return '<button class="li'+(x.d?' done':'')+'" data-act="'+x.a+'"'+(x.tab?' data-tab="'+x.tab+'"':'')+'><span class="ico">'+(x.d?ic('check',18):'<b>'+(i+1)+'</b>')+'</span><span class="grow t">'+esc(x.t)+'</span><span class="flip muted">'+ic('chev',18)+'</span></button>';}).join('')+'</div></section>';
+}
+function annCard(a,ro){
+  var h='<article class="card ann"><div class="row between"><span class="row">'+chip(T('official'),'red')+(a.canal!=='all'?chip(C(canalOf(a.canal).n)):'')+'</span><span class="muted small">'+esc(fmt(a.date))+'</span></div>';
+  h+='<h3>'+C(a.t)+'</h3>'+trBlock('a:'+a.id,a.body);
+  if(a.until)h+='<p class="muted small">'+T('until',{d:fmt(a.until)})+'</p>';
+  h+='<div class="row between wrap"><span class="muted small">'+a.reads+' '+T('reads')+'</span>';
+  if(!ro){h+='<span class="row">';
+    h+=S.read[a.id]?chip(ic('check',14)+T('read_done'),'green'):'<button class="btn sm" data-act="read" data-id="'+esc(a.id)+'">'+T('read_btn')+'</button>';
+    h+='<button class="btn sm" data-act="share" data-kind="ann" data-id="'+esc(a.id)+'" aria-label="'+T('share')+'">'+ic('share',16)+'</button></span>';}
+  return h+'</div></article>';
+}
+function modTools(k){
+  var code=S.invites[k.id],link=code?appUrl('i/'+code):'';
+  return '<section class="card stack s8"><h2 class="h3">'+T('invite_link')+'</h2>'+
+   (link?'<p class="linkbox" dir="ltr" style="overflow-wrap:anywhere">'+esc(link)+'</p><p class="muted small">'+T('invite_exp')+'</p><div class="row wrap"><button class="btn sm" data-act="copy-link" data-id="'+k.id+'">'+ic('copy',16)+T('copy')+'</button><button class="btn sm" data-act="share" data-kind="invite" data-id="'+k.id+'">'+ic('share',16)+T('share')+'</button><button class="btn sm danger" data-act="rotate-link" data-id="'+k.id+'">'+T('invite_rotate')+'</button></div>'
+        :'<p class="muted small">'+T('inv_none')+'</p><button class="btn sm primary" data-act="gen-link" data-id="'+k.id+'">'+T('inv_gen')+'</button>')+'</section>'+
+  '<section class="card stack s8"><h2 class="h3">'+T('wa_set')+'</h2><form data-form="wa" data-id="'+k.id+'" class="stack s8"><input type="url" id="wa-in" dir="ltr" autocomplete="off" placeholder="'+T('wa_set_ph')+'" value="'+esc(k.wa||'')+'"><button class="btn sm" type="submit">'+T('adm_save')+'</button></form></section>'+
+  '<section class="card stack s8"><h2 class="h3">'+T('rc_title')+'</h2><p class="muted small">'+T('rc_help')+'</p><form data-form="recovery" class="stack s8"><div class="pfx" dir="ltr">@<input type="text" id="rc-p" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="24" aria-label="'+esc(t('adm_pseudo'))+'"></div><button class="btn sm" type="submit">'+T('rc_make')+'</button></form></section>';
+}
+function manageSection(pj){
+  if(!canEdit(pj))return '';
+  return '<section class="card stack s8"><h2 class="h3">'+T('manage')+'</h2><div class="lbl">'+T('pj_status')+'</div><div class="seg">'+['recruit','progress','done'].map(function(v){return '<button aria-pressed="'+(pj.status===v)+'" data-act="set-status" data-id="'+pj.id+'" data-v="'+v+'">'+T('st_'+v)+'</button>';}).join('')+'</div>'+
+  '<form data-form="addtask" data-id="'+pj.id+'" class="row"><input type="text" id="tk-new" class="grow" maxlength="200" autocomplete="off" placeholder="'+esc(t('task_ph'))+'" aria-label="'+esc(t('add_task'))+'"><button class="btn sm" type="submit">'+ic('plus',16)+T('add_task')+'</button></form>'+
+  '<form data-form="addms" data-id="'+pj.id+'" class="stack s8"><div class="row"><input type="text" id="ms-t" class="grow" maxlength="120" autocomplete="off" placeholder="'+esc(t('ms_ph'))+'" aria-label="'+esc(t('add_ms'))+'"><input type="date" id="ms-d" aria-label="'+esc(t('f_due'))+'"></div><button class="btn sm" type="submit">'+ic('plus',16)+T('add_ms')+'</button></form></section>';
+}
+function helpCard(hq,mode){
+  var stc=hq.status==='open'?chip(T('hs_open'),'red'):hq.status==='doing'?chip(T('hs_doing'),'yellow'):chip(T('hs_solved'),'green');
+  var h='<article class="card stack s8"><div class="row between wrap"><span class="row">'+chip(T('dm_'+hq.dom))+(hq.urgent?chip(T('u_urgent'),'urgent'):'')+'</span>'+stc+'</div>';
+  h+='<p style="white-space:pre-line">'+esc(hq.txt)+'</p><p class="muted small">'+(mode==='ref'?'@'+esc(hq.who)+' · ':'')+esc(hq.country)+(hq.by?' · '+T('by',{x:hq.by}):'')+'</p>';
+  if(hq.reply)h+=replyHtml(hq);
+  if(mode==='ref'&&hq.status==='open')h+='<button class="btn sm primary" data-act="claim" data-id="'+hq.id+'">'+T('claim')+'</button>';
+  if(hq.status==='doing'&&hq.by===S.me.pseudo)h+='<button class="btn sm primary" data-act="reply" data-id="'+hq.id+'">'+T('reply_btn')+'</button>';
+  if(hq.status==='doing'&&(hq.who===S.me.pseudo||hq.by===S.me.pseudo))h+='<button class="btn sm" data-act="solve" data-id="'+hq.id+'">'+ic('check',16)+T('solve')+'</button>';
+  return h+'</article>';
+}
+function vHelp(){
+  var mine=S.helps.filter(function(x){return x.who===S.me.pseudo;}),q2=refQueue().filter(function(x){return x.status!=='solved';});
+  var h='<button class="btn primary block" data-act="new-help">'+ic('plus',18)+T('new_help')+'</button><p class="muted small row">'+ic('lock',14)+' '+T('help_priv')+'</p>';
+  if(S.me.ref.length)h+='<section><h2 class="h2">'+T('help_todo')+(q2.length?'<span class="count">'+q2.length+'</span>':'')+'</h2><p class="muted small" style="margin-bottom:8px">'+T('help_priv_ref')+'</p><div class="stack">'+(q2.length?q2.map(function(x){return helpCard(x,'ref');}).join(''):'<p class="empty">'+T('help_none')+'</p>')+'</div></section>';
+  h+='<section><h2 class="h2">'+T('help_mine')+'</h2><div class="stack">'+(mine.length?mine.map(function(x){return helpCard(x,'mine');}).join(''):'<p class="empty">'+T('help_none')+'</p>')+'</div></section>';
+  return h;
+}
+function vAlerts(){
+  var h='<div class="row between"><h2 class="h2" style="margin:0">'+T('nav_alerts')+'</h2>'+(unread()?'<button class="btn sm" data-act="mark-all">'+T('mark_all')+'</button>':'')+'</div>';
+  h+=S.notifs.length?'<div class="card list">'+S.notifs.map(function(n){return '<button class="li" data-act="alert-open" data-id="'+esc(n.id)+'"><span class="ico" style="'+(n.read?'background:var(--surface2);color:var(--ink2)':'')+'">'+ic(n.type==='task'?'check':n.type==='help'?'life':n.type==='canal'?'hash':'folder',18)+'</span><span class="grow"><span class="t" style="'+(n.read?'font-weight:400':'')+'">'+esc(n[S.lang]||n.fr)+'</span><br><span class="muted small">'+esc(rel(n.at))+'</span></span>'+(n.read?'':'<span class="chip green" aria-label="new">•</span>')+'</button>';}).join('')+'</div>':'<p class="empty">'+T('no_alerts')+'</p>';
+  return h;
+}
+function adminSection(){
+  if(!S.me.admin)return '';
+  return '<section class="card stack s8"><h2 class="h3">'+T('adm_title')+'</h2>'+
+  '<form data-form="setrole" class="stack s8"><div class="lbl">'+T('adm_role')+'</div><div class="pfx" dir="ltr">@<input type="text" id="ad-p" maxlength="24" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="'+esc(t('adm_pseudo'))+'"></div>'+
+  '<div class="field"><label for="ad-c">'+T('adm_canal')+'</label><select id="ad-c">'+CANALS.map(function(k){return '<option value="'+k.id+'">'+C(k.n)+'</option>';}).join('')+'</select></div>'+
+  '<label class="pick" for="ad-m"><span class="grow t">'+T('adm_mod')+'</span><input type="checkbox" id="ad-m" checked></label><label class="pick" for="ad-r"><span class="grow t">'+T('adm_relay')+'</span><input type="checkbox" id="ad-r"></label><button class="btn sm primary" type="submit">'+T('adm_save')+'</button></form>'+
+  '<form data-form="setref" class="stack s8"><div class="lbl">'+T('adm_ref')+'</div><div class="pfx" dir="ltr">@<input type="text" id="ar-p" maxlength="24" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="'+esc(t('adm_pseudo'))+'"></div><label class="pick" for="ar-o"><span class="grow t">'+T('adm_ref_on')+'</span><input type="checkbox" id="ar-o" checked></label><button class="btn sm primary" type="submit">'+T('adm_save')+'</button></form></section>';
+}
+function vMe(){
+  var roles=[chip(T('r_member'))];if(S.me.admin)roles.push(chip(T('r_speaker'),'red'));S.me.mod.forEach(function(id){roles.push(chip(T('r_mod',{x:c(canalOf(id).n)}),'green'));});
+  if(S.me.ref.length)roles.push(chip(T('adm_ref'),'yellow'));
+  var mine=Object.keys(S.mem).map(function(id){return '<div class="li"><span class="grow t">'+C(canalOf(id).n)+'</span>'+statusChip(id)+'</div>';}).join('');
+  return '<section class="row">'+av(S.me.pseudo,52)+'<div class="grow"><h1 class="page" style="font-size:22px">@'+esc(S.me.pseudo)+'</h1></div></section>'+
+  '<section><h2 class="h2">'+T('roles')+'</h2><div class="chips">'+roles.join('')+'</div></section>'+
+  (mine?'<section><h2 class="h2">'+T('my_canals')+'</h2><div class="card list">'+mine+'</div></section>':'')+
+  badgesSection()+skillsSection()+adminSection()+
+  '<section class="card stack s8"><h2 class="h3">'+T('recov')+'</h2><p class="muted small">'+T('recov_note')+'</p></section>'+
+  '<section class="stack s8"><div class="lbl">'+T('lang')+'</div><div class="seg"><button aria-pressed="'+(S.lang==='fr')+'" data-act="lang" data-v="fr">Français</button><button aria-pressed="'+(S.lang==='ar')+'" data-act="lang" data-v="ar">العربية</button></div>'+
+  '<div class="lbl">'+T('theme')+'</div><div class="seg">'+['light','dark'].map(function(v){return '<button aria-pressed="'+(S.theme===v)+'" data-act="theme" data-v="'+v+'">'+T('th_'+v)+'</button>';}).join('')+'</div></section>'+
+  '<button class="btn block danger" data-act="delete-account">'+T('del_account')+'</button>';
+}
+function vNewHelp(){
+  return '<h1 class="page">'+T('new_help')+'</h1><form data-form="help" class="stack" novalidate>'+
+  '<div class="field"><label for="nh-dom">'+T('domain')+'</label><select id="nh-dom">'+DOMAINS.map(function(d){return '<option value="'+d+'">'+T('dm_'+d)+'</option>';}).join('')+'</select></div>'+
+  '<div class="field"><label for="nh-country">'+T('country')+'</label><input type="text" id="nh-country" maxlength="40" autocomplete="off" value="'+esc(S.me.country)+'"></div>'+
+  '<div class="field"><label for="nh-urg">'+T('urgency')+'</label><select id="nh-urg"><option value="0">'+T('u_normal')+'</option><option value="1">'+T('u_urgent')+'</option></select></div>'+
+  '<div class="field"><label for="nh-txt">'+T('situation')+'</label><textarea id="nh-txt" maxlength="500"></textarea></div>'+
+  '<p class="muted small row">'+ic('lock',14)+' '+T('help_priv')+'</p><p class="fb err" id="nh-err"></p>'+
+  '<div class="row"><button type="button" class="btn grow" data-act="back">'+T('cancel')+'</button><button type="submit" class="btn primary grow">'+T('send')+'</button></div></form>';
+}
+function heroBlock(eyebrow,title,sub){return '<section class="hero">'+logoSvg()+'<p class="eyebrow">'+eyebrow+'</p><h1>'+title+'</h1><p>'+sub+'</p></section>';}
+function vLoad(){return heroBlock('','Diasporact',S.fatal?esc(S.fatal):T('loading'));}
+function vInv0(){
+  return heroBlock(T('inv_from'),T('inv0_title'),T('inv0_sub'))+(S.auth.err?'<div class="banner">'+ic('lock',18)+'<span>'+esc(S.auth.err)+'</span></div>':'')+
+  '<form data-form="invlink" class="stack" novalidate><div class="field"><label for="il-in">'+T('inv0_ph')+'</label><input type="text" id="il-in" autocomplete="off" autocapitalize="none" spellcheck="false" dir="ltr"></div><button class="btn primary block" type="submit">'+T('inv0_go')+'</button></form>';
+}
+function vInv1(){
+  var pk=S.auth.peek||{},adm=pk.kind==='admin',k=pk.canal?canalOf(pk.canal):null;
+  var hero=adm?heroBlock(T('inv_from'),T('adm_first'),T('adm_first_sub')):heroBlock(T('inv_from'),T('inv_title'),T('inv_sub',{canal:k?c(k.n):''}));
+  return hero+(k&&!adm?'<section class="card stack s8"><div class="row"><span class="ico-lg">'+ic(k.ico,20)+'</span><div class="grow"><h2 class="h3">'+C(k.n)+'</h2></div></div><p>'+C(k.d)+'</p></section>':'')+
+  '<form data-form="pseudo" class="stack" novalidate><div class="field"><label for="pseudo">'+T('pseudo_label')+'</label><div class="pfx" dir="ltr">@<input type="text" id="pseudo" maxlength="24" autocomplete="off" autocapitalize="none" spellcheck="false" value="'+esc(S.draft.pseudo)+'"></div><p class="muted small">'+T('pseudo_help')+'</p><p class="fb" id="pseudo-fb" aria-live="polite"></p></div>'+
+  '<div class="field"><label for="country">'+T('country_label')+'</label><input type="text" id="country" maxlength="60" autocomplete="country-name" value="'+esc(S.draft.country)+'"></div>'+
+  '<button type="submit" class="btn primary block" id="pseudo-go" disabled>'+T('create_account')+'</button></form>';
+}
+function vInvRec(){return heroBlock(T('inv_from'),T('rec_title'),T('rec_sub'))+'<button class="btn primary block" data-act="rec-go">'+T('rec_go')+'</button>';}
+var VIEWS={load:vLoad,inv0:vInv0,inv1:vInv1,invRec:vInvRec,home:vHome,canals:vCanals,canal:vCanal,projects:vProjects,project:vProject,newProject:vNewProject,help:vHelp,newHelp:vNewHelp,alerts:vAlerts,me:vMe};
+var pseudoTimer,pseudoSeq=0;
+function updatePseudo(){
+  var inp=$('#pseudo');if(!inp)return;var v=inp.value.trim().toLowerCase(),fb=$('#pseudo-fb'),go=$('#pseudo-go');S.draft.pseudo=inp.value;
+  fb.className='fb';go.disabled=true;clearTimeout(pseudoTimer);
+  if(!v){fb.textContent='';return;}
+  if(!/^[a-z0-9][a-z0-9._-]{2,23}$/.test(v)){fb.classList.add('err');fb.textContent=t('pseudo_bad');return;}
+  fb.textContent=t('pseudo_check');var my=++pseudoSeq;
+  pseudoTimer=setTimeout(function(){
+    q(client().rpc('pseudo_available',{p:v})).then(function(ok){
+      if(my!==pseudoSeq||!$('#pseudo'))return;fb=$('#pseudo-fb');fb.className='fb';
+      if(ok){fb.classList.add('ok');fb.textContent='✓ '+t('pseudo_ok',{p:v});$('#pseudo-go').disabled=false;}
+      else{fb.classList.add('err');fb.innerHTML=esc(t('pseudo_taken',{p:v}))+' '+[v+'.mr',v+'_'+new Date().getFullYear()].filter(function(s){return s.length<=24;}).map(function(s){return '<button type="button" class="chip" data-act="sug" data-v="'+esc(s)+'">@'+esc(s)+'</button>';}).join(' ');}
+    }).catch(function(){if(my!==pseudoSeq)return;var f=$('#pseudo-fb');if(f){f.className='fb err';f.textContent=t('e_net');}});
+  },350);
+}
+function shareMessage(kind,id){
+  if(kind==='project'){var p=projOf(id),pr=progress(p),u=appUrl('p/'+p.id);return {text:c(p.t)+' : '+pr.d+'/'+pr.n+(S.lang==='ar'?' مهام منجزة. تابع التقدم وشارك: ':' tâches terminées. Suivez l’avancement et participez : ')+u,title:c(p.t),sub:T('tasks_count',{a:pr.d,b:pr.n}),url:u};}
+  if(kind==='ann'){var a=annOf(id),u2=appUrl('a/'+a.id);return {text:(S.lang==='ar'?'إعلان رسمي: ':'Annonce officielle : ')+c(a.t)+(S.lang==='ar'?'. اقرأ وأكّد القراءة: ':'. Lire et confirmer la lecture : ')+u2,title:c(a.t),sub:T('official'),url:u2};}
+  var k=canalOf(id),u3=appUrl('i/'+S.invites[id]);return {text:(S.lang==='ar'?'انضموا إلى قناة «':'Rejoignez le canal « ')+c(k.n)+(S.lang==='ar'?'» على Diasporact: ':' » sur Diasporact : ')+u3,title:c(k.n),sub:T('app_name'),url:u3};
+}
+function openAnnForm(){
+  var ids=S.me.admin?CANALS.map(function(k){return k.id;}):S.me.mod;
+  openSheet(t('publish_ann'),'<form data-form="ann" class="stack" novalidate><div class="field"><label for="an-t">'+T('f_title')+'</label><input type="text" id="an-t" maxlength="140" autocomplete="off"></div><div class="field"><label for="an-b">'+T('f_body')+'</label><textarea id="an-b" maxlength="2000"></textarea></div><div class="field"><label for="an-c">'+T('f_target')+'</label><select id="an-c">'+(S.me.admin?'<option value="all">'+T('f_all')+'</option>':'')+ids.map(function(id){return '<option value="'+id+'">'+C(canalOf(id).n)+'</option>';}).join('')+'</select></div><div class="field"><label for="an-u">'+T('f_until')+'</label><input type="date" id="an-u"></div><p class="fb err" id="an-err"></p><button type="submit" class="btn primary block">'+T('publish')+'</button></form>');
+}
+
+/* ============ Actions ============ */
+function rpc(name,args){return q(client().rpc(name,args||{}));}
+function tbl(n){return client().from(n);}
+function pseudoId(p){return S.pubId[p];}
+function openRecoveryLink(code,pseudo){
+  var u=appUrl('i/'+code),msg=(S.lang==='ar'?'رابط إعادة الاتصال بحسابك على Diasporact: ':'Lien de reconnexion à votre compte Diasporact : ')+u;S._msg=msg;
+  openSheet(t('rc_ready')+' · @'+pseudo,'<p class="linkbox" dir="ltr" style="overflow-wrap:anywhere">'+esc(u)+'</p><p class="muted small">'+T('rc_help')+'</p><div class="row wrap"><button class="btn grow" data-act="copy-msg">'+ic('copy',18)+T('share_copy')+'</button><a class="btn primary grow" target="_blank" rel="noopener" href="https://wa.me/?text='+encodeURIComponent(msg)+'">'+ic('chat',18)+T('share_open')+'</a></div>');
+}
+var ACT={
+ tab:function(d){tab(d.tab);},
+ back:function(){back();},
+ 'go-me':function(){go('me');},
+ 'close-sheet':function(){closeSheet();},
+ 'open-canal':function(d){go('canal',{id:d.id,tab:d.tab});},
+ 'open-project':function(d){go('project',{id:d.id});},
+ join:function(d){mut(function(){return rpc('request_join',{p_canal:d.id});},function(){return t('t_pending',{m:canalOf(d.id).mod||'—'});});},
+ 'canal-tab':function(d){S.canalTab[d.id]=d.tab;S.route.params.tab=d.tab;render();},
+ 'proj-tab':function(d){S.projTab=d.tab;render();},
+ read:function(d){mut(function(){return rpc('mark_read',{p_ann:d.id});});},
+ share:function(d){openShare(d.kind,d.id);},
+ 'copy-msg':function(){doCopy(S._msg||'');},
+ 'copy-link':function(d){doCopy(appUrl('i/'+S.invites[d.id]));},
+ 'rotate-link':function(d){confirmSheet(t('cf_rotate'),t('cf_rotate_t'),'rotate-link-ok',d.id);},
+ 'rotate-link-ok':function(d){closeSheet(true);mut(function(){return rpc('rotate_canal_invite',{p_canal:d.id});},'t_new_link');},
+ 'gen-link':function(d){mut(function(){return rpc('rotate_canal_invite',{p_canal:d.id});},'t_new_link');},
+ accept:function(d){mut(function(){return rpc('decide_join',{p_canal:d.id,p_user:d.uid,p_accept:true});},function(){return t('t_accepted',{p:d.p});});},
+ refuse:function(d){mut(function(){return rpc('decide_join',{p_canal:d.id,p_user:d.uid,p_accept:false});},function(){return t('t_refused',{p:d.p});});},
+ take:function(d){mut(function(){return rpc('take_task',{p_task:d.task});},'t_took');},
+ finish:function(d){mut(function(){return rpc('set_task_status',{p_task:d.task,p_status:'done'});},'t_done');},
+ apply:function(d){mut(function(){return rpc('join_team',{p_project:d.id});},'t_applied');},
+ 'follow-sheet':function(d){openFollow(d.id);},
+ 'pick-follow':function(d){closeSheet(true);mut(function(){return q(tbl('follows').upsert({project_id:d.id,user_id:S.me.id,level:d.v==='milestones'?'mine':d.v}));});},
+ 'new-project':function(d){go('newProject',{canal:d.id});},
+ 'new-help':function(){go('newHelp');},
+ claim:function(d){mut(function(){return rpc('claim_help',{p_help:d.id});},'t_claimed2');},
+ solve:function(d){mut(function(){return rpc('solve_help',{p_help:d.id,p_reply:null});},'t_solved');},
+ reply:function(d){openSheet(t('reply_title'),'<form data-form="helpreply" data-id="'+esc(d.id)+'" class="stack s8"><textarea id="hr-txt" rows="6" maxlength="1000" placeholder="'+esc(t('reply_ph'))+'"></textarea><button class="btn primary block" type="submit">'+T('reply_send')+'</button></form>');},
+ 'mark-all':function(){mut(function(){return q(tbl('notifications').update({read:true}).eq('user_id',S.me.id));});},
+ 'alert-open':function(d){var n=S.notifs.filter(function(x){return x.id===d.id;})[0];if(!n)return;n.read=true;
+   tbl('notifications').update({read:true}).eq('id',d.id).then(function(){});
+   if(n.route&&n.route!=='home'&&(n.route!=='project'||projOf(n.params.id)))go(n.route,n.params);else render();},
+ lang:function(d){S.lang=d.v;saveLang(d.v);if(hasAccount())tbl('profiles').update({lang:d.v}).eq('id',S.me.id).then(function(){});render();},
+ 'toggle-lang':function(){ACT.lang({v:S.lang==='ar'?'fr':'ar'});},
+ theme:function(d){S.theme=d.v==='dark'?'dark':'light';saveTheme(S.theme);render();},
+ 'toggle-theme':function(){S.theme=S.theme==='dark'?'light':'dark';saveTheme(S.theme);render();},
+ 'delete-account':function(){confirmSheet(t('del_account'),t('del_t'),'delete-ok','');},
+ 'delete-ok':function(){closeSheet(true);rpc('delete_my_account').then(function(){return client().auth.signOut();}).then(function(){toast(t('t_deleted'));setTimeout(function(){location.href=location.pathname;},900);}).catch(function(e){toast(errMsg(e));});},
+ 'publish-ann':function(){openAnnForm();},
+ sug:function(d){var i=$('#pseudo');i.value=d.v;updatePseudo();i.focus();},
+ 'wa-group':function(d){var k=canalOf(d.id);if(k.wa)window.open(k.wa,'_blank','noopener');else toast(t('wa_none'));},
+ propose:function(d){mut(function(){return q(tbl('proposals').insert({project_id:d.id,from_user:S.me.id,to_user:pseudoId(d.p)}));},function(){return t('match_sent',{x:d.p});});},
+ 'toggle-matching':function(){mut(function(){return q(tbl('profiles').update({matching:!S.me.matching}).eq('id',S.me.id));});},
+ 'toggle-honor':function(){mut(function(){return q(tbl('profiles').update({show_honor:!S.me.showHonor}).eq('id',S.me.id));});},
+ 'hide-start':function(){S.hideStart=true;render();},
+ 'scroll-ann':function(){var e=$('#ann-sec');if(e)e.scrollIntoView({behavior:'smooth',block:'start'});},
+ 'badge-req':function(){openBadgeReq();},
+ 'badge-grant':function(d){var r=S.badgeReqs.filter(function(x){return x.id===d.id;})[0];mut(function(){return rpc('decide_badge',{p_req:d.id,p_grant:true});},function(){return t('bd_granted',{x:r?r.p:''});});},
+ 'badge-deny':function(d){mut(function(){return rpc('decide_badge',{p_req:d.id,p_grant:false});},'bd_denied');},
+ 'ms-toggle':function(d){mut(function(){return q(tbl('milestones').update({done:d.done!=='1'}).eq('id',d.ms));},'t_ms');},
+ 'set-status':function(d){mut(function(){return q(tbl('projects').update({status:d.v}).eq('id',d.id));},'t_saved');},
+ 'rec-go':function(){var code=S.auth.code;mut(function(){return rpc('redeem_invite',{p_code:code});},'welcome_in',function(){clearHash();S.deep=null;S.stack=[];S.route={name:'home',params:{}};});}
+};
+document.addEventListener('click',function(e){
+  var el=e.target.closest('[data-act]');if(!el)return;
+  var fn=ACT[el.dataset.act];if(!fn)return;
+  fn(el.dataset,el,e);
+});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('#sheets').hidden)closeSheet();});
+document.addEventListener('input',function(e){
+  var id=e.target.id;
+  if(id==='pseudo')updatePseudo();
+  if(id==='proj-q'){S.projQ=e.target.value;var pl=$('#proj-list');if(pl)pl.innerHTML=projListHtml();}
+  if(id==='cmt-text'){var n=$('#cmt-n');if(n)n.textContent=e.target.value.length+'/280';}
+});
+function need(id,errId,msgKey){var el=$('#'+id);if(!el||!el.value.trim()){var e=$('#'+errId);if(e)e.textContent=t(msgKey||'req');if(el)el.focus();return null;}return el.value.trim();}
+function list(v){return v.split(',').map(function(x){return x.trim();}).filter(Boolean);}
+function codeFromInput(v){var parts=String(v||'').trim().split(/[\/#?\s]+/).filter(Boolean);return parts.length?parts[parts.length-1]:'';}
+var FORMS={
+ invlink:function(){var code=codeFromInput($('#il-in').value);if(!code){S.auth.err=t('inv0_bad');render();return;}startOnboarding(code);},
+ pseudo:function(){
+   var v=$('#pseudo').value.trim().toLowerCase(),country=($('#country').value||'').trim(),code=S.auth.code;if(!/^[a-z0-9][a-z0-9._-]{2,23}$/.test(v)||!code)return;
+   mut(function(){return rpc('redeem_invite',{p_code:code,p_pseudo:v,p_country:country});},'welcome_in',function(){clearHash();S.draft={pseudo:'',country:''};S.stack=[];S.route={name:'home',params:{}};});
+ },
+ badgereq:function(){var n=$('#bq-note').value.trim();if(!n){$('#bq-note').focus();return;}closeSheet(true);mut(function(){return q(tbl('badge_requests').insert({user_id:S.me.id,type:$('#bq-type').value,note:n}));},'bd_sent');},
+ skills:function(){var sk=list($('#sk-in').value).slice(0,8);mut(function(){return q(tbl('profiles').update({skills:sk}).eq('id',S.me.id));},'sk_saved');},
+ comment:function(f){var v=$('#cmt-text').value.trim();if(!v)return;mut(function(){return q(tbl('comments').insert({project_id:f.dataset.id,author_id:S.me.id,body:v.slice(0,280)}));});},
+ addtask:function(f){var v=$('#tk-new').value.trim();if(!v)return;mut(function(){return q(tbl('tasks').insert({project_id:f.dataset.id,title:v}));},'t_saved');},
+ addms:function(f){var v=$('#ms-t').value.trim(),d=$('#ms-d').value;if(!v)return;mut(function(){return q(tbl('milestones').insert({project_id:f.dataset.id,title:v,due:d||null}));},'t_saved');},
+ project:function(){
+   var title=need('np-title','np-err'),obj=title&&need('np-obj','np-err');if(!title||!obj)return;
+   var needs=list($('#np-needs').value),canal=$('#np-canal').value,due=$('#np-due').value,pid=null;
+   mut(function(){
+     return q(tbl('projects').insert({canal_id:canal,owner_id:S.me.id,title:title,objective:obj,needs:needs,orig_lang:S.lang}).select('id').single()).then(function(row){
+       pid=row.id;
+       var ops=[q(tbl('project_team').insert({project_id:pid,user_id:S.me.id}))];
+       if(due)ops.push(q(tbl('milestones').insert({project_id:pid,title:title,due:due})));
+       return Promise.all(ops);
+     });
+   },'t_proj_pub',function(){S.stack.pop();S.route={name:'project',params:{id:pid}};setTimeout(function(){if(projOf(pid))openShare('project',pid);},50);});
+ },
+ help:function(){
+   var country=need('nh-country','nh-err'),txt=country&&need('nh-txt','nh-err');if(!country||!txt)return;
+   if(txt.length<10){$('#nh-err').textContent=t('req');return;}
+   var dom=$('#nh-dom').value,urg=$('#nh-urg').value==='1';
+   mut(function(){return q(tbl('helps').insert({author_id:S.me.id,domain:dom,country:country,urgent:urg,body:txt}));},'t_help_sent',function(){S.stack=[];S.route={name:'help',params:{}};});
+ },
+ helpreply:function(f){var v=$('#hr-txt').value.trim();if(!v)return;closeSheet(true);mut(function(){return rpc('solve_help',{p_help:f.dataset.id,p_reply:v});},'t_solved');},
+ ann:function(){
+   var title=need('an-t','an-err'),body=title&&need('an-b','an-err');if(!title||!body)return;
+   var cv=$('#an-c').value,until=$('#an-u').value,aid=null;
+   closeSheet(true);
+   mut(function(){return q(tbl('announcements').insert({canal_id:cv==='all'?null:cv,author_id:S.me.id,title:title,body:body,orig_lang:S.lang,valid_until:until||null}).select('id').single()).then(function(r){aid=r.id;});},'t_ann_pub',function(){setTimeout(function(){if(aid&&annOf(aid))openShare('ann',aid);},50);});
+ },
+ wa:function(f){var v=$('#wa-in').value.trim();mut(function(){return rpc('set_canal_wa',{p_canal:f.dataset.id,p_link:v});},'t_saved');},
+ recovery:function(){var p=$('#rc-p').value.trim().toLowerCase().replace(/^@/,'');if(!p)return;
+   mut(function(){return rpc('create_recovery_invite',{p_pseudo:p});},null,function(code){openRecoveryLink(code,p);});},
+ setrole:function(){var p=$('#ad-p').value.trim().toLowerCase().replace(/^@/,'');if(!p)return;
+   mut(function(){return rpc('set_role',{p_pseudo:p,p_canal:$('#ad-c').value,p_moderator:$('#ad-m').checked,p_relay:$('#ad-r').checked});},'t_saved');},
+ setref:function(){var p=$('#ar-p').value.trim().toLowerCase().replace(/^@/,'');if(!p)return;
+   mut(function(){return rpc('set_referent',{p_pseudo:p,p_on:$('#ar-o').checked});},'t_saved');}
+};
+document.addEventListener('submit',function(e){e.preventDefault();var f=e.target,fn=FORMS[f.getAttribute('data-form')];if(fn)fn(f);});
+document.addEventListener('change',function(e){if(e.target.id==='noted'){var b=$('#enter');if(b)b.disabled=!e.target.checked;}});
+
+/* ============ Démarrage ============ */
+function hashInfo(){var m=(location.hash||'').match(/^#\/(i|p|a)\/([^\/?#]+)/);return m?{k:m[1],v:decodeURIComponent(m[2])}:null;}
+function clearHash(){try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}}
+function goHome(){
+  S.stack=[];var h=S.deep;S.deep=null;
+  S.route=(h&&h.k==='p'&&projOf(h.v))?{name:'project',params:{id:h.v}}:{name:'home',params:{}};
+  render(true);
+}
+function startOnboarding(code){
+  S.auth.err='';var cl=client();
+  return cl.auth.getSession().then(function(r){
+    if(r.data.session)return;
+    return cl.auth.signInAnonymously().then(function(x){if(x.error)throw x.error;});
+  }).then(function(){return rpc('peek_invite',{p_code:code});}).then(function(pk){
+    if(!pk){S.auth={code:null,peek:null,err:t('e_invite')};S.route={name:'inv0',params:{}};}
+    else{S.auth={code:code,peek:pk,err:''};S.route={name:pk.kind==='recovery'?'invRec':'inv1',params:{}};}
+    render(true);
+  }).catch(function(e){S.auth={code:null,peek:null,err:errMsg(e)};S.route={name:'inv0',params:{}};render(true);});
+}
+function inviteWhileRegistered(code){
+  return rpc('peek_invite',{p_code:code}).then(function(pk){
+    if(!pk)throw new Error('invalid_invite');
+    if(pk.kind==='join'&&pk.canal){return rpc('redeem_invite',{p_code:code}).then(refresh).then(function(){clearHash();goHome();S.route={name:'canal',params:{id:pk.canal}};render(true);toast(t('joined',{x:c({fr:pk.canal_fr,ar:pk.canal_ar})}));});}
+    clearHash();goHome();toast(t('e_already'));
+  }).catch(function(e){clearHash();goHome();toast(errMsg(e));});
+}
+function boot(){
+  render(true);
+  if(!client()){S.fatal=t('cfg_missing');render(true);return;}
+  var h=hashInfo();
+  client().auth.getSession().then(function(r){return r.data.session?refresh():false;}).then(function(ok){
+    if(ok){if(h&&h.k==='i')return inviteWhileRegistered(h.v);S.deep=(h&&h.k==='p')?h:null;goHome();return;}
+    if(h&&h.k==='i')return startOnboarding(h.v);
+    S.route={name:'inv0',params:{}};render(true);
+  }).catch(function(e){S.fatal=errMsg(e);render(true);});
+  window.addEventListener('hashchange',function(){if(/^#\/i\//.test(location.hash))location.reload();});
+  setInterval(function(){
+    if(document.hidden||!hasAccount()||S.busy)return;
+    var a=document.activeElement;if(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))return;if(!$('#sheets').hidden)return;
+    refresh().then(function(){render();}).catch(function(){});
+  },60000);
+}
+
+
+boot();
 })();
 </script>
 

@@ -69,7 +69,11 @@ ok "R34 confirmation de lecture comptée" "$(q $C "select reads from engagement 
 
 # entraide
 HID=$(q $C "insert into helps(author_id,domain,country,body) values (me(),'adm','France','Comment renouveler mon passeport ?') returning id" | head -1)
-ok "R35 demande d'entraide visible des inscrits" "$(q $B "select count(*) from helps")" "1"
+ok "R35 demande d'entraide invisible des simples membres" "$(q $D "select count(*) from helps")" "0"
+ok "R35b visible d'un modérateur" "$(q $B "select count(*) from helps")" "1"
+q $A "select set_referent('ahmed.lille',true)" >/dev/null
+ok "R35c visible d'un référent" "$(q $D "select count(*) from helps")" "1"
+q $A "select set_referent('ahmed.lille',false)" >/dev/null
 has "R36 on ne peut pas s'attribuer sa propre demande" "$(q $C "select claim_help('$HID')")" ""
 ok "R37 auteur ne peut pas prendre sa demande" "$(q $C "select status from helps")" "open"
 q $B "select claim_help('$HID')" >/dev/null
@@ -112,6 +116,38 @@ ok "R56 demande invisible des autres membres" "$(q $NEW "select count(*) from ca
 has "R57 membre ne valide pas sa propre demande" "$(q $D "select decide_join('inv',(select id from profiles where pseudo='ahmed.lille'),true)")" "forbidden"
 q $A "select decide_join('inv',(select id from profiles where pseudo='ahmed.lille'),true)" >/dev/null
 ok "R58 admin accepte la demande" "$(q $D "select status from canal_members where canal_id='inv' and user_id=me()")" "member"
+
+# lien de canal pour un membre déjà inscrit
+LV=$(q $A "select rotate_canal_invite('num')")
+q $D "select redeem_invite('$LV')" >/dev/null
+ok "R61 membre existant rejoint un 2e canal par lien" "$(q $D "select count(*) from canal_members where canal_id='num' and status='member'")" "1"
+ok "R62 compteur de membres par canal" "$(q $D "select members from canal_stats where canal_id='num'")" "1"
+has "R63 lien WhatsApp invalide refusé" "$(q $A "select set_canal_wa('edu','http://evil.example')")" "check"
+q $A "select set_canal_wa('edu','https://chat.whatsapp.com/AbC123xyz')" >/dev/null
+ok "R64 lien WhatsApp enregistré" "$(q $D "select wa_link from canals where id='edu'")" "https://chat.whatsapp.com/AbC123xyz"
+has "R65 membre ne change pas le lien WhatsApp" "$(q $D "select set_canal_wa('edu','https://chat.whatsapp.com/Zzz')")" "forbidden"
+q $D "select join_team('$PID')" >/dev/null
+ok "R66 membre rejoint l'équipe d'un projet" "$(q $D "select count(*) from project_team where project_id='$PID'")" "1"
+ok "R67 propriétaire notifié" "$(q $NEW "select count(*) from notifications where kind='joined'")" "1"
+
+# notifications de suivi (jalons, commentaires, propositions)
+q $NEW "insert into milestones(project_id,title,due) values ('$PID','Cahier validé','2027-01-01')" >/dev/null
+MS=$(q $NEW "select id from milestones limit 1")
+q $D "insert into follows(project_id,user_id,level) values ('$PID',me(),'mine')" >/dev/null
+q $NEW "update milestones set done=true where id='$MS'" >/dev/null
+ok "R68 suiveur « jalons seulement » notifié d'un jalon" "$(q $D "select count(*) from notifications where kind='milestone'")" "1"
+q $NEW "insert into comments(project_id,author_id,body) values ('$PID',me(),'avancement')" >/dev/null
+ok "R69 « jalons seulement » : pas de notification de commentaire" "$(q $D "select count(*) from notifications where kind='comment'")" "0"
+q $D "update follows set level='none' where project_id='$PID' and user_id=me()" >/dev/null
+q $NEW "update milestones set done=false where id='$MS'" >/dev/null; q $NEW "update milestones set done=true where id='$MS'" >/dev/null
+ok "R70 suivi « rien » : plus aucune notification de jalon" "$(q $D "select count(*) from notifications where kind='milestone'")" "1"
+q $NEW "update follows set level='none' where project_id='$PID'" >/dev/null 2>&1
+q $NEW "insert into follows(project_id,user_id,level) values ('$PID',me(),'none')" >/dev/null
+BEFORE=$(q $NEW "select count(*) from notifications where kind='comment'")
+q $D "insert into comments(project_id,author_id,body) values ('$PID',me(),'question')" >/dev/null
+ok "R71 propriétaire en suivi « rien » non notifié" "$(q $NEW "select count(*) from notifications where kind='comment'")" "$BEFORE"
+q $D "insert into proposals(project_id,from_user,to_user) values ('$PID',me(),(select id from public_profiles where pseudo='sidi.paris'))" >/dev/null
+ok "R72 membre proposé : notification reçue" "$(q $NEW "select count(*) from notifications where kind='proposal'")" "1"
 
 # anonyme sans compte
 ok "R59 anon sans profil : rien dans les canaux membres" "$(q ffffffff-0000-0000-0000-000000000009 "select count(*) from projects")" "0"
