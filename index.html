@@ -700,7 +700,7 @@ function flagEmoji(iso){return String.fromCodePoint(0x1F1E6+iso.charCodeAt(0)-65
 function flagFor(txt){
   if(!_cmap){_cmap={};COUNTRIES.forEach(function(c){_cmap[c[0].toLowerCase()]=c[0];for(var i=1;i<4;i++)_cmap[_cn(c[i])]=c[0];});['royaume uni','uk','usa','etats unis d amerique','emirats','emirats arabes','republique democratique du congo','rdc','cote d ivoire'].forEach(function(k,i){var m={'royaume uni':'GB','uk':'GB','usa':'US','etats unis d amerique':'US','emirats':'AE','emirats arabes':'AE','republique democratique du congo':'CD','rdc':'CD','cote d ivoire':'CI'};_cmap[k]=m[k];});}
   var raw=String(txt||'');if(!raw.trim())return '';
-  var iso=_cmap[_cn(raw)]||_cmap[_cn(raw.split(/[,(\/\-–]/)[0])];
+  var iso=_cmap[_cn(raw)]||_cmap[_cn(raw.split(/[,(\/–]| - /)[0])];
   return iso?flagEmoji(iso):'';
 }
 function countryInput(id,val,attrs){
