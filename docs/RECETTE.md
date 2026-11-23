@@ -56,6 +56,19 @@ Objectif : décider de la mise en production sur la base de preuves. Chaque cas 
 | ACC-11 | Lien de reconnexion à usage unique | Membre | Réutiliser le lien de reconnexion ; attendre 7 jours. | Refus à la 2e utilisation et après expiration. | Auto | Bloquant | À faire |
 | ACC-12 | Suppression du compte | Membre | Profil > Supprimer mon compte > confirmer. | Profil supprimé ; retour à l’écran d’invitation. | Manuel | Majeur | À faire |
 | ACC-13 | Stockage navigateur bloqué | Visiteur | Navigation privée / données du site effacées. | L’application ne plante pas ; retour à l’écran d’invitation. | Manuel | Mineur | À faire |
+| ACC-20 | Code de secours affiché à l’inscription | Nouveau membre | S’inscrire avec un mot de passe ; relever le code de secours affiché. | Code de 20 caractères affiché une seule fois, avec bouton Copier ; régénérable depuis Moi. | Manuel | Bloquant | À faire |
+| ACC-21 | Mot de passe oublié (réinitialisation par le membre) | Membre avec code | Écran d’accueil > Mot de passe oublié ? : pseudo + code + nouveau mot de passe. | Connexion réussie avec le nouveau mot de passe ; nouveau code affiché ; ancien code et ancien mot de passe refusés. | Manuel | Bloquant | À faire |
+
+## Sécurité
+
+| ID | Scénario | Rôle | Étapes | Résultat attendu | Mode | Priorité | Statut |
+|---|---|---|---|---|---|---|---|
+| SEC-10 | Blocage anti-devinette du code de secours | Visiteur | Saisir 5 codes faux pour un même pseudo. | Blocage de 15 minutes (même avec le bon code) ; message « Trop d’essais ». | Auto | Majeur | À faire |
+
+## Comptes
+
+| ID | Scénario | Rôle | Étapes | Résultat attendu | Mode | Priorité | Statut |
+|---|---|---|---|---|---|---|---|
 | ACC-14 | Inscription avec mot de passe | Visiteur invité | Ouvrir un lien de canal ; choisir pseudo, pays et mot de passe (8 caractères min.) ; valider. | Compte créé ; mot de passe de moins de 8 caractères refusé avec un message clair. | Manuel | Bloquant | À faire |
 | ACC-15 | Connexion sur un second appareil | Membre avec mot de passe | Sur un autre téléphone : « J’ai déjà un compte », pseudo + mot de passe. | Même profil, canaux, projets et badges ; les deux appareils fonctionnent en même temps. | Manuel | Bloquant | À faire |
 | ACC-16 | Mauvais mot de passe | Membre | Se connecter avec un mauvais mot de passe. | Message « Pseudo ou mot de passe incorrect » ; aucune indication sur l’existence du pseudo. | Manuel | Majeur | À faire |
@@ -184,4 +197,4 @@ Objectif : décider de la mise en production sur la base de preuves. Chaque cas 
 | PERF-02 | Volume de données | Technique | Mesurer la taille de la base après le jeu d’essai. | < 50 Mo (limite gratuite : 500 Mo). | Manuel | Mineur | À faire |
 | PERF-03 | Volume de contenus | Technique | Générer 100 projets et 1 000 commentaires ; mesurer le chargement. | Chargement < 5 s ; sinon pagination à prévoir (V1.1). | Manuel | Majeur | À faire |
 
-**Total : 95 cas** (51 bloquants, 35 majeurs, 9 mineurs).
+**Total : 98 cas** (53 bloquants, 36 majeurs, 9 mineurs).
