@@ -409,8 +409,19 @@ grant execute on function join_team(uuid) to authenticated;
 
 -- Compte : suppression à la demande du membre (anonymise ses contenus via cascade partielle)
 create or replace function delete_my_account() returns void language plpgsql security definer set search_path = public as $$
+declare m uuid := me();
 begin
-  delete from profiles where id = me();
+  if m is null then raise exception 'not_registered'; end if;
+  delete from proposals where from_user = m or to_user = m;
+  delete from comments where author_id = m;
+  delete from projects where owner_id = m;          -- cascade : jalons, tâches, équipe, suivis
+  delete from helps where author_id = m;
+  delete from announcements where author_id = m;    -- cascade : lectures
+  update helps set claimed_by = null, status = 'open' where claimed_by = m;
+  update invites set created_by = null where created_by = m;
+  update badge_requests set decided_by = null where decided_by = m;
+  update badge_grants set granted_by = null where granted_by = m;
+  delete from profiles where id = m;                -- cascade : badges, notifications, invitations de reconnexion…
 end $$;
 grant execute on function delete_my_account() to authenticated;
 

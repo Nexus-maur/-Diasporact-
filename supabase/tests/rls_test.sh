@@ -151,6 +151,12 @@ ok "R71 propriétaire en suivi « rien » non notifié" "$(q $NEW "select count(
 q $D "insert into proposals(project_id,from_user,to_user) values ('$PID',me(),(select id from public_profiles where pseudo='sidi.paris'))" >/dev/null
 ok "R72 membre proposé : notification reçue" "$(q $NEW "select count(*) from notifications where kind='proposal'")" "1"
 
+# suppression de compte (propriétaire de projet + commentaire + demande)
+q $NEW "insert into helps(author_id,domain,body) values (me(),'adm','demande avant suppression')" >/dev/null
+q $NEW "select delete_my_account()" >/dev/null
+ok "R73 suppression de compte propriétaire de projet" "$(sa "select count(*) from profiles where auth_uid='$NEW'" | tail -1)" "0"
+ok "R74 ses projets disparaissent" "$(sa "select count(*) from projects where id='$PID'" | tail -1)" "0"
+
 # anonyme sans compte
 ok "R59 anon sans profil : rien dans les canaux membres" "$(q ffffffff-0000-0000-0000-000000000009 "select count(*) from projects")" "0"
 ok "R60 ping anti-pause" "$($DB -c "set role anon; select ping();" | grep -x ok)" "ok"
