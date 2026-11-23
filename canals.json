@@ -1,15 +1,5 @@
 [
  {
-  "id": "edu",
-  "ico": "book",
-  "name_fr": "Éducation & jeunesse",
-  "name_ar": "التعليم والشباب",
-  "desc_fr": "Bourses, mentorat, écoles et projets pour la jeunesse mauritanienne.",
-  "desc_ar": "منح وإرشاد ومدارس ومشاريع لفائدة الشباب الموريتاني.",
-  "wa_link": null,
-  "sort": 1
- },
- {
   "id": "inv",
   "ico": "chart",
   "name_fr": "Investissement & entrepreneuriat",
@@ -58,5 +48,15 @@
   "desc_ar": "الذاكرة واللغات والفنون والفعاليات الثقافية.",
   "wa_link": null,
   "sort": 6
+ },
+ {
+  "id": "edu",
+  "ico": "book",
+  "name_fr": "Éducation & jeunesse",
+  "name_ar": "التعليم والشباب",
+  "desc_fr": "Bourses, mentorat, écoles et projets pour la jeunesse mauritanienne.",
+  "desc_ar": "منح وإرشاد ومدارس ومشاريع لفائدة الشباب الموريتاني.",
+  "wa_link": "https://chat.whatsapp.com/AbCdEf123456",
+  "sort": 1
  }
 ]
