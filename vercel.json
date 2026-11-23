@@ -31,15 +31,6 @@
           "value": "DENY"
         }
       ]
-    },
-    {
-      "source": "/supabase/(.*)",
-      "headers": [
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "https://supabase.com"
-        }
-      ]
     }
   ]
 }
