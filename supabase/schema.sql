@@ -230,7 +230,7 @@ grant execute on function pseudo_available(text) to authenticated;
 -- join : crée le profil + adhésion ; recovery : rattache le profil existant à cet appareil ; admin : premier administrateur.
 create or replace function redeem_invite(p_code text, p_pseudo text default null, p_country text default '')
 returns json language plpgsql security definer set search_path = public as $$
-declare inv invites; uid uuid := auth.uid(); pid uuid; ps text := lower(trim(coalesce(p_pseudo,'')));
+declare inv invites; uid uuid := auth.uid(); pid uuid; old_uid uuid; ps text := lower(trim(coalesce(p_pseudo,'')));
 begin
   if uid is null then raise exception 'not_authenticated'; end if;
   select * into inv from invites where code = p_code and active
@@ -239,7 +239,10 @@ begin
 
   if inv.kind = 'recovery' then
     update profiles set auth_uid = null where auth_uid = uid;     -- libère cet appareil s'il avait un autre profil
+    select auth_uid into old_uid from profiles where id = inv.target_user;
     update profiles set auth_uid = uid where id = inv.target_user;
+    -- supprime l'ancienne identité (et son e-mail technique) : l'ancien appareil perd l'accès, le pseudo pourra recevoir un nouveau mot de passe
+    if old_uid is not null and old_uid <> uid then delete from auth.users where id = old_uid; end if;
     update invites set uses = uses + 1, active = false where code = p_code;
     return json_build_object('ok', true, 'kind', 'recovery');
   end if;

@@ -105,9 +105,11 @@ ok "R49 compétences visibles si le membre l'accepte" "$(q $D "select count(*) f
 RC=$(q $A "select create_recovery_invite('sidi.paris')")
 has "R50 membre ne crée pas de lien de reconnexion" "$(q $D "select create_recovery_invite('sidi.paris')")" "forbidden"
 NEW=eeeeeeee-0000-0000-0000-000000000005
+sa "insert into auth.users(id) values ('$B')" >/dev/null
 q $NEW "select redeem_invite('$RC')" >/dev/null
 ok "R51 reconnexion sur un nouvel appareil" "$(q $NEW "select pseudo from profiles")" "sidi.paris"
 ok "R52 projet retrouvé après reconnexion" "$(q $NEW "select count(*) from projects")" "1"
+ok "R53b ancienne identité supprimée (e-mail libéré)" "$(sa "select count(*) from auth.users where id='$B'" | tail -1)" "0"
 ok "R53 ancien appareil déconnecté du profil" "$(q $B "select count(*) from profiles")" "0"
 has "R54 lien de reconnexion à usage unique" "$(q $D "select redeem_invite('$RC')")" "invalid_invite"
 
