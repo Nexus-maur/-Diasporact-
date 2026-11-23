@@ -15,7 +15,7 @@ for (const t of TABLES) {
   const rows = [];
   for (let from = 0; ; from += 1000) {
     const r = await fetch(`${url}/rest/v1/${t}?select=*`, { headers: { ...H, Range: `${from}-${from + 999}`, 'Range-Unit': 'items' } });
-    if (!r.ok) { console.error(`Échec ${t}: HTTP ${r.status}`); process.exit(1); }
+    if (!r.ok) { console.error(`Échec ${t}: HTTP ${r.status} ${(await r.text()).slice(0, 300)} (type de clé : ${key.startsWith('sb_secret_') ? 'secrète' : key.startsWith('sb_publishable_') ? 'PUBLIQUE (mauvaise clé)' : key.startsWith('eyJ') ? 'JWT' : 'inconnu'}, longueur ${key.length})`); process.exit(1); }
     const page = await r.json();
     rows.push(...page);
     if (page.length < 1000) break;
