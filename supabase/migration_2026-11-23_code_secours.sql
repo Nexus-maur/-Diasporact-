@@ -6,6 +6,7 @@ create table if not exists recovery_secrets (
   locked_until timestamptz
 );
 alter table recovery_secrets enable row level security;
+revoke all on recovery_secrets from anon, authenticated;
 
 create or replace function make_recovery_code() returns text language plpgsql security definer set search_path = public as $$
 declare c text; pid uuid := me();
