@@ -120,9 +120,9 @@ Objectif : décider de la mise en production sur la base de preuves. Chaque cas 
 | PRJ-10 | Lien projet | Membre / non-membre | Partager le lien d’un projet ; l’ouvrir avec un compte membre puis non membre. | Membre : fiche ouverte ; non-membre : accès refusé. | Manuel | Majeur | À faire |
 | PRJ-11 | Recherche | Membre | Rechercher par mot (titre, besoin, canal). | Résultats filtrés en direct. | Auto | Mineur | À faire |
 | PRJ-12 | Suggestions de compétences | Membre + propriétaire | Activer « Apparaître dans la recherche » ; ouvrir un projet dont un besoin correspond. | Profil suggéré seulement si activé ; « Proposer » enregistré (bouton devient « Proposé »). | Auto | Majeur | À faire |
-| PRJ-13 | Archiver un projet (modérateur) | Modérateur du canal | Ouvrir un projet > Gérer > Archiver. | Le projet disparaît des listes des membres ; il apparaît chez les modérateurs sous « Projets archivés » avec Désarchiver et Supprimer. | Manuel | Bloquant | À faire |
+| PRJ-13 | Archiver un projet (propriétaire ou modérateur) | Propriétaire ou modérateur | Ouvrir un projet > Gérer > Archiver. | Le projet disparaît des listes des membres ; il apparaît chez les modérateurs sous « Projets archivés » avec Désarchiver et Supprimer. | Manuel | Bloquant | À faire |
 | PRJ-14 | Supprimer un projet (modérateur) | Modérateur du canal | Gérer > Supprimer le projet > Confirmer. | Projet, tâches, jalons et commentaires supprimés après confirmation. | Manuel | Bloquant | À faire |
-| PRJ-15 | Archivage et suppression interdits aux non-modérateurs | Propriétaire non modérateur | Ouvrir son projet ; chercher les boutons ; tenter via l’API. | Aucun bouton Archiver/Supprimer ; tentative refusée. | Auto | Bloquant | À faire |
+| PRJ-15 | Suppression et archivage par un tiers interdits | Propriétaire non modérateur / autre membre | Propriétaire : chercher le bouton Supprimer. Autre membre : tenter d’archiver via l’API. | Pas de bouton Supprimer pour le propriétaire ; archivage par un tiers refusé. | Auto | Bloquant | À faire |
 
 ## Entraide
 

@@ -411,10 +411,10 @@ begin
 end $$;
 grant execute on function join_team(uuid) to authenticated;
 
--- Archivage des projets : réservé aux modérateurs du canal (et à l'administrateur). Suppression : policy proj_delete (modérateurs).
+-- Archivage des projets : propriétaire, modérateurs du canal et administrateur. Suppression : modérateurs seulement (policy proj_delete).
 create or replace function guard_project_archive() returns trigger language plpgsql as $$
 begin
-  if new.archived_at is distinct from old.archived_at and not is_mod(old.canal_id) then raise exception 'forbidden'; end if;
+  if new.archived_at is distinct from old.archived_at and not (is_mod(old.canal_id) or old.owner_id = me()) then raise exception 'forbidden'; end if;
   return new;
 end $$;
 drop trigger if exists projects_guard_archive on projects;
@@ -577,7 +577,7 @@ create policy cm_read on canal_members for select to authenticated
 create policy inv_read on invites for select to authenticated using (kind = 'join' and canal_id is not null and is_mod(canal_id));
 
 -- Projets
-create policy proj_read on projects for select to authenticated using (is_member(canal_id) and (archived_at is null or is_mod(canal_id)));
+create policy proj_read on projects for select to authenticated using (is_member(canal_id) and (archived_at is null or owner_id = me() or is_mod(canal_id)));
 create policy proj_insert on projects for insert to authenticated with check (owner_id = me() and is_member(canal_id));
 create policy proj_update on projects for update to authenticated using (owner_id = me() or is_mod(canal_id)) with check (owner_id = me() or is_mod(canal_id));
 create policy proj_delete on projects for delete to authenticated using (is_mod(canal_id));
