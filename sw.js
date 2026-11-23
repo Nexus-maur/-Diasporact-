@@ -1,4 +1,4 @@
-const V = 'dp-v2';
+const V = 'dp-v3';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './vendor/supabase.js'];
 
 self.addEventListener('install', e => {
@@ -25,6 +25,12 @@ self.addEventListener('fetch', e => {
         .then(res => { const cp = res.clone(); caches.open(V).then(c => c.put('./index.html', cp)); return res; })
         .catch(() => caches.match('./index.html'))
     );
+    return;
+  }
+
+  // Configuration : toujours le réseau d'abord, pour qu'un changement de clés soit pris en compte tout de suite
+  if (u.origin === location.origin && u.pathname.endsWith('/config.js')) {
+    e.respondWith(fetch(r).then(res => { const cp = res.clone(); caches.open(V).then(c => c.put(r, cp)); return res; }).catch(() => caches.match(r)));
     return;
   }
 
