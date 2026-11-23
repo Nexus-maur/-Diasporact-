@@ -76,6 +76,8 @@ ok "R35c visible d'un référent" "$(q $D "select count(*) from helps")" "1"
 q $A "select set_referent('ahmed.lille',false)" >/dev/null
 has "R36 on ne peut pas s'attribuer sa propre demande" "$(q $C "select claim_help('$HID')")" ""
 ok "R37 auteur ne peut pas prendre sa demande" "$(q $C "select status from helps")" "open"
+has "R37b un membre non référent ne peut pas prendre la demande" "$(q $B "select claim_help('$HID')")" "forbidden"
+q $A "select set_referent('sidi.paris',true)" >/dev/null
 q $B "select claim_help('$HID')" >/dev/null
 ok "R38 membre prend la demande" "$(q $C "select status from helps")" "doing"
 ok "R39 auteur notifié" "$(q $C "select count(*) from notifications where kind='claimed'")" "1"

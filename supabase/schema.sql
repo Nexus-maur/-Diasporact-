@@ -360,6 +360,7 @@ create or replace function claim_help(p_help uuid) returns void language plpgsql
 declare a uuid;
 begin
   if me() is null then raise exception 'not_registered'; end if;
+  if not (is_ref() or is_admin()) then raise exception 'forbidden'; end if;
   update helps set status = 'doing', claimed_by = me() where id = p_help and status = 'open' and author_id <> me() returning author_id into a;
   if a is not null then insert into notifications(user_id, kind, ref, body) values (a, 'claimed', p_help::text, (select pseudo from profiles where id = me())); end if;
 end $$;
