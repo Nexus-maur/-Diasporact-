@@ -194,5 +194,13 @@ has "R84 blocage après 5 essais ratés" "$(q $NEW "select reset_password('admin
 # anonyme sans compte
 ok "R59 anon sans profil : rien dans les canaux membres" "$(q ffffffff-0000-0000-0000-000000000009 "select count(*) from projects")" "0"
 ok "R60 ping anti-pause" "$($DB -c "set role anon; select ping();" | grep -x ok)" "ok"
+ANO=ffffffff-0000-0000-0000-000000000009
+ok "R92 anon sans profil ne lit pas public_profiles" "$(q $ANO "select count(*) from public_profiles")" "0"
+ok "R93 anon sans profil ne lit pas skills_directory" "$(q $ANO "select count(*) from skills_directory")" "0"
+ok "R94 anon sans profil ne lit pas canal_stats" "$(q $ANO "select count(*) from canal_stats")" "0"
+ok "R95 anon sans profil ne lit pas canal_mods" "$(q $ANO "select count(*) from canal_mods")" "0"
+ok "R96 anon sans profil ne lit pas canals" "$(q $ANO "select count(*) from canals")" "0"
+ok "R97 membre inscrit lit bien public_profiles" "$(q $A "select count(*) from public_profiles")" "3"
+ok "R98 membre inscrit lit bien la liste des canaux" "$(q $A "select count(*) from canals")" "6"
 
 echo "----"; echo "$pass réussis, $fail échoués"; [ $fail -eq 0 ]

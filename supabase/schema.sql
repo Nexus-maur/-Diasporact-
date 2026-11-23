@@ -196,19 +196,23 @@ create or replace function ping() returns text language sql stable as $$ select 
 grant execute on function ping() to anon, authenticated;
 
 -- ============ Vues publiques (pseudo uniquement, jamais d'email : il n'y en a pas) ============
+-- security_invoker = false fait tourner ces vues avec les privilèges du propriétaire (hors RLS sur profiles/…),
+-- donc chacune doit vérifier elle-même que l'appelant est déjà un membre enregistré (me() is not null) :
+-- sans ce filtre, n'importe quelle session authentifiée (y compris une session anonyme Supabase créée
+-- sans la moindre invitation) pourrait les lire.
 create view public_profiles with (security_invoker = false) as
-  select id, pseudo, country, show_honor, is_admin, is_ref from profiles;
+  select id, pseudo, country, show_honor, is_admin, is_ref from profiles where me() is not null;
 create view skills_directory with (security_invoker = false) as
-  select id, pseudo, country, skills from profiles where matching;
+  select id, pseudo, country, skills from profiles where matching and me() is not null;
 grant select on public_profiles, skills_directory to authenticated;
 
 create view canal_stats with (security_invoker = false) as
-  select canal_id, count(*) as members from canal_members where status = 'member' group by canal_id;
+  select canal_id, count(*) as members from canal_members where status = 'member' and me() is not null group by canal_id;
 create view canal_mods with (security_invoker = false) as
   select m.canal_id, p.pseudo, m.is_moderator, m.is_relay from canal_members m join profiles p on p.id = m.user_id
-  where m.status = 'member' and (m.is_moderator or m.is_relay);
+  where m.status = 'member' and (m.is_moderator or m.is_relay) and me() is not null;
 create view ann_read_counts with (security_invoker = false) as
-  select ann_id, count(*) as n from ann_reads group by ann_id;
+  select ann_id, count(*) as n from ann_reads where me() is not null group by ann_id;
 grant select on canal_stats, canal_mods, ann_read_counts to authenticated;
 
 create view engagement with (security_invoker = false) as
@@ -559,7 +563,8 @@ alter table badge_grants enable row level security;
 alter table notifications enable row level security;
 
 -- Canaux : liste visible de tous les comptes connectés
-create policy canals_read on canals for select to authenticated using (true);
+-- Réservé aux membres déjà enregistrés : avant redeem_invite, une session authentifiée (même anonyme) n'a pas de profil.
+create policy canals_read on canals for select to authenticated using (me() is not null);
 create policy canals_admin on canals for all to authenticated using (is_admin()) with check (is_admin());
 
 -- Profils : chacun lit/modifie le sien (les pseudos des autres passent par la vue public_profiles)
