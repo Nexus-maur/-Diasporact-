@@ -2,7 +2,6 @@
 -- À exécuter une seule fois dans Supabase > SQL Editor > New query > Run.
 -- Prérequis : Authentication > Providers > activer « Allow anonymous sign-ins ».
 
-create extension if not exists pgcrypto;
 
 -- ============ Tables ============
 create table canals (
@@ -277,7 +276,7 @@ grant execute on function peek_invite(text) to authenticated;
 
 -- Le modérateur crée / fait tourner le lien de son canal (l'ancien cesse de fonctionner).
 create or replace function rotate_canal_invite(p_canal text) returns text language plpgsql security definer set search_path = public as $$
-declare c text := lower(replace(p_canal,'_','-')) || '-' || encode(gen_random_bytes(5),'hex');
+declare c text := lower(replace(p_canal,'_','-')) || '-' || substr(replace(gen_random_uuid()::text,'-',''),1,16);
 begin
   if not is_mod(p_canal) then raise exception 'forbidden'; end if;
   update invites set active = false where canal_id = p_canal and kind = 'join';
@@ -288,7 +287,7 @@ grant execute on function rotate_canal_invite(text) to authenticated;
 
 -- Lien de reconnexion pour un membre qui a perdu son téléphone (valable 7 jours, usage unique).
 create or replace function create_recovery_invite(p_pseudo text) returns text language plpgsql security definer set search_path = public as $$
-declare t uuid; c text := 'retour-' || encode(gen_random_bytes(6),'hex');
+declare t uuid; c text := 'retour-' || substr(replace(gen_random_uuid()::text,'-',''),1,24);
 begin
   if not is_any_mod() then raise exception 'forbidden'; end if;
   select id into t from profiles where pseudo = lower(p_pseudo);
