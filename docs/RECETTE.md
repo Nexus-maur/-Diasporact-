@@ -119,6 +119,9 @@ Objectif : décider de la mise en production sur la base de preuves. Chaque cas 
 | PRJ-10 | Lien projet | Membre / non-membre | Partager le lien d’un projet ; l’ouvrir avec un compte membre puis non membre. | Membre : fiche ouverte ; non-membre : accès refusé. | Manuel | Majeur | À faire |
 | PRJ-11 | Recherche | Membre | Rechercher par mot (titre, besoin, canal). | Résultats filtrés en direct. | Auto | Mineur | À faire |
 | PRJ-12 | Suggestions de compétences | Membre + propriétaire | Activer « Apparaître dans la recherche » ; ouvrir un projet dont un besoin correspond. | Profil suggéré seulement si activé ; « Proposer » enregistré (bouton devient « Proposé »). | Auto | Majeur | À faire |
+| PRJ-13 | Archiver un projet (modérateur) | Modérateur du canal | Ouvrir un projet > Gérer > Archiver. | Le projet disparaît des listes des membres ; il apparaît chez les modérateurs sous « Projets archivés » avec Désarchiver et Supprimer. | Manuel | Bloquant | À faire |
+| PRJ-14 | Supprimer un projet (modérateur) | Modérateur du canal | Gérer > Supprimer le projet > Confirmer. | Projet, tâches, jalons et commentaires supprimés après confirmation. | Manuel | Bloquant | À faire |
+| PRJ-15 | Archivage et suppression interdits aux non-modérateurs | Propriétaire non modérateur | Ouvrir son projet ; chercher les boutons ; tenter via l’API. | Aucun bouton Archiver/Supprimer ; tentative refusée. | Auto | Bloquant | À faire |
 
 ## Entraide
 
@@ -197,4 +200,4 @@ Objectif : décider de la mise en production sur la base de preuves. Chaque cas 
 | PERF-02 | Volume de données | Technique | Mesurer la taille de la base après le jeu d’essai. | < 50 Mo (limite gratuite : 500 Mo). | Manuel | Mineur | À faire |
 | PERF-03 | Volume de contenus | Technique | Générer 100 projets et 1 000 commentaires ; mesurer le chargement. | Chargement < 5 s ; sinon pagination à prévoir (V1.1). | Manuel | Majeur | À faire |
 
-**Total : 98 cas** (53 bloquants, 36 majeurs, 9 mineurs).
+**Total : 101 cas** (56 bloquants, 36 majeurs, 9 mineurs).

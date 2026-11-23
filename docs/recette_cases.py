@@ -69,6 +69,9 @@ CASES=[
 ('PRJ-10','Projets','Lien projet','Membre / non-membre','Partager le lien d’un projet ; l’ouvrir avec un compte membre puis non membre.','Membre : fiche ouverte ; non-membre : accès refusé.',H,M),
 ('PRJ-11','Projets','Recherche','Membre','Rechercher par mot (titre, besoin, canal).','Résultats filtrés en direct.',A,m),
 ('PRJ-12','Projets','Suggestions de compétences','Membre + propriétaire','Activer « Apparaître dans la recherche » ; ouvrir un projet dont un besoin correspond.','Profil suggéré seulement si activé ; « Proposer » enregistré (bouton devient « Proposé »).',A,M),
+('PRJ-13','Projets','Archiver un projet (modérateur)','Modérateur du canal','Ouvrir un projet > Gérer > Archiver.','Le projet disparaît des listes des membres ; il apparaît chez les modérateurs sous « Projets archivés » avec Désarchiver et Supprimer.',H,B),
+('PRJ-14','Projets','Supprimer un projet (modérateur)','Modérateur du canal','Gérer > Supprimer le projet > Confirmer.','Projet, tâches, jalons et commentaires supprimés après confirmation.',H,B),
+('PRJ-15','Projets','Archivage et suppression interdits aux non-modérateurs','Propriétaire non modérateur','Ouvrir son projet ; chercher les boutons ; tenter via l’API.','Aucun bouton Archiver/Supprimer ; tentative refusée.',A,B),
 # --- Entraide
 ('ENT-01','Entraide','Créer une demande','Membre','Entraide > Demander de l’aide (domaine, pays, urgence, texte ≥ 10 caractères).','Demande enregistrée, statut « Ouverte ».',A,B),
 ('ENT-02','Entraide','Confidentialité','Membre simple','Consulter l’entraide avec un autre compte.','Demandes des autres invisibles ; visibles de l’auteur, du référent, du modérateur, de l’admin.',A,B),

@@ -153,6 +153,21 @@ ok "R71 propriétaire en suivi « rien » non notifié" "$(q $NEW "select count(
 q $D "insert into proposals(project_id,from_user,to_user) values ('$PID',me(),(select id from public_profiles where pseudo='sidi.paris'))" >/dev/null
 ok "R72 membre proposé : notification reçue" "$(q $NEW "select count(*) from notifications where kind='proposal'")" "1"
 
+# archivage / suppression de projet : modérateurs uniquement
+P2=$(q $D "insert into projects(canal_id,owner_id,title,objective) values ('edu',me(),'Projet à archiver','test') returning id" | head -1)
+has "R85 le propriétaire (non modérateur) ne peut pas archiver" "$(q $D "update projects set archived_at = now() where id='$P2'")" "forbidden"
+q $C "select 1" >/dev/null
+q $A "update projects set archived_at = now() where id='$P2'" >/dev/null
+ok "R86 l'admin archive" "$(q $A "select count(*) from projects where id='$P2' and archived_at is not null")" "1"
+ok "R87 projet archivé invisible de son propriétaire" "$(q $D "select count(*) from projects where id='$P2'")" "0"
+ok "R88 projet archivé visible du modérateur du canal" "$(q $NEW "select count(*) from projects where id='$P2'")" "1"
+q $D "delete from projects where id='$P2'" >/dev/null 2>&1
+ok "R89 le propriétaire ne supprime pas" "$(q $A "select count(*) from projects where id='$P2'")" "1"
+q $NEW "update projects set archived_at = null where id='$P2'" >/dev/null
+ok "R90 le modérateur désarchive" "$(q $D "select count(*) from projects where id='$P2'")" "1"
+q $NEW "delete from projects where id='$P2'" >/dev/null
+ok "R91 le modérateur supprime" "$(q $A "select count(*) from projects where id='$P2'")" "0"
+
 # suppression de compte (propriétaire de projet + commentaire + demande)
 q $NEW "insert into helps(author_id,domain,body) values (me(),'adm','demande avant suppression')" >/dev/null
 q $NEW "select delete_my_account()" >/dev/null
