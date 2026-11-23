@@ -693,6 +693,38 @@ function titleFor(r,p){
 }
 
 /* ============ Rendu ============ */
+var COUNTRIES=[["MR","Mauritanie","موريتانيا","Mauritania"],["FR","France","فرنسا","France"],["SN","Sénégal","السنغال","Senegal"],["ML","Mali","مالي","Mali"],["MA","Maroc","المغرب","Morocco"],["DZ","Algérie","الجزائر","Algeria"],["TN","Tunisie","تونس","Tunisia"],["EG","Égypte","مصر","Egypt"],["LY","Libye","ليبيا","Libya"],["CI","Côte d’Ivoire","كوت ديفوار","Ivory Coast"],["GN","Guinée","غينيا","Guinea"],["GM","Gambie","غامبيا","Gambia"],["GW","Guinée-Bissau","غينيا بيساو","Guinea-Bissau"],["BF","Burkina Faso","بوركينا فاسو","Burkina Faso"],["NE","Niger","النيجر","Niger"],["NG","Nigeria","نيجيريا","Nigeria"],["GH","Ghana","غانا","Ghana"],["CM","Cameroun","الكاميرون","Cameroon"],["GA","Gabon","الغابون","Gabon"],["CG","Congo","الكونغو","Congo"],["CD","RD Congo","الكونغو الديمقراطية","DR Congo"],["AO","Angola","أنغولا","Angola"],["ZA","Afrique du Sud","جنوب أفريقيا","South Africa"],["SA","Arabie saoudite","السعودية","Saudi Arabia"],["AE","Émirats arabes unis","الإمارات","United Arab Emirates"],["QA","Qatar","قطر","Qatar"],["KW","Koweït","الكويت","Kuwait"],["BH","Bahreïn","البحرين","Bahrain"],["OM","Oman","عمان","Oman"],["JO","Jordanie","الأردن","Jordan"],["LB","Liban","لبنان","Lebanon"],["TR","Turquie","تركيا","Turkey"],["ES","Espagne","إسبانيا","Spain"],["PT","Portugal","البرتغال","Portugal"],["IT","Italie","إيطاليا","Italy"],["DE","Allemagne","ألمانيا","Germany"],["BE","Belgique","بلجيكا","Belgium"],["NL","Pays-Bas","هولندا","Netherlands"],["LU","Luxembourg","لوكسمبورغ","Luxembourg"],["CH","Suisse","سويسرا","Switzerland"],["GB","Royaume-Uni","المملكة المتحدة","United Kingdom"],["IE","Irlande","أيرلندا","Ireland"],["SE","Suède","السويد","Sweden"],["NO","Norvège","النرويج","Norway"],["DK","Danemark","الدنمارك","Denmark"],["FI","Finlande","فنلندا","Finland"],["AT","Autriche","النمسا","Austria"],["PL","Pologne","بولندا","Poland"],["RU","Russie","روسيا","Russia"],["UA","Ukraine","أوكرانيا","Ukraine"],["US","États-Unis","الولايات المتحدة","United States"],["CA","Canada","كندا","Canada"],["MX","Mexique","المكسيك","Mexico"],["BR","Brésil","البرازيل","Brazil"],["AR","Argentine","الأرجنتين","Argentina"],["CN","Chine","الصين","China"],["JP","Japon","اليابان","Japan"],["KR","Corée du Sud","كوريا الجنوبية","South Korea"],["IN","Inde","الهند","India"],["PK","Pakistan","باكستان","Pakistan"],["MY","Malaisie","ماليزيا","Malaysia"],["AU","Australie","أستراليا","Australia"],["NZ","Nouvelle-Zélande","نيوزيلندا","New Zealand"],["SD","Soudan","السودان","Sudan"],["TD","Tchad","تشاد","Chad"],["CV","Cap-Vert","الرأس الأخضر","Cape Verde"],["GQ","Guinée équatoriale","غينيا الاستوائية","Equatorial Guinea"],["BJ","Bénin","بنين","Benin"],["TG","Togo","توغو","Togo"],["SL","Sierra Leone","سيراليون","Sierra Leone"],["LR","Libéria","ليبيريا","Liberia"],["MG","Madagascar","مدغشقر","Madagascar"],["EH","Sahara occidental","الصحراء الغربية","Western Sahara"],["IQ","Irak","العراق","Iraq"],["PS","Palestine","فلسطين","Palestine"]];
+var _cmap=null;
+function _cn(x){return String(x||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[’'`.\-]/g,' ').replace(/\s+/g,' ').trim();}
+function flagEmoji(iso){return String.fromCodePoint(0x1F1E6+iso.charCodeAt(0)-65,0x1F1E6+iso.charCodeAt(1)-65);}
+function flagFor(txt){
+  if(!_cmap){_cmap={};COUNTRIES.forEach(function(c){_cmap[c[0].toLowerCase()]=c[0];for(var i=1;i<4;i++)_cmap[_cn(c[i])]=c[0];});['royaume uni','uk','usa','etats unis d amerique','emirats','emirats arabes','republique democratique du congo','rdc','cote d ivoire'].forEach(function(k,i){var m={'royaume uni':'GB','uk':'GB','usa':'US','etats unis d amerique':'US','emirats':'AE','emirats arabes':'AE','republique democratique du congo':'CD','rdc':'CD','cote d ivoire':'CI'};_cmap[k]=m[k];});}
+  var raw=String(txt||'');if(!raw.trim())return '';
+  var iso=_cmap[_cn(raw)]||_cmap[_cn(raw.split(/[,(\/\-–]/)[0])];
+  return iso?flagEmoji(iso):'';
+}
+function countryInput(id,val,attrs){
+  var nm=S.lang==='ar'?2:1;
+  return '<input type="text" id="'+id+'" list="dl-'+id+'" '+(attrs||'')+' value="'+esc(val||'')+'"><datalist id="dl-'+id+'">'+COUNTRIES.map(function(c){return '<option value="'+esc(c[nm])+'"></option>';}).join('')+'</datalist>';
+}
+function decorateFlags(el){
+  if(!el||!S.flags)return;
+  var w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT,{acceptNode:function(n){var pn=n.parentNode&&n.parentNode.nodeName;return (pn==='SCRIPT'||pn==='STYLE'||pn==='TEXTAREA'||pn==='OPTION'||pn==='TITLE')?NodeFilter.FILTER_REJECT:(n.nodeValue.indexOf('@')>-1?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT);}}),nodes=[],n;
+  while((n=w.nextNode()))nodes.push(n);
+  nodes.forEach(function(tn){
+    var v=tn.nodeValue,re=/(^|[^\w.@])@([a-z0-9][a-z0-9._-]{2,23})/g,m,last=0,out=[],hit=false;
+    while((m=re.exec(v))){
+      var ps=m[2],f=S.flags[ps];if(!f){ps=ps.replace(/[._-]+$/,'');f=S.flags[ps];}
+      if(!f)continue;
+      var end=m.index+m[1].length+1+ps.length;out.push(v.slice(last,end),f);last=end;hit=true;re.lastIndex=end;
+    }
+    if(!hit)return;
+    out.push(v.slice(last));
+    var fr=document.createDocumentFragment();
+    for(var i=0;i<out.length;i+=2){fr.appendChild(document.createTextNode(out[i]));if(i+1<out.length){var sp=document.createElement('span');sp.className='flg';sp.setAttribute('aria-hidden','true');sp.textContent=' '+out[i+1];fr.appendChild(sp);}}
+    tn.parentNode.replaceChild(fr,tn);
+  });
+}
 function render(resetScroll){
   var acct=hasAccount(),r=S.route.name,p=S.route.params||{};
   if(!acct&&['load','inv0','inv1','invRec'].indexOf(r)<0){S.route={name:'inv0',params:{}};r='inv0';p={};}
@@ -703,7 +735,7 @@ function render(resetScroll){
   var tb=(detail?'<button class="icon-btn flip" data-act="back" aria-label="'+T('back')+'">'+ic('back',22)+'</button>':logoSvg())+'<h1>'+esc(titleFor(r,p))+'</h1><button class="icon-btn lang-btn" data-act="toggle-lang" aria-label="'+esc(S.lang==='ar'?'Français':'العربية')+'">'+(S.lang==='ar'?'FR':'ع')+'</button><button class="icon-btn" data-act="toggle-theme" aria-label="'+esc(S.theme==='dark'?t('th_light'):t('th_dark'))+'">'+ic(S.theme==='dark'?'sun':'moon',20)+'</button>'+(acct&&!onb?'<button class="icon-btn me-btn" data-act="go-me" aria-label="'+T('my_account')+'">'+av(S.me.pseudo,32)+'</button>':'');
   $('#topbar').innerHTML=tb;
   var view=$('#view'),y=view.scrollTop;
-  view.innerHTML=(VIEWS[r]||vHome)(p);
+  view.innerHTML=(VIEWS[r]||vHome)(p);decorateFlags(view);
   view.scrollTop=resetScroll?0:y;
   var bar=$('#tabbar');
   if(acct&&!onb){bar.hidden=false;var cur=tabOf(r),un=unread();bar.innerHTML=TABS.map(function(x){return '<button class="tab" data-act="tab" data-tab="'+x[0]+'"'+(cur===x[0]?' aria-current="page"':'')+'>'+ic(x[1],22)+'<span class="tab-l">'+T(x[2])+'</span>'+tabBadge(x[0],un)+'</button>';}).join('');}
@@ -724,7 +756,7 @@ function openSheet(title,body,cls){
   closeSheet(true);lastFocus=document.activeElement;
   var r=$('#sheets');
   r.innerHTML='<div class="scrim" data-act="close-sheet"></div><div class="sheet '+(cls||'')+'" role="dialog" aria-modal="true" aria-label="'+esc(title)+'"><div class="sheet-h"><h2>'+esc(title)+'</h2><button class="icon-btn" data-act="close-sheet" aria-label="'+T('close')+'">'+ic('x',20)+'</button></div><div class="sheet-b">'+body+'</div></div>';
-  r.hidden=false;var f=r.querySelector('.sheet-b button,.sheet-b input,.sheet-b textarea,.sheet-b select');if(f)f.focus();
+  decorateFlags(r);r.hidden=false;var f=r.querySelector('.sheet-b button,.sheet-b input,.sheet-b textarea,.sheet-b select');if(f)f.focus();
 }
 function closeSheet(silent){var r=$('#sheets');r.hidden=true;r.innerHTML='';if(!silent&&lastFocus&&lastFocus.focus){try{lastFocus.focus();}catch(e){}}}
 
@@ -898,7 +930,7 @@ function doRefresh(){
 }
 function applyData(me,d){
   var canals=d[0],stats=d[1],mods=d[2],pubs=d[3],cms=d[4],projs=d[5],mss=d[6],tks=d[7],team=d[8],cmts=d[9],helps=d[10],anns=d[11],myReads=d[12],rcount=d[13],notifs=d[14],breqs=d[15],grants=d[16],eng=d[17],dir=d[18],fol=d[19],props=d[20],invs=d[21];
-  var pp={};S.pubId={};S.honorOk={};pubs.forEach(function(p){pp[p.id]=p.pseudo;S.pubId[p.pseudo]=p.id;S.honorOk[p.pseudo]=p.show_honor!==false;});S.pub=pp;
+  var pp={};S.pubId={};S.honorOk={};pubs.forEach(function(p){pp[p.id]=p.pseudo;S.pubId[p.pseudo]=p.id;S.honorOk[p.pseudo]=p.show_honor!==false;});S.pub=pp;S.flags={};pubs.forEach(function(p){var f=flagFor(p.country);if(f)S.flags[p.pseudo]=f;});
   /* canaux */
   canals.forEach(function(row){var k=CANALS.filter(function(x){return x.id===row.id;})[0];
     if(!k){k={id:row.id,ico:row.ico,n:{fr:row.name_fr,ar:row.name_ar},d:{fr:row.desc_fr,ar:row.desc_ar}};CANALS.push(k);}
@@ -1080,6 +1112,7 @@ function vMe(){
   return '<section class="row">'+av(S.me.pseudo,52)+'<div class="grow"><h1 class="page" style="font-size:22px">@'+esc(S.me.pseudo)+'</h1></div></section>'+
   '<section><h2 class="h2">'+T('roles')+'</h2><div class="chips">'+roles.join('')+'</div></section>'+
   (mine?'<section><h2 class="h2">'+T('my_canals')+'</h2><div class="card list">'+mine+'</div></section>':'')+
+  '<section class="card stack s8"><h2 class="h3">'+T('country')+'</h2><form data-form="mycountry" class="row" novalidate><div class="grow">'+countryInput('my-country',S.me.country,'maxlength="60" autocomplete="country-name" aria-label="'+esc(t('country'))+'"')+'</div><button class="btn sm" type="submit">'+T('sk_save')+'</button></form></section>'+
   badgesSection()+skillsSection()+adminSection()+
   (S.anon?'<section class="card stack s8"><h2 class="h3">'+T('secure_t')+'</h2><p class="muted small">'+T('secure_note')+'</p>'+'<form data-form="setpw" class="stack s8" novalidate><input type="password" id="sp-w" autocomplete="new-password" minlength="8" maxlength="72" dir="ltr" placeholder="'+esc(t('pw_new'))+'" aria-label="'+esc(t('pw_new'))+'"><button class="btn sm" type="submit">'+T(S.anon?'secure_go':'change_pw')+'</button></form>'+'</section>':'<section class="card stack s8"><h2 class="h3">'+ic('lock',16)+' '+T('acct_ok_t')+'</h2><p class="muted small">'+T('acct_ok_note',{p:esc(S.me.pseudo)})+'</p>'+'<div class="stack s8"><h3 class="h3">'+T('sc_title')+'</h3><p class="muted small">'+T('sc_note')+' '+T('sc_gen_warn')+'</p><button class="btn sm" data-act="gen-code">'+T('sc_gen')+'</button></div>'+'<form data-form="setpw" class="stack s8" novalidate><input type="password" id="sp-w" autocomplete="new-password" minlength="8" maxlength="72" dir="ltr" placeholder="'+esc(t('pw_new'))+'" aria-label="'+esc(t('pw_new'))+'"><button class="btn sm" type="submit">'+T(S.anon?'secure_go':'change_pw')+'</button></form>'+'<button class="btn sm" data-act="logout">'+T('logout_t')+'</button></section>')+
   '<section class="card stack s8"><h2 class="h3">'+T('recov')+'</h2><p class="muted small">'+T('recov_note')+'</p></section>'+
@@ -1090,7 +1123,7 @@ function vMe(){
 function vNewHelp(){
   return '<h1 class="page">'+T('new_help')+'</h1><form data-form="help" class="stack" novalidate>'+
   '<div class="field"><label for="nh-dom">'+T('domain')+'</label><select id="nh-dom">'+DOMAINS.map(function(d){return '<option value="'+d+'">'+T('dm_'+d)+'</option>';}).join('')+'</select></div>'+
-  '<div class="field"><label for="nh-country">'+T('country')+'</label><input type="text" id="nh-country" maxlength="40" autocomplete="off" value="'+esc(S.me.country)+'"></div>'+
+  '<div class="field"><label for="nh-country">'+T('country')+'</label>'+countryInput('nh-country',S.me.country,'maxlength="40" autocomplete="off"')+'</div>'+
   '<div class="field"><label for="nh-urg">'+T('urgency')+'</label><select id="nh-urg"><option value="0">'+T('u_normal')+'</option><option value="1">'+T('u_urgent')+'</option></select></div>'+
   '<div class="field"><label for="nh-txt">'+T('situation')+'</label><textarea id="nh-txt" maxlength="500"></textarea></div>'+
   '<p class="muted small row">'+ic('lock',14)+' '+T('help_priv')+'</p><p class="fb err" id="nh-err"></p>'+
@@ -1108,7 +1141,7 @@ function vInv1(){
   var hero=adm?heroBlock(T('inv_from'),T('adm_first'),T('adm_first_sub')):heroBlock(T('inv_from'),T('inv_title'),T('inv_sub',{canal:k?c(k.n):''}));
   return hero+(k&&!adm?'<section class="card stack s8"><div class="row"><span class="ico-lg">'+ic(k.ico,20)+'</span><div class="grow"><h2 class="h3">'+C(k.n)+'</h2></div></div><p>'+C(k.d)+'</p></section>':'')+
   '<form data-form="pseudo" class="stack" novalidate><div class="field"><label for="pseudo">'+T('pseudo_label')+'</label><div class="pfx" dir="ltr">@<input type="text" id="pseudo" maxlength="24" autocomplete="off" autocapitalize="none" spellcheck="false" value="'+esc(S.draft.pseudo)+'"></div><p class="muted small">'+T('pseudo_help')+'</p><p class="fb" id="pseudo-fb" aria-live="polite"></p></div>'+
-  '<div class="field"><label for="country">'+T('country_label')+'</label><input type="text" id="country" maxlength="60" autocomplete="country-name" value="'+esc(S.draft.country)+'"></div>'+
+  '<div class="field"><label for="country">'+T('country_label')+'</label>'+countryInput('country',S.draft.country,'maxlength="60" autocomplete="country-name"')+'</div>'+
   '<div class="field"><label for="pw">'+T('pw_label')+'</label><input type="password" id="pw" autocomplete="new-password" minlength="8" maxlength="72" dir="ltr"><p class="muted small">'+T('pw_help')+'</p><p class="fb err" id="pw-fb" aria-live="polite"></p></div>'+
   '<button type="submit" class="btn primary block" id="pseudo-go" disabled>'+T('create_account')+'</button></form>';
 }
@@ -1243,6 +1276,7 @@ var FORMS={
    var p=$('#lg-p').value.trim().toLowerCase().replace(/^@/,''),w=$('#lg-w').value;if(!p||!w){S.auth.err=t('e_login');render();return;}
    mut(function(){return client().auth.signInWithPassword({email:pseudoMail(p),password:w}).then(function(x){if(x.error)throw x.error;return x;});},'t_logged_in',function(){clearHash();S.auth={code:null,peek:null,err:''};S.stack=[];S.route={name:'home',params:{}};});
  },
+ mycountry:function(){var v=($('#my-country').value||'').trim();mut(function(){return q(tbl('profiles').update({country:v}).eq('id',S.me.id));},'t_saved');},
  forgot:function(){
    var p=$('#fg-p').value.trim().toLowerCase().replace(/^@/,''),cd=$('#fg-c').value.trim(),w=$('#fg-w').value;
    if(!p||!cd){toast(t('e_code'));return;} if(w.length<8){toast(t('pw_short'));return;}

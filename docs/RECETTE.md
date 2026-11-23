@@ -56,6 +56,7 @@ Objectif : décider de la mise en production sur la base de preuves. Chaque cas 
 | ACC-11 | Lien de reconnexion à usage unique | Membre | Réutiliser le lien de reconnexion ; attendre 7 jours. | Refus à la 2e utilisation et après expiration. | Auto | Bloquant | À faire |
 | ACC-12 | Suppression du compte | Membre | Profil > Supprimer mon compte > confirmer. | Profil supprimé ; retour à l’écran d’invitation. | Manuel | Majeur | À faire |
 | ACC-13 | Stockage navigateur bloqué | Visiteur | Navigation privée / données du site effacées. | L’application ne plante pas ; retour à l’écran d’invitation. | Manuel | Mineur | À faire |
+| ACC-22 | Drapeau du pays de résidence à côté du pseudo | Membre | Renseigner un pays de résidence (liste de suggestions ou saisie libre) ; regarder les pseudos dans les listes, commentaires, équipes. | Le drapeau s’affiche après @pseudo partout ; pays inconnu = pas de drapeau ; le pays est modifiable dans Moi. | Manuel | Mineur | À faire |
 | ACC-20 | Code de secours affiché à l’inscription | Nouveau membre | S’inscrire avec un mot de passe ; relever le code de secours affiché. | Code de 20 caractères affiché une seule fois, avec bouton Copier ; régénérable depuis Moi. | Manuel | Bloquant | À faire |
 | ACC-21 | Mot de passe oublié (réinitialisation par le membre) | Membre avec code | Écran d’accueil > Mot de passe oublié ? : pseudo + code + nouveau mot de passe. | Connexion réussie avec le nouveau mot de passe ; nouveau code affiché ; ancien code et ancien mot de passe refusés. | Manuel | Bloquant | À faire |
 
@@ -200,4 +201,4 @@ Objectif : décider de la mise en production sur la base de preuves. Chaque cas 
 | PERF-02 | Volume de données | Technique | Mesurer la taille de la base après le jeu d’essai. | < 50 Mo (limite gratuite : 500 Mo). | Manuel | Mineur | À faire |
 | PERF-03 | Volume de contenus | Technique | Générer 100 projets et 1 000 commentaires ; mesurer le chargement. | Chargement < 5 s ; sinon pagination à prévoir (V1.1). | Manuel | Majeur | À faire |
 
-**Total : 101 cas** (56 bloquants, 36 majeurs, 9 mineurs).
+**Total : 102 cas** (56 bloquants, 36 majeurs, 10 mineurs).
