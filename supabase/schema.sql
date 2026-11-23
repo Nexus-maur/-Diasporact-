@@ -554,6 +554,21 @@ create policy notif_update on notifications for update to authenticated using (u
 revoke update on notifications from authenticated;
 grant update (read) on notifications to authenticated;
 
+-- ============ Privilèges sur les tables ============
+-- Les nouveaux projets Supabase n'accordent plus automatiquement l'accès aux tables : on le fait ici.
+-- La confidentialité reste assurée par les règles RLS ci-dessus (sans règle, une écriture est refusée).
+grant usage on schema public to anon, authenticated, service_role;
+grant all on all tables in schema public to service_role;
+grant all on all sequences in schema public to service_role;
+grant execute on all functions in schema public to service_role;
+grant select, insert, update, delete on canals, profiles, canal_members, invites, projects, milestones, tasks, project_team,
+  comments, follows, proposals, helps, announcements, ann_reads, badge_requests, badge_grants, notifications to authenticated;
+revoke update on profiles, notifications from authenticated;
+grant update (country, lang, skills, matching, base, show_honor) on profiles to authenticated;
+grant update (read) on notifications to authenticated;
+alter default privileges in schema public grant all on tables to service_role;
+alter default privileges in schema public grant all on sequences to service_role;
+
 -- ============ Données de départ : les 6 canaux ============
 insert into canals(id, ico, name_fr, name_ar, desc_fr, desc_ar, sort) values
  ('edu','book','Éducation & jeunesse','التعليم والشباب','Bourses, mentorat, écoles et projets pour la jeunesse mauritanienne.','منح وإرشاد ومدارس ومشاريع لفائدة الشباب الموريتاني.',1),
