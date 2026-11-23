@@ -159,6 +159,22 @@ q $NEW "select delete_my_account()" >/dev/null
 ok "R73 suppression de compte propriétaire de projet" "$(sa "select count(*) from profiles where auth_uid='$NEW'" | tail -1)" "0"
 ok "R74 ses projets disparaissent" "$(sa "select count(*) from projects where id='$PID'" | tail -1)" "0"
 
+# code de secours / mot de passe perdu
+has "R75 code de secours refusé tant qu'aucun mot de passe" "$(q $A "select make_recovery_code()")" "need_password"
+sa "insert into auth.users(id,email) values ('$A','admin.nkc@membre.test'); insert into auth.sessions(user_id) values ('$A')" >/dev/null
+CODE=$(q $A "select make_recovery_code()")
+ok "R76 code de secours généré (20 caractères)" "${#CODE}" "20"
+ok "R77 le code n'est lisible par aucun membre" "$(q $A "select count(*) from recovery_secrets" 2>&1 | grep -c 'permission denied')" "1"
+ok "R78 mauvais code refusé" "$(q $NEW "select reset_password('admin.nkc','AAAAAAAAAAAAAAAAAAAA','nouveau-mdp-123')")" '{"ok" : false, "reason" : "bad"}'
+ok "R79 mot de passe trop court refusé" "$(q $NEW "select reset_password('admin.nkc','$CODE','court')" | grep -o weak)" "weak"
+R=$(q $NEW "select reset_password('Admin.NKC','${CODE:0:5}-${CODE:5:5} ${CODE:10}','nouveau-mdp-123')")
+has "R80 réinitialisation avec le bon code (casse et séparateurs tolérés)" "$R" '"ok" : true'
+ok "R81 mot de passe changé (empreinte bcrypt)" "$(sa "select left(encrypted_password,4) from auth.users where id='$A'" | tail -1)" '$2a$'
+ok "R82 anciennes sessions révoquées" "$(sa "select count(*) from auth.sessions where user_id='$A'" | tail -1)" "0"
+has "R83 l'ancien code ne marche plus" "$(q $NEW "select reset_password('admin.nkc','$CODE','encore-un-mdp-1')")" '"reason" : "bad"'
+for i in 1 2 3 4; do q $NEW "select reset_password('admin.nkc','XXXXXXXXXXXXXXXXXXXX','encore-un-mdp-1')" >/dev/null; done
+has "R84 blocage après 5 essais ratés" "$(q $NEW "select reset_password('admin.nkc','XXXXXXXXXXXXXXXXXXXX','encore-un-mdp-1')" ; q $NEW "select reset_password('admin.nkc','XXXXXXXXXXXXXXXXXXXX','encore-un-mdp-1')")" '"reason" : "locked"'
+
 # anonyme sans compte
 ok "R59 anon sans profil : rien dans les canaux membres" "$(q ffffffff-0000-0000-0000-000000000009 "select count(*) from projects")" "0"
 ok "R60 ping anti-pause" "$($DB -c "set role anon; select ping();" | grep -x ok)" "ok"
