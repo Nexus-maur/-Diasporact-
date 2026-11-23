@@ -56,6 +56,12 @@ Objectif : décider de la mise en production sur la base de preuves. Chaque cas 
 | ACC-11 | Lien de reconnexion à usage unique | Membre | Réutiliser le lien de reconnexion ; attendre 7 jours. | Refus à la 2e utilisation et après expiration. | Auto | Bloquant | À faire |
 | ACC-12 | Suppression du compte | Membre | Profil > Supprimer mon compte > confirmer. | Profil supprimé ; retour à l’écran d’invitation. | Manuel | Majeur | À faire |
 | ACC-13 | Stockage navigateur bloqué | Visiteur | Navigation privée / données du site effacées. | L’application ne plante pas ; retour à l’écran d’invitation. | Manuel | Mineur | À faire |
+| ACC-14 | Inscription avec mot de passe | Visiteur invité | Ouvrir un lien de canal ; choisir pseudo, pays et mot de passe (8 caractères min.) ; valider. | Compte créé ; mot de passe de moins de 8 caractères refusé avec un message clair. | Manuel | Bloquant | À faire |
+| ACC-15 | Connexion sur un second appareil | Membre avec mot de passe | Sur un autre téléphone : « J’ai déjà un compte », pseudo + mot de passe. | Même profil, canaux, projets et badges ; les deux appareils fonctionnent en même temps. | Manuel | Bloquant | À faire |
+| ACC-16 | Mauvais mot de passe | Membre | Se connecter avec un mauvais mot de passe. | Message « Pseudo ou mot de passe incorrect » ; aucune indication sur l’existence du pseudo. | Manuel | Majeur | À faire |
+| ACC-17 | Ajout d’un mot de passe à un compte existant | Membre inscrit avant la mise à jour | Moi > Sécuriser mon compte > enregistrer un mot de passe. | Le profil est conservé ; connexion possible ensuite depuis un autre appareil. | Manuel | Bloquant | À faire |
+| ACC-18 | Changement de mot de passe et déconnexion | Membre avec mot de passe | Moi > nouveau mot de passe ; puis « Se déconnecter de cet appareil ». | Nouveau mot de passe actif ; retour à l’écran d’invitation ; reconnexion possible. | Manuel | Majeur | À faire |
+| ACC-19 | Mot de passe perdu | Modérateur + membre | Le modérateur génère un lien de reconnexion ; le membre l’ouvre puis ajoute un nouveau mot de passe depuis Moi. | Compte retrouvé ; ancien mot de passe et ancien appareil n’ont plus accès. | Manuel | Majeur | À faire |
 
 ## Rôles
 
@@ -178,4 +184,4 @@ Objectif : décider de la mise en production sur la base de preuves. Chaque cas 
 | PERF-02 | Volume de données | Technique | Mesurer la taille de la base après le jeu d’essai. | < 50 Mo (limite gratuite : 500 Mo). | Manuel | Mineur | À faire |
 | PERF-03 | Volume de contenus | Technique | Générer 100 projets et 1 000 commentaires ; mesurer le chargement. | Chargement < 5 s ; sinon pagination à prévoir (V1.1). | Manuel | Majeur | À faire |
 
-**Total : 89 cas** (48 bloquants, 32 majeurs, 9 mineurs).
+**Total : 95 cas** (51 bloquants, 35 majeurs, 9 mineurs).

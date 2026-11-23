@@ -4,7 +4,7 @@ Durée : environ 45 minutes. Tout se fait depuis un ordinateur.
 
 ## 1. Supabase (base de données)
 1. Créer un compte sur supabase.com, puis **New project** (région proche des membres, par exemple Paris / eu-west). Noter le mot de passe de la base dans votre gestionnaire de mots de passe.
-2. **Authentication > Sign In / Providers** : activer **Allow anonymous sign-ins**.
+2. **Authentication > Sign In / Providers** : activer **Allow anonymous sign-ins**, et vérifier que le fournisseur **Email** est activé avec **Confirm email désactivé** (les membres ne saisissent jamais d’e-mail : l’application utilise `pseudo@membre.diasporact.app` en interne pour la connexion par mot de passe).
 3. **SQL Editor > New query** : coller le contenu de `supabase/schema.sql`, puis **Run**. Aucune erreur ne doit apparaître.
 4. Toujours dans le SQL Editor, exécuter cette ligne (remplacez le code par un secret de votre choix, long et aléatoire) :
    `insert into invites(code, kind, max_uses) values ('VOTRE-CODE-SECRET', 'admin', 1);`

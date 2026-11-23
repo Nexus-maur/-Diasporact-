@@ -28,6 +28,12 @@ CASES=[
 ('ACC-11','Comptes','Lien de reconnexion à usage unique','Membre','Réutiliser le lien de reconnexion ; attendre 7 jours.','Refus à la 2e utilisation et après expiration.',A,B),
 ('ACC-12','Comptes','Suppression du compte','Membre','Profil > Supprimer mon compte > confirmer.','Profil supprimé ; retour à l’écran d’invitation.',H,M),
 ('ACC-13','Comptes','Stockage navigateur bloqué','Visiteur','Navigation privée / données du site effacées.','L’application ne plante pas ; retour à l’écran d’invitation.',H,m),
+('ACC-14','Comptes','Inscription avec mot de passe','Visiteur invité','Ouvrir un lien de canal ; choisir pseudo, pays et mot de passe (8 caractères min.) ; valider.','Compte créé ; mot de passe de moins de 8 caractères refusé avec un message clair.',H,B),
+('ACC-15','Comptes','Connexion sur un second appareil','Membre avec mot de passe','Sur un autre téléphone : « J’ai déjà un compte », pseudo + mot de passe.','Même profil, canaux, projets et badges ; les deux appareils fonctionnent en même temps.',H,B),
+('ACC-16','Comptes','Mauvais mot de passe','Membre','Se connecter avec un mauvais mot de passe.','Message « Pseudo ou mot de passe incorrect » ; aucune indication sur l’existence du pseudo.',H,M),
+('ACC-17','Comptes','Ajout d’un mot de passe à un compte existant','Membre inscrit avant la mise à jour','Moi > Sécuriser mon compte > enregistrer un mot de passe.','Le profil est conservé ; connexion possible ensuite depuis un autre appareil.',H,B),
+('ACC-18','Comptes','Changement de mot de passe et déconnexion','Membre avec mot de passe','Moi > nouveau mot de passe ; puis « Se déconnecter de cet appareil ».','Nouveau mot de passe actif ; retour à l’écran d’invitation ; reconnexion possible.',H,M),
+('ACC-19','Comptes','Mot de passe perdu','Modérateur + membre','Le modérateur génère un lien de reconnexion ; le membre l’ouvre puis ajoute un nouveau mot de passe depuis Moi.','Compte retrouvé ; ancien mot de passe et ancien appareil n’ont plus accès.',H,M),
 # --- Rôles et droits
 ('ROL-01','Rôles','Nommer un modérateur','Admin','Profil > Administration > pseudo + canal + « Modérateur ».','Le membre voit l’onglet Modération de ce canal.',A,B),
 ('ROL-02','Rôles','Nommer un relais local','Admin','Même formulaire, case « Relais local ».','Badge « Relais » affiché sous le pseudo.',A,M),
