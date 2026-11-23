@@ -1,4 +1,5 @@
 // Restauration des tables depuis un dossier de sauvegarde (produit par scripts/backup.mjs).
+const hdr = k => (k.startsWith('eyJ') ? { apikey: k, Authorization: 'Bearer ' + k } : { apikey: k }); // les nouvelles clés sb_… ne se passent pas en Bearer
 // Usage : SUPABASE_URL=... SUPABASE_SERVICE_KEY=... node scripts/restore.mjs <dossier> [--keep-auth]
 // Sans --keep-auth (nouveau projet Supabase), les liens profil <-> appareil sont effacés :
 // chaque membre se reconnecte avec un lien de reconnexion fourni par un modérateur.
@@ -16,7 +17,7 @@ for (const t of ORDER) {
   for (let i = 0; i < rows.length; i += 500) {
     const r = await fetch(`${url}/rest/v1/${t}`, {
       method: 'POST',
-      headers: { apikey: key, Authorization: 'Bearer ' + key, 'Content-Type': 'application/json', Prefer: 'resolution=merge-duplicates,return=minimal' },
+      headers: { ...hdr(key), 'Content-Type': 'application/json', Prefer: 'resolution=merge-duplicates,return=minimal' },
       body: JSON.stringify(rows.slice(i, i + 500))
     });
     if (!r.ok) { console.error(`Échec ${t}: HTTP ${r.status} ${await r.text()}`); process.exit(1); }

@@ -1,4 +1,5 @@
 // Export de toutes les tables Supabase en JSON (clé « service_role », jamais exposée à l'application).
+const hdr = k => (k.startsWith('eyJ') ? { apikey: k, Authorization: 'Bearer ' + k } : { apikey: k }); // les nouvelles clés sb_… ne se passent pas en Bearer
 // Usage : SUPABASE_URL=... SUPABASE_SERVICE_KEY=... node scripts/backup.mjs <dossier-de-sortie>
 import { mkdir, writeFile } from 'node:fs/promises';
 
@@ -7,7 +8,7 @@ const TABLES = ['canals', 'profiles', 'canal_members', 'invites', 'projects', 'm
 const url = (process.env.SUPABASE_URL || '').replace(/\/$/, ''), key = process.env.SUPABASE_SERVICE_KEY, out = process.argv[2];
 if (!url || !key || !out) { console.error('Usage: SUPABASE_URL, SUPABASE_SERVICE_KEY et dossier de sortie requis'); process.exit(2); }
 
-const H = { apikey: key, Authorization: 'Bearer ' + key };
+const H = hdr(key);
 await mkdir(out, { recursive: true });
 const summary = {};
 for (const t of TABLES) {

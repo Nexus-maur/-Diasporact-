@@ -1,5 +1,6 @@
 // Tâche quotidienne (cron Vercel) : interroge la base pour éviter la mise en pause du plan gratuit Supabase.
 // Variables Vercel : SUPABASE_URL, SUPABASE_ANON_KEY (et facultativement CRON_SECRET).
+const hdr = k => (k.startsWith('eyJ') ? { apikey: k, Authorization: 'Bearer ' + k } : { apikey: k }); // les nouvelles clés sb_… ne se passent pas en Bearer
 module.exports = async (req, res) => {
   const secret = process.env.CRON_SECRET;
   if (secret && req.headers.authorization !== 'Bearer ' + secret) return res.status(401).json({ ok: false });
@@ -8,7 +9,7 @@ module.exports = async (req, res) => {
   try {
     const r = await fetch(url.replace(/\/$/, '') + '/rest/v1/rpc/ping', {
       method: 'POST',
-      headers: { apikey: key, Authorization: 'Bearer ' + key, 'Content-Type': 'application/json' },
+      headers: { ...hdr(key), 'Content-Type': 'application/json' },
       body: '{}'
     });
     const body = await r.text();
