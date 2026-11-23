@@ -561,7 +561,9 @@ reply_btn:'Répondre',reply_title:'Répondre à la demande',reply_ph:'Votre rép
 n_joined:'@{x} a rejoint votre projet',n_prop:'On vous propose de contribuer au projet {x}',t_claimed2:'Demande prise en charge.',b_speaker:'Administrateur',r_speaker:'Administrateur',
 apply:'Rejoindre l’équipe',t_applied:'Vous faites partie de l’équipe.',t_sent_req:'Demande envoyée.',
 no_dir:'Aucun profil ne correspond pour le moment.',empty_canals:'Rejoignez un canal avec un lien d’invitation.',
-share_note:'Le message s’ouvre dans WhatsApp : vous choisissez le groupe.',invite_exp:'Le lien reste valable jusqu’à ce que vous en générez un nouveau.'
+share_note:'Le message s’ouvre dans WhatsApp : vous choisissez le groupe.',invite_exp:'Le lien reste valable jusqu’à ce que vous en générez un nouveau.',
+privacy_t:'Confidentialité et mes données',privacy_export:'Télécharger mes données',privacy_export_note:'Un fichier avec tout ce que l’application sait de vous : profil, canaux, projets, entraide, annonces, notifications.',privacy_policy:'Comment vos données sont utilisées',t_exported:'Données exportées.',
+privacy_title2:'Confidentialité',privacy_body:'<p>Diasporact ne collecte ni nom complet ni e-mail : seulement un pseudo que vous choisissez, votre pays de résidence (facultatif) et les contenus que vous créez (projets, messages d’entraide, commentaires).</p><p>Ces données sont hébergées dans l’Union européenne et ne sont jamais vendues ni partagées avec un tiers. Elles sont visibles uniquement par les autres membres invités, selon vos canaux.</p><p>Vous pouvez à tout moment télécharger vos données ou supprimer définitivement votre compte depuis cet écran.</p><p class="muted small">Pour signaler un problème de sécurité ou de confidentialité : board.kalidia@gmail.com</p>'
 });
 Object.assign(I18N.ar,{
 loading:'جارٍ التحميل…',e_generic:'حدث خطأ. أعد المحاولة بعد قليل.',e_invite:'هذا الرابط لم يعد صالحاً. اطلب رابطاً جديداً من مشرف قناتك.',
@@ -586,7 +588,9 @@ reply_btn:'الرد',reply_title:'الرد على الطلب',reply_ph:'ردّك
 n_joined:'انضم @{x} إلى مشروعك',n_prop:'يُقترح عليك المساهمة في مشروع {x}',t_claimed2:'تم تولي الطلب.',b_speaker:'مشرف عام',r_speaker:'مشرف عام',
 apply:'الانضمام إلى الفريق',t_applied:'أصبحت عضواً في الفريق.',t_sent_req:'تم إرسال الطلب.',
 no_dir:'لا توجد ملفات مطابقة حالياً.',empty_canals:'انضم إلى قناة عبر رابط دعوة.',
-share_note:'تُفتح الرسالة في واتساب: تختار المجموعة.',invite_exp:'يبقى الرابط صالحاً حتى تنشئ رابطاً جديداً.'
+share_note:'تُفتح الرسالة في واتساب: تختار المجموعة.',invite_exp:'يبقى الرابط صالحاً حتى تنشئ رابطاً جديداً.',
+privacy_t:'الخصوصية وبياناتي',privacy_export:'تحميل بياناتي',privacy_export_note:'ملف يحتوي على كل ما يعرفه التطبيق عنك: الملف الشخصي، القنوات، المشاريع، التضامن، الإعلانات، الإشعارات.',privacy_policy:'كيف تُستخدم بياناتك',t_exported:'تم تصدير البيانات.',
+privacy_title2:'الخصوصية',privacy_body:'<p>لا يجمع Diasporact الاسم الكامل ولا البريد الإلكتروني: فقط اسم مستخدم تختاره، وبلد إقامتك (اختياري)، والمحتوى الذي تنشئه (مشاريع، رسائل تضامن، تعليقات).</p><p>تُستضاف هذه البيانات داخل الاتحاد الأوروبي ولا تُباع أو تُشارك أبداً مع طرف ثالث. لا يراها إلا الأعضاء المدعوون الآخرون، حسب قنواتك.</p><p>يمكنك في أي وقت تحميل بياناتك أو حذف حسابك نهائياً من هذه الشاشة.</p><p class="muted small">للإبلاغ عن مشكلة أمنية أو متعلقة بالخصوصية: board.kalidia@gmail.com</p>'
 });
 
 /* ============ Accès Supabase ============ */
@@ -864,6 +868,7 @@ function vMe(){
   '<section class="card stack s8"><h2 class="h3">'+T('recov')+'</h2><p class="muted small">'+T('recov_note')+'</p></section>'+
   '<section class="stack s8"><div class="lbl">'+T('lang')+'</div><div class="seg"><button aria-pressed="'+(S.lang==='fr')+'" data-act="lang" data-v="fr">Français</button><button aria-pressed="'+(S.lang==='ar')+'" data-act="lang" data-v="ar">العربية</button></div>'+
   '<div class="lbl">'+T('theme')+'</div><div class="seg">'+['light','dark'].map(function(v){return '<button aria-pressed="'+(S.theme===v)+'" data-act="theme" data-v="'+v+'">'+T('th_'+v)+'</button>';}).join('')+'</div></section>'+
+  '<section class="card stack s8"><h2 class="h3">'+T('privacy_t')+'</h2><p class="muted small">'+T('privacy_export_note')+'</p><button class="btn sm" data-act="export-data">'+T('privacy_export')+'</button><button class="btn sm" data-act="privacy-info">'+T('privacy_policy')+'</button></section>'+
   '<button class="btn block danger" data-act="delete-account">'+T('del_account')+'</button>';
 }
 function vNewHelp(){
@@ -974,6 +979,16 @@ var ACT={
  forgot:function(){openForgot();},
  'gen-code':function(){if(S.anon)return;S.busy=false;rpc('make_recovery_code').then(function(c){showRecoveryCode(c);}).catch(function(e){toast(errMsg(e));});},
  logout:function(){if(S.anon)return;client().auth.signOut().then(function(){location.href=location.pathname;});},
+ 'privacy-info':function(){openSheet(t('privacy_title2'),t('privacy_body'));},
+ 'export-data':function(){
+   rpc('export_my_data').then(function(data){
+     var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+     var url=URL.createObjectURL(blob);
+     var a=document.createElement('a');a.href=url;a.download='diasporact-mes-donnees-'+S.me.pseudo+'.json';document.body.appendChild(a);a.click();
+     setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(url);},1000);
+     toast(t('t_exported'));
+   }).catch(function(e){toast(errMsg(e));});
+ },
  'delete-account':function(){confirmSheet(t('del_account'),t('del_t'),'delete-ok','');},
  'delete-ok':function(){closeSheet(true);rpc('delete_my_account').then(function(){return client().auth.signOut();}).then(function(){toast(t('t_deleted'));setTimeout(function(){location.href=location.pathname;},900);}).catch(function(e){toast(errMsg(e));});},
  'publish-ann':function(){openAnnForm();},

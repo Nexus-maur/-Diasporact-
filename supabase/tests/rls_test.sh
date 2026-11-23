@@ -203,4 +203,9 @@ ok "R96 anon sans profil ne lit pas canals" "$(q $ANO "select count(*) from cana
 ok "R97 membre inscrit lit bien public_profiles" "$(q $A "select count(*) from public_profiles")" "3"
 ok "R98 membre inscrit lit bien la liste des canaux" "$(q $A "select count(*) from canals")" "6"
 
+# RGPD : export de ses propres données
+has "R99 export : contient son propre pseudo" "$(q $A "select export_my_data()")" "admin.nkc"
+has "R100 export : non inscrit refusé" "$(q $ANO "select export_my_data()")" "not_registered"
+ok "R101 export : ne contient pas le pseudo d'un autre membre" "$(q $A "select export_my_data()::text !~ 'mariem.paris'")" "t"
+
 echo "----"; echo "$pass réussis, $fail échoués"; [ $fail -eq 0 ]
