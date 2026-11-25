@@ -154,6 +154,17 @@ textarea{resize:vertical;min-height:84px}
 .pfx:focus-within{outline:2px solid var(--green)}
 .pfx input{border:0;border-radius:0 12px 12px 0;background:transparent;outline:0}
 [dir="rtl"] .pfx input{border-radius:12px 0 0 12px}
+.cpick{position:relative;display:flex;flex-direction:column;gap:6px}
+.cp-row{display:flex;gap:8px;align-items:stretch}
+.cp-row input{flex:1;min-width:0}
+.cp-btn{flex:none;min-width:48px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font-size:24px;line-height:1;cursor:pointer;display:grid;place-items:center}
+.cp-btn:focus-visible,.cp-item:focus-visible{outline:2px solid var(--green)}
+.cp-panel{border:1px solid var(--line);border-radius:14px;background:var(--surface);padding:10px;display:flex;flex-direction:column;gap:8px}
+.cp-panel[hidden]{display:none}
+.cp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:6px;max-height:240px;overflow-y:auto}
+.cp-item{display:flex;align-items:center;gap:8px;padding:8px;border:1px solid var(--line);border-radius:10px;background:var(--surface2);color:var(--ink);font:13px/1.2 var(--f-body);text-align:start;cursor:pointer;min-width:0}
+.cp-item .flg{font-size:22px}
+.cp-item:hover{border-color:var(--green)}
 .fb{min-height:22px;font-size:13px}
 .fb.ok{color:var(--green-ink)}
 .fb.err{color:var(--red-ink)}

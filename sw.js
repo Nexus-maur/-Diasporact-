@@ -1,4 +1,4 @@
-const V = 'dp-v3';
+const V = 'dp-v4';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './vendor/supabase.js'];
 
 self.addEventListener('install', e => {
