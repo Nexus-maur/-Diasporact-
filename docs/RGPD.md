@@ -24,13 +24,17 @@ section 7.
 ## 2. Données collectées
 
 Diasporact applique un principe de **minimisation volontaire** depuis sa
-conception : pas de nom complet, pas d'email, pas de numéro de téléphone.
+conception : pas d'email, pas de numéro de téléphone. Le nom complet (nom et
+prénom) a été ajouté le 25/11/2026 comme donnée **facultative** : un membre
+qui ne le renseigne pas reste identifié uniquement par son pseudo, comme
+avant.
 
 | Donnée | Obligatoire | Usage |
 |---|---|---|
 | Pseudo | Oui | Identification au sein de l'app |
+| Nom et prénom | Non (facultatif) | Affichés publiquement à la place du pseudo seul si renseignés (le pseudo reste visible, en plus petit, pour les liens @pseudo) |
 | Mot de passe (haché par Supabase Auth) | Oui | Connexion multi-appareils |
-| Pays de résidence | Non (facultatif) | Affiché aux autres membres si renseigné |
+| Pays de résidence | Non (facultatif) | Affiché aux autres membres si renseigné ; sert aussi à déterminer qui reçoit les annonces d'un porte-parole de ce pays |
 | Compétences (si activé "matching") | Non | Mise en relation entraide/projets |
 | Contenus créés (projets, tâches, commentaires, annonces, demandes d'entraide) | — | Fonctionnement du service |
 | Code de récupération de compte (haché) | Oui | Récupération d'accès en cas de mot de passe perdu |
@@ -81,14 +85,28 @@ des membres humains, qui décident eux-mêmes de contacter ou non quelqu'un.
 | Droit d'accès | Le membre voit déjà ses données dans l'app ; en plus, le bouton d'export (ci-dessous) donne une vue exhaustive et structurée. |
 | Droit à la portabilité | Fonction `export_my_data()` (RPC Supabase), exposée dans l'app via le bouton **"Télécharger mes données"** (écran Mon profil → section "Confidentialité et mes données"). Génère un fichier JSON téléchargeable contenant : profil, canaux, projets créés, tâches assignées, commentaires, suivis, propositions envoyées/reçues, demandes et prises en charge d'entraide, annonces publiées/lues, demandes et octrois de badges, notifications. Mis en production le 23/11/2026. |
 | Droit à l'effacement | Fonction `delete_my_account()` (préexistante), exposée via le bouton **"Supprimer mon compte"** sur le même écran. |
-| Droit de rectification | Le membre peut modifier pseudo, pays, compétences et mot de passe directement dans l'app. |
-| Droit d'opposition / retrait du consentement | Un membre peut désactiver le "matching" ou vider le champ pays à tout moment ; cela arrête l'usage correspondant immédiatement. |
+| Droit de rectification | Le membre peut modifier pseudo, nom, prénom, pays, compétences et mot de passe directement dans l'app. |
+| Droit d'opposition / retrait du consentement | Un membre peut désactiver le "matching", vider le champ pays, ou effacer son nom et prénom (retour à l'affichage par pseudo seul) à tout moment ; cela arrête l'usage correspondant immédiatement. |
 | Droit à la limitation | Pas d'implémentation technique dédiée à ce jour (cas d'usage rare vu le périmètre de l'app) ; une demande serait traitée manuellement par le responsable de traitement. |
 
 Toute demande qui ne pourrait pas être traitée directement dans l'app peut
 être adressée à **board.kalidia@gmail.com**.
 
 ## 6. Mesures de sécurité en place
+
+**Rôle porte-parole (25/11/2026)** : un porte-parole peut diffuser une
+annonce à toute la diaspora d'un pays (et non plus seulement à son canal).
+La visibilité est contrôlée côté base (RLS) : un membre ne voit une telle
+annonce que si son propre champ "pays de résidence" correspond (comparaison
+insensible à la casse et aux espaces) à celui ciblé par l'annonce ; aucune
+nouvelle donnée personnelle n'est collectée pour cela, le rôle s'appuie sur
+le pays déjà déclaré par chaque membre. Seul un administrateur peut désigner
+un porte-parole (table `spokespersons`, plusieurs porte-paroles possibles
+par pays). Limite connue : la correspondance de pays repose sur une
+comparaison textuelle simple (pas de normalisation des accents) — un pays
+saisi avec une orthographe très différente de la liste de suggestions
+pourrait ne pas être rattaché correctement ; à surveiller si ce cas se
+présente en usage réel.
 
 Audit de sécurité réalisé le 23/11/2026, avec les correctifs suivants :
 
@@ -195,11 +213,15 @@ perte) :
    être exposées, pour combien de membres, et sur quelle période (en
    s'appuyant sur les logs Vercel/Supabase disponibles).
 3. **Évaluation du risque** : au vu des données collectées par Diasporact
-   (pas d'email, pas de données bancaires, pas de nom complet), le risque
-   pour les personnes est généralement limité, mais chaque incident doit
-   être évalué au cas par cas (ex. une fuite de pays de résidence +
-   pseudo peut avoir un impact réel pour des personnes dans des contextes
-   sensibles).
+   (pas d'email, pas de données bancaires), le risque pour les personnes
+   est généralement limité, mais chaque incident doit être évalué au cas
+   par cas (ex. une fuite de pays de résidence + pseudo peut avoir un
+   impact réel pour des personnes dans des contextes sensibles). Depuis le
+   25/11/2026, le nom et le prénom sont un champ facultatif que le membre
+   choisit lui-même de rendre public (comme le pseudo) ; une fuite touchant
+   un membre ayant renseigné son nom réel associé à son pays de résidence
+   mérite une vigilance accrue par rapport à un pseudo seul, dans les mêmes
+   contextes sensibles.
 4. **Notification à l'autorité de contrôle compétente** (en France, la
    CNIL) **sous 72 heures** à compter de la connaissance de la violation,
    si elle est susceptible d'engendrer un risque pour les droits et

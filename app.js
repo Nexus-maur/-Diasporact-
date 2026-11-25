@@ -45,7 +45,8 @@ domain:'Domaine',country:'Pays de résidence',urgency:'Urgence',u_normal:'Normal
 dm_adm:'Administratif',dm_jur:'Juridique',dm_ins:'Installation',dm_ret:'Retour et investissement',dm_san:'Santé',by:'Pris en charge par @{x}',
 alerts_title:'Réglages',push:'Notifications push',push_note:'Sur iPhone, ajoutez l’app à l’écran d’accueil pour recevoir les push.',digest:'Résumé quotidien',digest_note:'Regroupe les mises à jour de vos projets en un seul message.',mark_all:'Tout marquer comme lu',no_alerts:'Aucune notification.',
 my_account:'Mon compte',recov:'Code de récupération',show:'Afficher',hide:'Masquer',recov_note:'Rattacher un e-mail ou un numéro sera possible plus tard.',lang:'Langue',theme:'Thème',th_light:'Blanc',th_dark:'Noir',logout:'Se déconnecter',my_canals:'Mes canaux',roles:'Rôles',
-r_member:'Membre',r_mod:'Modérateur de {x}',r_ref:'Référent : {x}',r_speaker:'Porte-parole officiel',
+r_member:'Membre',r_mod:'Modérateur de {x}',r_ref:'Référent : {x}',r_speaker:'Porte-parole officiel',r_spk:'Porte-parole ({x})',
+name_section:'Nom et prénom',firstname_label:'Prénom',lastname_label:'Nom',name_public_note:'Optionnel, visible publiquement. Si renseigné, votre pseudo apparaît en grisé en dessous à la place du pseudo seul.',
 share_title:'Partager dans WhatsApp',share_prev:'Message à publier dans le groupe',share_open:'Ouvrir WhatsApp',share_copy:'Copier le message',
 share_note:'Le lien affiche un aperçu et ramène directement sur la fiche. Les membres du canal peuvent agir, les autres peuvent demander l’accès.',
 wa_title:'Simulation d’un groupe WhatsApp',wa_note:'Les discussions libres restent ici. Les liens ouvrent l’outil.',wa_open:'Ouvrir le lien',
@@ -54,7 +55,7 @@ t_took:'Tâche prise. L’équipe est informée.',t_done:'Tâche terminée. Brav
 t_claimed:'Demande prise en charge. @{p} est notifié·e.',t_solved:'Demande marquée comme résolue',t_new_link:'Nouveau lien créé. L’ancien ne fonctionne plus.',
 t_push_on:'Push activées. Dans la version réelle, le navigateur demandera votre autorisation.',t_no_notif:'Aucune notification : vous suivez ce projet sur « Rien ».',
 t_ann_pub:'Annonce publiée',t_proj_pub:'Projet publié dans le canal',
-f_canal:'Canal',f_title:'Titre',f_needs:'Besoins (séparés par des virgules)',f_due:'Échéance',f_body:'Texte',f_target:'Diffusion',f_all:'Tous les canaux',f_until:'Valable jusqu’au',req:'Champ obligatoire',
+f_canal:'Canal',f_title:'Titre',f_needs:'Besoins (séparés par des virgules)',f_due:'Échéance',f_body:'Texte',f_target:'Diffusion',f_all:'Tous les canaux (admin)',f_country_opt:'Toute la diaspora d’un pays',f_country_ph:'Pays',f_until:'Valable jusqu’au',req:'Champ obligatoire',
 n_task:'Tâche assignée : {x}',n_mil:'Jalon atteint : {x}',n_cmt:'Nouveau commentaire sur {x}',n_acc:'Demande acceptée : vous êtes membre de {x}',n_ann:'Nouvelle annonce officielle : {x}',n_claim:'Votre demande d’entraide est prise en charge par @{x}',
 n_welcome:'Bienvenue. Vos demandes sont en cours de validation.',
 now:'à l’instant',min:'il y a {n} min',hour:'il y a {n} h',day:'il y a {n} j',ai_tag:'Généré par IA · à vérifier',ai_sim:'Dans cette démo, l’analyse est simulée par des règles simples.',from_chat:'Depuis une discussion',chat_btn:'À partir d’une discussion',chat_intro:'Collez une discussion WhatsApp : l’IA propose une fiche projet avec décisions, questions ouvertes et actions. Vous relisez et corrigez avant de publier.',chat_consent:'Ne collez qu’une discussion dont les participants acceptent le partage. Rien n’est conservé.',chat_ph:'Un message par ligne : « Prénom : message »',chat_sample:'Utiliser un exemple',chat_go:'Analyser la discussion',chat_loading:'Analyse en cours…',chat_empty:'Collez d’abord une discussion.',chat_back:'Modifier le texte',cr_actions:'Actions repérées (décochez pour écarter)',cr_decisions:'Décisions repérées',cr_questions:'Questions restées ouvertes',cr_none:'Rien repéré',cr_create:'Créer le projet',cr_by:'proposé par @{x}',ch_decisions:'Décisions de la discussion : ',ch_questions:'Questions ouvertes : ',dictate:'Dicter',voice_sim:'Saisie vocale simulée dans la démo',voice_listen:'Je vous écoute…',voice_demo_c:'Je peux m’en occuper cette semaine.',voice_demo_h:'Bonjour, je dois renouveler mon passeport rapidement et je ne sais pas par où commencer.',voice_demo_x:'Sidi : on pourrait organiser une collecte de livres pour une bibliothèque ?',dg_title:'Votre résumé personnalisé',dg_sub:'Rédigé dans votre langue à partir de votre activité.',dg_freq:'Fréquence',dg_daily:'Chaque jour',dg_weekly:'Chaque semaine',dg_task:'Tâche à faire : {x} ({p})',dg_ann:'Annonce officielle à lire : {x}',dg_proj:'{x} : {a}/{b} tâches terminées',dg_help:'{x} demande(s) d’entraide attendent un référent',dg_reqs:'{x} demande(s) d’adhésion à traiter',dg_myhelp:'Votre demande d’entraide est suivie par @{x}',dg_none:'Rien de nouveau.',dg_wa:'Aperçu dans WhatsApp',dg_note:'Les annonces officielles sont citées telles quelles, jamais reformulées.',dg_wa_note:'Message envoyé sur WhatsApp avec un lien vers l’app (prévu via l’API WhatsApp Business).',sk_title:'Compétences',sk_opt:'Mises en relation par compétences',sk_opt_note:'Si activé, votre pseudo et vos compétences peuvent être proposés aux porteurs de projets. Vous décidez toujours de répondre.',sk_in:'Mes compétences (séparées par des virgules)',sk_save:'Enregistrer',sk_saved:'Compétences enregistrées',match_title:'Membres qui pourraient aider',match_note:'Seuls les membres ayant activé les mises en relation apparaissent. Vous les sollicitez, ils décident.',match_why:'Compétence « {s} » ↔ besoin « {n} »',match_prop:'Proposer de contribuer',match_sent:'Proposition envoyée à @{x}',match_done:'Proposé',match_none:'Aucune suggestion pour le moment.',match_home:'Projets qui recherchent vos compétences',match_home_why:'Besoin : {n}',ai_help_t:'Suggestions de l’assistant',ai_help_dom:'Domaine suggéré : {x}',ai_help_urg:'Cela semble urgent : marquer comme urgent',ai_help_faq:'Une fiche pratique pourrait répondre :',ai_help_view:'Voir la fiche',ai_help_ok:'Cela répond à ma question',ai_help_ok_t:'Content d’avoir pu aider. Votre demande n’a pas été envoyée.',ai_help_note:'Ne remplace pas l’avis d’un référent.',faq_title:'Fiches pratiques',faq_sub:'Rédigées et validées par les référents.',faq_by:'Validée par @{x}',faq_note:'Information indicative : vérifiez toujours auprès de l’organisme officiel.',draft_btn:'Brouillon de réponse',draft_title:'Brouillon de réponse',draft_note:'Proposition de l’IA à partir des fiches existantes. Relisez et modifiez : rien n’est envoyé sans vous.',draft_faq:'Ajouter cette réponse aux fiches pratiques',draft_send:'Envoyer la réponse',draft_sent:'Réponse envoyée à @{x}',draft_hi:'Bonjour @{x}, merci pour votre message.',draft_generic:'Voici ce que je peux vous indiquer : …',draft_bye:'Je reste disponible pour préciser. — @{x}',reply_from:'Réponse de @{x}',n_reply:'Réponse reçue à votre demande d’entraide.',tr_do:'Traduire',tr_auto:'Traduction automatique',tr_orig:'Voir l’original',cr_add:'Ajouter',act_title:'Que voulez-vous faire ?',th_help:'Demander de l’aide',th_proj:'Lancer un projet',th_chat:'Projet depuis une discussion',th_canals:'Découvrir les canaux',fs_title:'Premiers pas',fs_sub:'On discute sur WhatsApp, on agit ici : projets, entraide et annonces officielles.',fs_1:'Rejoindre un canal',fs_1p:'Demande envoyée : en attente du modérateur',fs_2:'Lire une annonce officielle',fs_3:'Prendre une tâche ou lancer un projet',fs_4:'Indiquer vos compétences',fs_hide:'Masquer',fs_prog:'{a}/{b} faits',see_projects:'Voir les projets ouverts',search_proj:'Rechercher un projet, un besoin…',search_none:'Aucun résultat.',proj_see_all:'Voir tous les projets',cf_ok:'Confirmer',cf_logout:'Vous allez être déconnecté. Vérifiez que vous avez noté votre code de récupération : il est indispensable pour retrouver votre compte.',cf_rotate:'Renouveler le lien d’invitation',cf_rotate_t:'L’ancien lien sera révoqué : les personnes qui ne l’ont pas encore utilisé ne pourront plus rejoindre avec celui-ci.',cr_add_ph:'Saisir un élément…',cr_del:'Retirer',cr_empty_hint:'Rien n’a été repéré automatiquement : complétez vous-même les éléments ci-dessous.',tab_honor:'À l’honneur',bd_title:'Badges',bd_rules:'Les badges d’engagement comptent uniquement des actions validées (tâche terminée, entraide résolue, lecture confirmée), jamais le nombre de messages. Les badges de profil sont attribués après vérification par un modérateur.',bd_profile:'Badges de profil vérifiés',bd_none:'Aucun badge de profil pour le moment.',bd_req:'Demander un badge de profil',bd_eng:'Badges d’engagement',bd_next:'{a}/{b} pour le niveau suivant',bd_max:'niveau maximum',bd_honor:'Apparaître parmi les membres à l’honneur',bd_honor_note:'Les canaux mettent en avant leurs membres les plus actifs. Vous pouvez choisir de ne pas y figurer.',bd_type:'Type de badge',bd_note:'Justification (profession, organisation…)',bd_note_help:'Un modérateur vérifie votre demande avant d’attribuer le badge. Aucun justificatif n’est conservé dans cette démo.',bd_sent:'Demande envoyée aux modérateurs',bd_pending:'En attente : {x}',bd_reqs:'Demandes de badge',bd_none_req:'Aucune demande de badge.',bd_grant:'Attribuer',bd_granted:'Badge attribué à @{x}',bd_denied:'Demande refusée',b_mod:'Modérateur',b_ref:'Référent',b_speaker:'Porte-parole',b_relay:'Relais au pays',b_expert:'Expert vérifié · {x}',hn_title:'Membres à l’honneur',hn_sub:'Les plus actifs de ce canal ces dernières semaines.',hn_line:'{t} tâches · {h} entraides · {p} projets',hn_note:'Basé sur des actions validées. Merci à celles et ceux qui font avancer la communauté.',hn_none:'Pas encore de membre à l’honneur.',n_badge:'Nouveau badge : {x}'
@@ -97,7 +98,8 @@ domain:'المجال',country:'بلد الإقامة',urgency:'الاستعجا�
 dm_adm:'إداري',dm_jur:'قانوني',dm_ins:'الاستقرار',dm_ret:'العودة والاستثمار',dm_san:'صحي',by:'تتولاه @{x}',
 alerts_title:'الإعدادات',push:'إشعارات فورية',push_note:'على آيفون، أضف التطبيق إلى الشاشة الرئيسية لتلقي الإشعارات.',digest:'ملخص يومي',digest_note:'يجمع تحديثات مشاريعك في رسالة واحدة.',mark_all:'تعليم الكل كمقروء',no_alerts:'لا توجد إشعارات.',
 my_account:'حسابي',recov:'رمز الاستعادة',show:'إظهار',hide:'إخفاء',recov_note:'سيكون ربط بريد إلكتروني أو رقم هاتف ممكناً لاحقاً.',lang:'اللغة',theme:'المظهر',th_light:'أبيض',th_dark:'أسود',logout:'تسجيل الخروج',my_canals:'قنواتي',roles:'الأدوار',
-r_member:'عضو',r_mod:'مشرف {x}',r_ref:'مرجعي: {x}',r_speaker:'ناطق رسمي',
+r_member:'عضو',r_mod:'مشرف {x}',r_ref:'مرجعي: {x}',r_speaker:'ناطق رسمي',r_spk:'ناطق باسم {x}',
+name_section:'الاسم الكامل',firstname_label:'الاسم الأول',lastname_label:'اسم العائلة',name_public_note:'اختياري وظاهر للجميع. إن تم إدخاله، يظهر المعرّف (@) باهتاً أسفله بدلاً من المعرّف وحده.',
 share_title:'المشاركة في واتساب',share_prev:'الرسالة المراد نشرها في المجموعة',share_open:'فتح واتساب',share_copy:'نسخ الرسالة',
 share_note:'سيعرض الرابط معاينة ويقود مباشرة إلى البطاقة. يمكن لأعضاء القناة التفاعل، ويمكن لغيرهم طلب الدخول.',
 wa_title:'محاكاة مجموعة واتساب',wa_note:'تبقى النقاشات الحرة هنا. والروابط تفتح الأداة.',wa_open:'فتح الرابط',
@@ -106,7 +108,7 @@ t_took:'تم إسناد المهمة إليك. الفريق على علم.',t_do
 t_claimed:'تم تولي الطلب. أُشعر @{p}.',t_solved:'تم وسم الطلب كمحلول',t_new_link:'أُنشئ رابط جديد. الرابط القديم لم يعد يعمل.',
 t_push_on:'تم تفعيل الإشعارات. في النسخة الفعلية سيطلب المتصفح إذنك.',t_no_notif:'لا إشعار: أنت تتابع هذا المشروع على «لا شيء».',
 t_ann_pub:'تم نشر الإعلان',t_proj_pub:'تم نشر المشروع في القناة',
-f_canal:'القناة',f_title:'العنوان',f_needs:'الاحتياجات (مفصولة بفواصل)',f_due:'الموعد النهائي',f_body:'النص',f_target:'النشر',f_all:'كل القنوات',f_until:'صالح حتى',req:'حقل مطلوب',
+f_canal:'القناة',f_title:'العنوان',f_needs:'الاحتياجات (مفصولة بفواصل)',f_due:'الموعد النهائي',f_body:'النص',f_target:'النشر',f_all:'كل القنوات (الإدارة)',f_country_opt:'كل جالية بلد',f_country_ph:'البلد',f_until:'صالح حتى',req:'حقل مطلوب',
 n_task:'مهمة أُسندت إليك: {x}',n_mil:'بلوغ مرحلة: {x}',n_cmt:'تعليق جديد على {x}',n_acc:'تم قبول طلبك: أنت عضو في {x}',n_ann:'إعلان رسمي جديد: {x}',n_claim:'تتولى @{x} طلب المساعدة الخاص بك',
 n_welcome:'مرحباً بك. طلباتك قيد المراجعة.',
 now:'الآن',min:'منذ {n} د',hour:'منذ {n} س',day:'منذ {n} ي',ai_tag:'أُنشئ بالذكاء الاصطناعي · يُرجى التحقق',ai_sim:'في هذه النسخة التجريبية يُحاكى التحليل بقواعد بسيطة.',from_chat:'من نقاش',chat_btn:'انطلاقاً من نقاش',chat_intro:'الصق نقاشاً من واتساب: يقترح الذكاء الاصطناعي بطاقة مشروع بالقرارات والأسئلة المفتوحة والإجراءات. تراجعها وتصححها قبل النشر.',chat_consent:'لا تلصق إلا نقاشاً يوافق مشاركوه على مشاركته. لا يُحفظ أي شيء.',chat_ph:'رسالة في كل سطر: «الاسم: الرسالة»',chat_sample:'استخدام مثال',chat_go:'تحليل النقاش',chat_loading:'جارٍ التحليل…',chat_empty:'الصق نقاشاً أولاً.',chat_back:'تعديل النص',cr_actions:'الإجراءات المرصودة (ألغِ التحديد للاستبعاد)',cr_decisions:'القرارات المرصودة',cr_questions:'أسئلة بقيت مفتوحة',cr_none:'لا شيء',cr_create:'إنشاء المشروع',cr_by:'اقترحها @{x}',ch_decisions:'قرارات النقاش: ',ch_questions:'أسئلة مفتوحة: ',dictate:'إملاء',voice_sim:'إدخال صوتي مُحاكى في النسخة التجريبية',voice_listen:'أنا أستمع إليك…',voice_demo_c:'يمكنني التكفل بذلك هذا الأسبوع.',voice_demo_h:'مرحباً، يجب أن أجدد جواز سفري بسرعة ولا أعرف من أين أبدأ.',voice_demo_x:'Sidi : on pourrait organiser une collecte de livres pour une bibliothèque ?',dg_title:'ملخصك الشخصي',dg_sub:'مكتوب بلغتك انطلاقاً من نشاطك.',dg_freq:'التكرار',dg_daily:'كل يوم',dg_weekly:'كل أسبوع',dg_task:'مهمة عليك: {x} ({p})',dg_ann:'إعلان رسمي للقراءة: {x}',dg_proj:'{x}: {a}/{b} مهام منجزة',dg_help:'{x} طلب(ات) مساعدة تنتظر مرجعياً',dg_reqs:'{x} طلب(ات) انضمام للمعالجة',dg_myhelp:'يتابع @{x} طلب المساعدة الخاص بك',dg_none:'لا جديد.',dg_wa:'معاينة في واتساب',dg_note:'تُنقل الإعلانات الرسمية كما هي دون إعادة صياغة.',dg_wa_note:'رسالة تُرسل عبر واتساب مع رابط إلى التطبيق (مخطط لها عبر واجهة WhatsApp Business).',sk_title:'الكفاءات',sk_opt:'الربط حسب الكفاءات',sk_opt_note:'عند التفعيل قد يُقترح اسمك المستعار وكفاءاتك على حاملي المشاريع. تقرر دائماً هل تستجيب.',sk_in:'كفاءاتي (مفصولة بفواصل)',sk_save:'حفظ',sk_saved:'تم حفظ الكفاءات',match_title:'أعضاء قد يساعدون',match_note:'لا يظهر إلا الأعضاء الذين فعّلوا الربط. أنت تدعوهم وهم يقررون.',match_why:'كفاءة «{s}» ↔ حاجة «{n}»',match_prop:'اقتراح المساهمة',match_sent:'أُرسل الاقتراح إلى @{x}',match_done:'تم الاقتراح',match_none:'لا اقتراحات حالياً.',match_home:'مشاريع تبحث عن كفاءاتك',match_home_why:'الحاجة: {n}',ai_help_t:'اقتراحات المساعد',ai_help_dom:'المجال المقترح: {x}',ai_help_urg:'يبدو الأمر عاجلاً: تحديده كعاجل',ai_help_faq:'قد تجيب بطاقة عملية:',ai_help_view:'عرض البطاقة',ai_help_ok:'هذا يجيب عن سؤالي',ai_help_ok_t:'سعيد بأنني ساعدت. لم يُرسل طلبك.',ai_help_note:'لا يغني عن رأي المرجعي.',faq_title:'بطاقات عملية',faq_sub:'يحررها المرجعيون ويصادقون عليها.',faq_by:'صادق عليها @{x}',faq_note:'معلومة إرشادية: تحقق دائماً لدى الجهة الرسمية.',draft_btn:'مسودة رد',draft_title:'مسودة رد',draft_note:'اقتراح من الذكاء الاصطناعي انطلاقاً من البطاقات الموجودة. راجعه وعدّله: لا يُرسل شيء دونك.',draft_faq:'إضافة هذا الرد إلى البطاقات العملية',draft_send:'إرسال الرد',draft_sent:'أُرسل الرد إلى @{x}',draft_hi:'مرحباً @{x}، شكراً على رسالتك.',draft_generic:'إليك ما يمكنني إفادتك به: …',draft_bye:'أبقى رهن إشارتك للتوضيح. — @{x}',reply_from:'رد @{x}',n_reply:'وصل رد على طلب المساعدة الخاص بك.',tr_do:'ترجمة',tr_auto:'ترجمة آلية',tr_orig:'عرض الأصل',cr_add:'إضافة',act_title:'ماذا تريد أن تفعل؟',th_help:'طلب مساعدة',th_proj:'إطلاق مشروع',th_chat:'مشروع من نقاش',th_canals:'اكتشاف القنوات',fs_title:'الخطوات الأولى',fs_sub:'نتناقش في واتساب ونعمل هنا: المشاريع والتضامن والإعلانات الرسمية.',fs_1:'الانضمام إلى قناة',fs_1p:'أُرسل طلبك: بانتظار المشرف',fs_2:'قراءة إعلان رسمي',fs_3:'تولّي مهمة أو إطلاق مشروع',fs_4:'تحديد كفاءاتك',fs_hide:'إخفاء',fs_prog:'{a}/{b} منجز',see_projects:'عرض المشاريع المفتوحة',search_proj:'ابحث عن مشروع أو حاجة…',search_none:'لا نتائج.',proj_see_all:'عرض كل المشاريع',cf_ok:'تأكيد',cf_logout:'سيتم تسجيل خروجك. تأكد من تدوين رمز الاسترجاع: لا غنى عنه لاستعادة حسابك.',cf_rotate:'تجديد رابط الدعوة',cf_rotate_t:'سيُلغى الرابط القديم: لن يتمكن من لم يستعمله بعد من الانضمام به.',cr_add_ph:'اكتب عنصراً…',cr_del:'إزالة',cr_empty_hint:'لم يُرصد شيء تلقائياً: أكمل العناصر أدناه بنفسك.',tab_honor:'المكرَّمون',bd_title:'الشارات',bd_rules:'تحتسب شارات الالتزام الأفعال المعتمدة فقط (مهمة منجزة، مساعدة محلولة، قراءة مؤكدة) ولا تحتسب عدد الرسائل أبداً. تُمنح شارات الملف بعد تحقق أحد المشرفين.',bd_profile:'شارات الملف الموثَّقة',bd_none:'لا شارة ملف حالياً.',bd_req:'طلب شارة ملف',bd_eng:'شارات الالتزام',bd_next:'{a}/{b} للمستوى التالي',bd_max:'المستوى الأقصى',bd_honor:'الظهور ضمن الأعضاء المكرَّمين',bd_honor_note:'تُبرز القنوات أنشط أعضائها. يمكنك اختيار عدم الظهور.',bd_type:'نوع الشارة',bd_note:'التبرير (المهنة، الجهة…)',bd_note_help:'يتحقق أحد المشرفين من طلبك قبل منح الشارة. لا تُحفظ أي وثيقة في هذه النسخة التجريبية.',bd_sent:'أُرسل الطلب إلى المشرفين',bd_pending:'قيد الانتظار: {x}',bd_reqs:'طلبات الشارات',bd_none_req:'لا طلبات شارات.',bd_grant:'منح',bd_granted:'مُنحت الشارة لـ @{x}',bd_denied:'رُفض الطلب',b_mod:'مشرف',b_ref:'مرجعي',b_speaker:'ناطق رسمي',b_relay:'مندوب في الوطن',b_expert:'خبير موثَّق · {x}',hn_title:'الأعضاء المكرَّمون',hn_sub:'الأنشط في هذه القناة خلال الأسابيع الأخيرة.',hn_line:'{t} مهام · {h} مساعدات · {p} مشاريع',hn_note:'بناءً على أفعال معتمدة. شكراً لكل من يدفع المجتمع إلى الأمام.',hn_none:'لا أعضاء مكرَّمون بعد.',n_badge:'شارة جديدة: {x}'
@@ -324,7 +326,7 @@ function projListHtml(){
 function projCard(p){
   var pr=progress(p),k=canalOf(p.canal);
   return '<button class="card pcard" data-act="open-project" data-id="'+esc(p.id)+'"><div class="row between wrap">'+chip(C(k.n))+projStatus(p)+'</div><h3>'+C(p.t)+'</h3>'+
-   '<div class="bar" aria-hidden="true"><i style="--w:'+pr.pct+'%"></i></div><div class="row between muted small"><span>'+T('tasks_count',{a:pr.d,b:pr.n})+'</span><span>@'+esc(p.owner)+'</span></div></button>';
+   '<div class="bar" aria-hidden="true"><i style="--w:'+pr.pct+'%"></i></div><div class="row between muted small"><span>'+T('tasks_count',{a:pr.d,b:pr.n})+'</span><span>'+idInline(p.owner)+'</span></div></button>';
 }
 function todoItems(){
   var out=[];
@@ -336,7 +338,7 @@ function todoItems(){
 }
 function vHome(){
   var todo=todoItems(),anns=visibleAnns(),rec=S.projects.filter(function(p){return p.status==='recruit'&&isMember(p.canal);});
-  var h='<section><p class="eyebrow">'+T('hello')+'</p><h1 class="page">@'+esc(S.me.pseudo)+'</h1></section>';
+  var h='<section><p class="eyebrow">'+T('hello')+'</p><h1 class="page">'+idInline(S.me.pseudo)+'</h1></section>';
   h+=startCard()+tilesHtml();
   h+='<section><h2 class="h2">'+T('todo')+(todo.length?'<span class="count">'+todo.length+'</span>':'')+'</h2>';
   h+=todo.length?'<div class="card list">'+todo.map(function(i){return '<button class="li" data-act="'+i.act+'" '+dataAttrs(i.data)+'><span class="ico">'+ic(i.ico,18)+'</span><span class="grow"><span class="t">'+i.title+'</span><br><span class="muted small">'+i.sub+'</span></span><span class="flip muted">'+ic('chev',18)+'</span></button>';}).join('')+'</div>':'<div class="empty">'+T('nothing')+'<br><button class="btn sm" style="margin-top:8px" data-act="tab" data-tab="projects">'+T('see_projects')+'</button></div>';
@@ -356,7 +358,7 @@ function vCanal(p){
   var k=canalOf(p.id),st=mem(p.id);
   var tabs=[['ann','tab_ann']];if(st==='member'){tabs.push(['proj','tab_proj'],['help','tab_help'],['honor','tab_honor']);}if(isMod(p.id))tabs.push(['mod','tab_mod']);
   var cur=p.tab||S.canalTab[p.id]||'ann';if(!tabs.some(function(x){return x[0]===cur;}))cur='ann';S.canalTab[p.id]=cur;
-  var h='<section class="card stack s8"><div class="row"><span class="ico-lg">'+ic(k.ico,22)+'</span><div class="grow"><h2 class="h3">'+C(k.n)+'</h2><p class="muted small">'+k.count+' '+T('canal_members')+(k.mod?' · '+T('canal_mod')+' @'+esc(k.mod):'')+'</p></div>'+statusChip(p.id)+'</div><p>'+C(k.d)+'</p>';
+  var h='<section class="card stack s8"><div class="row"><span class="ico-lg">'+ic(k.ico,22)+'</span><div class="grow"><h2 class="h3">'+C(k.n)+'</h2><p class="muted small">'+k.count+' '+T('canal_members')+(k.mod?' · '+T('canal_mod')+' '+idInline(k.mod):'')+'</p></div>'+statusChip(p.id)+'</div><p>'+C(k.d)+'</p>';
   h+='<button class="btn block" data-act="wa-group" data-id="'+k.id+'">'+ic('chat',18)+T('canal_wa')+'</button><p class="muted small">'+T('canal_wa_note')+'</p></section>';
   if(!st)h+='<button class="btn primary block" data-act="join" data-id="'+k.id+'">'+T('canal_join')+'</button>';
   if(st==='pending')h+='<div class="banner">'+ic('clock',18)+'<span>'+T('canal_pending_banner',{m:k.mod})+'</span></div>';
@@ -384,7 +386,7 @@ function vProjects(){
 function vProject(p){
   var pj=projOf(p.id);if(!pj)return '';
   var k=canalOf(pj.canal),member=hasAccount()&&isMember(pj.canal),pr=progress(pj);
-  var h='<section class="stack s8"><div class="row wrap">'+chip(C(k.n))+projStatus(pj)+'</div><h1 class="page">'+C(pj.t)+'</h1><div class="bar" aria-hidden="true"><i style="--w:'+pr.pct+'%"></i></div><p class="muted small">'+T('tasks_count',{a:pr.d,b:pr.n})+' · '+T('owner')+' @'+esc(pj.owner)+'</p>'+trBlock('p:'+pj.id,pj.obj)+'</section>';
+  var h='<section class="stack s8"><div class="row wrap">'+chip(C(k.n))+projStatus(pj)+'</div><h1 class="page">'+C(pj.t)+'</h1><div class="bar" aria-hidden="true"><i style="--w:'+pr.pct+'%"></i></div><p class="muted small">'+T('tasks_count',{a:pr.d,b:pr.n})+' · '+T('owner')+' '+idInline(pj.owner)+'</p>'+trBlock('p:'+pj.id,pj.obj)+'</section>';
   if(!member){
     h+='<div class="banner info">'+ic('lock',18)+'<span>'+(hasAccount()?T('proj_locked',{x:c(k.n)}):T('proj_locked_visitor'))+'</span></div>';
     h+=hasAccount()?(mem(pj.canal)==='pending'?'':'<button class="btn primary block" data-act="join" data-id="'+k.id+'">'+T('canal_join')+'</button>'):'<button class="btn primary block" data-act="wa-invite">'+T('canal_join')+'</button>';
@@ -403,11 +405,11 @@ function vProject(p){
     if(k2.status==='done')act=chip(ic('check',14)+T('tk_done'),'green');
     else if(!k2.who)act='<button class="btn sm" data-act="take" data-id="'+pj.id+'" data-task="'+k2.id+'">'+T('take')+'</button>';
     else if(k2.who===S.me.pseudo)act='<button class="btn sm primary" data-act="finish" data-id="'+pj.id+'" data-task="'+k2.id+'">'+T('mark_done')+'</button>';
-    return '<div class="tk"><span class="dot '+k2.status+'"></span><span class="grow"><span class="t">'+esc(k2.t)+'</span><br><span class="muted small">'+(k2.who?'@'+esc(k2.who):T('unassigned'))+'</span></span>'+act+'</div>';}).join('')+'</section>';
-  h+='<section class="card"><h2 class="h2">'+T('comments')+'</h2>'+(pj.cmts.length?pj.cmts.map(function(m){return '<div class="cmt">'+av(m.by)+'<div class="grow"><p class="who">@'+esc(m.by)+pBadges(m.by)+' <span class="muted small" style="font-weight:400">'+esc(rel(m.at))+'</span></p><p>'+esc(m.t)+'</p></div></div>';}).join(''):'')+
+    return '<div class="tk"><span class="dot '+k2.status+'"></span><span class="grow"><span class="t">'+esc(k2.t)+'</span><br><span class="muted small">'+(k2.who?idInline(k2.who):T('unassigned'))+'</span></span>'+act+'</div>';}).join('')+'</section>';
+  h+='<section class="card"><h2 class="h2">'+T('comments')+'</h2>'+(pj.cmts.length?pj.cmts.map(function(m){return '<div class="cmt">'+av(m.by)+'<div class="grow"><p class="who">'+idInline(m.by)+pBadges(m.by)+' <span class="muted small" style="font-weight:400">'+esc(rel(m.at))+'</span></p><p>'+esc(m.t)+'</p></div></div>';}).join(''):'')+
     '<form data-form="comment" data-id="'+pj.id+'" class="stack s8" style="margin-top:8px"><label class="lbl" for="cmt-text" hidden>'+T('comments')+'</label><textarea id="cmt-text" maxlength="280" rows="2" placeholder="'+T('cmt_ph')+'"></textarea><div class="row between"><span id="cmt-n" class="muted small">0/280</span><span class="row"><button class="btn sm primary" type="submit">'+T('publish')+'</button></span></div></form></section>';
   h+=manageSection(pj);
-  h+='<section><h2 class="h2">'+T('team')+'</h2><div class="chips">'+pj.team.map(function(m){return '<span class="chip">'+av(m,20)+'@'+esc(m)+'</span>'+pBadges(m);}).join('')+'</div></section>';
+  h+='<section><h2 class="h2">'+T('team')+'</h2><div class="chips">'+pj.team.map(function(m){return '<span class="chip">'+av(m,20)+idInline(m)+'</span>'+pBadges(m);}).join('')+'</div></section>';
   return h;
 }
 
@@ -453,6 +455,9 @@ function countryInput(id,val,attrs){
   var nm=S.lang==='ar'?2:1;
   return '<input type="text" id="'+id+'" list="dl-'+id+'" '+(attrs||'')+' value="'+esc(val||'')+'"><datalist id="dl-'+id+'">'+COUNTRIES.map(function(c){return '<option value="'+esc(c[nm])+'"></option>';}).join('')+'</datalist>';
 }
+/* Identité affichée : nom complet si renseigné (optionnel, public), pseudo toujours présent mais grisé dans ce cas. */
+function nameOf(p){return (S.names&&S.names[p])||'';}
+function idInline(p){var n=nameOf(p);return n?esc(n)+' <span class="muted small">@'+esc(p)+'</span>':'@'+esc(p);}
 function decorateFlags(el){
   if(!el||!S.flags)return;
   var w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT,{acceptNode:function(n){var pn=n.parentNode&&n.parentNode.nodeName;return (pn==='SCRIPT'||pn==='STYLE'||pn==='TEXTAREA'||pn==='OPTION'||pn==='TITLE')?NodeFilter.FILTER_REJECT:(n.nodeValue.indexOf('@')>-1?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT);}}),nodes=[],n;
@@ -553,6 +558,7 @@ recov:'Changer de téléphone',recov_note:'Sans mot de passe, votre compte reste
 del_account:'Supprimer mon compte',del_t:'Votre profil sera supprimé définitivement. Cette action ne peut pas être annulée.',t_deleted:'Compte supprimé.',
 adm_title:'Administration',adm_role:'Nommer un modérateur ou un relais',adm_pseudo:'Pseudo du membre',adm_canal:'Canal',adm_mod:'Modérateur du canal',adm_relay:'Relais local',adm_save:'Enregistrer',
 adm_ref:'Référent entraide',adm_ref_on:'Référent entraide (voit et traite les demandes)',t_saved:'Enregistré.',
+adm_spk:'Porte-parole d’un pays',adm_spk_country:'Pays',adm_spk_on:'Porte-parole de ce pays (peut diffuser une annonce à toute sa diaspora)',
 rc_title:'Lien de reconnexion',rc_help:'Pour un membre qui a changé d’appareil. Valable 7 jours, à usage unique.',rc_make:'Générer le lien',rc_ready:'Lien prêt',
 wa_set:'Groupe WhatsApp du canal',wa_set_ph:'https://chat.whatsapp.com/…',wa_none:'Le groupe WhatsApp de ce canal n’a pas encore été ajouté.',wa_bad:'Lien WhatsApp invalide.',
 inv_gen:'Générer le lien d’invitation',inv_none:'Aucun lien actif.',
@@ -580,6 +586,7 @@ recov:'تغيير الهاتف',recov_note:'بدون كلمة مرور يبقى 
 del_account:'حذف حسابي',del_t:'سيُحذف ملفك نهائياً. لا يمكن التراجع عن هذا الإجراء.',t_deleted:'تم حذف الحساب.',
 adm_title:'الإدارة',adm_role:'تعيين مشرف أو مرجع محلي',adm_pseudo:'اسم العضو',adm_canal:'القناة',adm_mod:'مشرف القناة',adm_relay:'مرجع محلي',adm_save:'حفظ',
 adm_ref:'مرجع التضامن',adm_ref_on:'مرجع التضامن (يرى الطلبات ويعالجها)',t_saved:'تم الحفظ.',
+adm_spk:'ناطق باسم بلد',adm_spk_country:'البلد',adm_spk_on:'ناطق باسم هذا البلد (يمكنه نشر إعلان لكل جاليته)',
 rc_title:'رابط إعادة الاتصال',rc_help:'لعضو غيّر جهازه. صالح 7 أيام ويُستعمل مرة واحدة.',rc_make:'إنشاء الرابط',rc_ready:'الرابط جاهز',
 wa_set:'مجموعة واتساب للقناة',wa_set_ph:'https://chat.whatsapp.com/…',wa_none:'لم تُضف مجموعة واتساب لهذه القناة بعد.',wa_bad:'رابط واتساب غير صالح.',
 inv_gen:'إنشاء رابط الدعوة',inv_none:'لا يوجد رابط نشط.',
@@ -673,21 +680,23 @@ function doRefresh(){
         q(cl.from('badge_requests').select('*').eq('status','pending')),q(cl.from('badge_grants').select('*')),
         q(cl.from('engagement').select('*')),q(cl.from('skills_directory').select('*')),
         q(cl.from('follows').select('*').eq('user_id',id)),q(cl.from('proposals').select('*').eq('from_user',id)),
-        q(cl.from('invites').select('*').eq('active',true).eq('kind','join').order('created_at'))
+        q(cl.from('invites').select('*').eq('active',true).eq('kind','join').order('created_at')),
+        q(cl.from('spokesperson_list').select('*'))
       ]).then(function(d){applyData(meRow,d);return true;});
     });
   });
 }
 function applyData(me,d){
-  var canals=d[0],stats=d[1],mods=d[2],pubs=d[3],cms=d[4],projs=d[5],mss=d[6],tks=d[7],team=d[8],cmts=d[9],helps=d[10],anns=d[11],myReads=d[12],rcount=d[13],notifs=d[14],breqs=d[15],grants=d[16],eng=d[17],dir=d[18],fol=d[19],props=d[20],invs=d[21];
-  var pp={};S.pubId={};S.honorOk={};pubs.forEach(function(p){pp[p.id]=p.pseudo;S.pubId[p.pseudo]=p.id;S.honorOk[p.pseudo]=p.show_honor!==false;});S.pub=pp;S.flags={};pubs.forEach(function(p){var f=flagFor(p.country);if(f)S.flags[p.pseudo]=f;});
+  var canals=d[0],stats=d[1],mods=d[2],pubs=d[3],cms=d[4],projs=d[5],mss=d[6],tks=d[7],team=d[8],cmts=d[9],helps=d[10],anns=d[11],myReads=d[12],rcount=d[13],notifs=d[14],breqs=d[15],grants=d[16],eng=d[17],dir=d[18],fol=d[19],props=d[20],invs=d[21],spks=d[22]||[];
+  var pp={};S.pubId={};S.honorOk={};S.names={};pubs.forEach(function(p){pp[p.id]=p.pseudo;S.pubId[p.pseudo]=p.id;S.honorOk[p.pseudo]=p.show_honor!==false;var nm=((p.first_name||'')+' '+(p.last_name||'')).trim();if(nm)S.names[p.pseudo]=nm;});S.pub=pp;S.flags={};pubs.forEach(function(p){var f=flagFor(p.country);if(f)S.flags[p.pseudo]=f;});
+  S.spkCountries=[];spks.forEach(function(s){if(s.pseudo===me.pseudo)S.spkCountries.push(s.country);});
   /* canaux */
   canals.forEach(function(row){var k=CANALS.filter(function(x){return x.id===row.id;})[0];
     if(!k){k={id:row.id,ico:row.ico,n:{fr:row.name_fr,ar:row.name_ar},d:{fr:row.desc_fr,ar:row.desc_ar}};CANALS.push(k);}
     var st=stats.filter(function(x){return x.canal_id===row.id;})[0],md=mods.filter(function(x){return x.canal_id===row.id&&x.is_moderator;})[0];
     k.count=st?+st.members:0;k.mod=md?md.pseudo:'';k.wa=row.wa_link||'';});
   /* moi */
-  S.me={id:me.id,pseudo:me.pseudo,country:me.country||'',skills:me.skills||[],matching:!!me.matching,showHonor:me.show_honor!==false,admin:!!me.is_admin,mod:[],ref:(me.is_ref||me.is_admin)?DOMAINS.slice():[]};
+  S.me={id:me.id,pseudo:me.pseudo,firstName:me.first_name||'',lastName:me.last_name||'',country:me.country||'',skills:me.skills||[],matching:!!me.matching,showHonor:me.show_honor!==false,admin:!!me.is_admin,mod:[],ref:(me.is_ref||me.is_admin)?DOMAINS.slice():[],spk:S.spkCountries||[]};
   S.mem={};S.reqs={};S.cmem={};
   cms.forEach(function(m){
     if(m.user_id===me.id){if(m.status==='member'||m.status==='pending')S.mem[m.canal_id]=m.status;if(m.status==='member'&&m.is_moderator)S.me.mod.push(m.canal_id);}
@@ -719,7 +728,7 @@ function applyData(me,d){
   /* annonces */
   var cnt={};rcount.forEach(function(x){cnt[x.ann_id]=+x.n;});
   S.read={};myReads.forEach(function(x){S.read[x.ann_id]=true;});
-  S.anns=anns.map(function(a){return {id:a.id,canal:a.canal_id||'all',t:{fr:a.title,ar:a.title_ar||a.title},body:{fr:a.body,ar:a.body_ar||a.body,orig:a.orig_lang||'fr'},date:(a.created_at||'').slice(0,10),until:a.valid_until||'',reads:cnt[a.id]||0};});
+  S.anns=anns.map(function(a){return {id:a.id,canal:a.canal_id||(a.country?'country:'+a.country:'all'),country:a.country||'',t:{fr:a.title,ar:a.title_ar||a.title},body:{fr:a.body,ar:a.body_ar||a.body,orig:a.orig_lang||'fr'},date:(a.created_at||'').slice(0,10),until:a.valid_until||'',reads:cnt[a.id]||0};});
   /* notifications */
   S.notifs=notifs.map(function(n){
     function tx(l,key,x){return I18N[l][key].split('{x}').join(x==null?'':x);}
@@ -767,7 +776,7 @@ function matchSection(pj,inTeam){
   var sg=matchNeed(pj);
   return '<section class="card stack s8" id="match"><h2 class="h3">'+T('match_title')+'</h2><p class="muted small">'+T('match_note')+'</p>'+
   (sg.length?sg.map(function(g){var done=S.proposed[pj.id+'|'+g.m.p];
-    return '<div class="li" style="align-items:flex-start">'+av(g.m.p)+'<span class="grow"><span class="t">@'+esc(g.m.p)+'</span>'+pBadges(g.m.p)+' <span class="muted small">· '+esc(g.m.c||'')+'</span><br><span class="muted small">'+T('match_why',{s:g.skill,n:g.need})+'</span></span>'+
+    return '<div class="li" style="align-items:flex-start">'+av(g.m.p)+'<span class="grow"><span class="t">'+idInline(g.m.p)+'</span>'+pBadges(g.m.p)+' <span class="muted small">· '+esc(g.m.c||'')+'</span><br><span class="muted small">'+T('match_why',{s:g.skill,n:g.need})+'</span></span>'+
     (done?chip(ic('check',14)+T('match_done'),'green'):'<button class="btn sm" data-act="propose" data-id="'+esc(pj.id)+'" data-p="'+esc(g.m.p)+'">'+T('match_prop')+'</button>')+'</div>';}).join(''):'<p class="empty">'+T('match_none')+'</p>')+'</section>';
 }
 function statsOf(p){var b=S.eng[p]||{};return {reads:b.reads||0,tasks:b.tasks||0,proj:b.proj||0,help:b.help||0,links:b.links||0};}
@@ -777,16 +786,17 @@ function honorHtml(id){
   var list=(S.cmem[id]||[]).filter(function(p){return p&&(p===S.me.pseudo?S.me.showHonor:S.honorOk[p]!==false);}).map(function(p){return {p:p,st:statsOf(p)};});
   list=list.filter(function(x){return pts(x.st)>0;}).sort(function(a,b){return pts(b.st)-pts(a.st);}).slice(0,3);
   return '<section><h2 class="h2">'+T('hn_title')+'</h2><p class="muted small" style="margin-bottom:8px">'+T('hn_sub')+'</p>'+
-  (list.length?'<div class="card list">'+list.map(function(x){return '<div class="li" style="align-items:flex-start">'+av(x.p)+'<span class="grow"><span class="t">@'+esc(x.p)+'</span>'+pBadges(x.p)+'<br><span class="muted small">'+T('hn_line',{t:x.st.tasks,h:x.st.help,p:x.st.proj})+'</span></span></div>';}).join('')+'</div>':'<p class="empty">'+T('hn_none')+'</p>')+'<p class="muted small" style="margin-top:8px">'+T('hn_note')+'</p></section>';
+  (list.length?'<div class="card list">'+list.map(function(x){return '<div class="li" style="align-items:flex-start">'+av(x.p)+'<span class="grow"><span class="t">'+idInline(x.p)+'</span>'+pBadges(x.p)+'<br><span class="muted small">'+T('hn_line',{t:x.st.tasks,h:x.st.help,p:x.st.proj})+'</span></span></div>';}).join('')+'</div>':'<p class="empty">'+T('hn_none')+'</p>')+'<p class="muted small" style="margin-top:8px">'+T('hn_note')+'</p></section>';
 }
 function visibleAnns(){
   var today=new Date().toISOString().slice(0,10);
-  return S.anns.filter(function(a){return (a.canal==='all'||isMember(a.canal))&&(!a.until||a.until>=today);});
+  // RLS filtre déjà côté serveur (canal, pays ou générale) : on ne revérifie ici que l'appartenance aux canaux.
+  return S.anns.filter(function(a){return (a.canal==='all'||a.canal.indexOf('country:')===0||isMember(a.canal))&&(!a.until||a.until>=today);});
 }
 function tilesHtml(){
   if(!Object.keys(S.mem).some(isMember))return '';
   var ts=[['life','new-help','th_help'],['folder','new-project','th_proj'],['hash','tab','th_canals']];
-  if(S.me.admin||S.me.mod.length)ts.push(['mega','publish-ann','publish_ann']);
+  if(S.me.admin||S.me.mod.length||(S.me.spk&&S.me.spk.length))ts.push(['mega','publish-ann','publish_ann']);
   return '<section><h2 class="h2">'+T('act_title')+'</h2><div class="tiles">'+ts.map(function(x){return '<button class="tile" data-act="'+x[1]+'"'+(x[1]==='tab'?' data-tab="canals"':'')+'><span class="ico">'+ic(x[0],20)+'</span>'+T(x[2])+'</button>';}).join('')+'</div></section>';
 }
 function startCard(){
@@ -802,7 +812,8 @@ function startCard(){
   '<div class="card list">'+it.map(function(x,i){return '<button class="li'+(x.d?' done':'')+'" data-act="'+x.a+'"'+(x.tab?' data-tab="'+x.tab+'"':'')+'><span class="ico">'+(x.d?ic('check',18):'<b>'+(i+1)+'</b>')+'</span><span class="grow t">'+esc(x.t)+'</span><span class="flip muted">'+ic('chev',18)+'</span></button>';}).join('')+'</div></section>';
 }
 function annCard(a,ro){
-  var h='<article class="card ann"><div class="row between"><span class="row">'+chip(T('official'),'red')+(a.canal!=='all'?chip(C(canalOf(a.canal).n)):'')+'</span><span class="muted small">'+esc(fmt(a.date))+'</span></div>';
+  var isCountry=a.canal.indexOf('country:')===0;
+  var h='<article class="card ann"><div class="row between"><span class="row">'+chip(T('official'),'red')+(isCountry?chip(esc(a.country)):(a.canal!=='all'?chip(C(canalOf(a.canal).n)):''))+'</span><span class="muted small">'+esc(fmt(a.date))+'</span></div>';
   h+='<h3>'+C(a.t)+'</h3>'+trBlock('a:'+a.id,a.body);
   if(a.until)h+='<p class="muted small">'+T('until',{d:fmt(a.until)})+'</p>';
   h+='<div class="row between wrap"><span class="muted small">'+a.reads+' '+T('reads')+'</span>';
@@ -828,7 +839,7 @@ function manageSection(pj){
 function helpCard(hq,mode){
   var stc=hq.status==='open'?chip(T('hs_open'),'red'):hq.status==='doing'?chip(T('hs_doing'),'yellow'):chip(T('hs_solved'),'green');
   var h='<article class="card stack s8"><div class="row between wrap"><span class="row">'+chip(T('dm_'+hq.dom))+(hq.urgent?chip(T('u_urgent'),'urgent'):'')+'</span>'+stc+'</div>';
-  h+='<p style="white-space:pre-line">'+esc(hq.txt)+'</p><p class="muted small">'+(mode==='ref'?'@'+esc(hq.who)+' · ':'')+esc(hq.country)+(hq.by?' · '+T('by',{x:hq.by}):'')+'</p>';
+  h+='<p style="white-space:pre-line">'+esc(hq.txt)+'</p><p class="muted small">'+(mode==='ref'?idInline(hq.who)+' · ':'')+esc(hq.country)+(hq.by?' · '+T('by',{x:hq.by}):'')+'</p>';
   if(hq.reply)h+=replyHtml(hq);
   if(mode==='ref'&&hq.status==='open')h+='<button class="btn sm primary" data-act="claim" data-id="'+hq.id+'">'+T('claim')+'</button>';
   if(hq.status==='doing'&&hq.by===S.me.pseudo)h+='<button class="btn sm primary" data-act="reply" data-id="'+hq.id+'">'+T('reply_btn')+'</button>';
@@ -853,15 +864,23 @@ function adminSection(){
   '<form data-form="setrole" class="stack s8"><div class="lbl">'+T('adm_role')+'</div><div class="pfx" dir="ltr">@<input type="text" id="ad-p" maxlength="24" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="'+esc(t('adm_pseudo'))+'"></div>'+
   '<div class="field"><label for="ad-c">'+T('adm_canal')+'</label><select id="ad-c">'+CANALS.map(function(k){return '<option value="'+k.id+'">'+C(k.n)+'</option>';}).join('')+'</select></div>'+
   '<label class="pick" for="ad-m"><span class="grow t">'+T('adm_mod')+'</span><input type="checkbox" id="ad-m" checked></label><label class="pick" for="ad-r"><span class="grow t">'+T('adm_relay')+'</span><input type="checkbox" id="ad-r"></label><button class="btn sm primary" type="submit">'+T('adm_save')+'</button></form>'+
-  '<form data-form="setref" class="stack s8"><div class="lbl">'+T('adm_ref')+'</div><div class="pfx" dir="ltr">@<input type="text" id="ar-p" maxlength="24" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="'+esc(t('adm_pseudo'))+'"></div><label class="pick" for="ar-o"><span class="grow t">'+T('adm_ref_on')+'</span><input type="checkbox" id="ar-o" checked></label><button class="btn sm primary" type="submit">'+T('adm_save')+'</button></form></section>';
+  '<form data-form="setref" class="stack s8"><div class="lbl">'+T('adm_ref')+'</div><div class="pfx" dir="ltr">@<input type="text" id="ar-p" maxlength="24" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="'+esc(t('adm_pseudo'))+'"></div><label class="pick" for="ar-o"><span class="grow t">'+T('adm_ref_on')+'</span><input type="checkbox" id="ar-o" checked></label><button class="btn sm primary" type="submit">'+T('adm_save')+'</button></form>'+
+  '<form data-form="setspk" class="stack s8"><div class="lbl">'+T('adm_spk')+'</div><div class="pfx" dir="ltr">@<input type="text" id="as-p" maxlength="24" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="'+esc(t('adm_pseudo'))+'"></div>'+
+  '<div class="field"><label for="as-c">'+T('adm_spk_country')+'</label>'+countryInput('as-c','','maxlength="60" autocomplete="off"')+'</div>'+
+  '<label class="pick" for="as-o"><span class="grow t">'+T('adm_spk_on')+'</span><input type="checkbox" id="as-o" checked></label><button class="btn sm primary" type="submit">'+T('adm_save')+'</button></form></section>';
 }
 function vMe(){
   var roles=[chip(T('r_member'))];if(S.me.admin)roles.push(chip(T('r_speaker'),'red'));S.me.mod.forEach(function(id){roles.push(chip(T('r_mod',{x:c(canalOf(id).n)}),'green'));});
   if(S.me.ref.length)roles.push(chip(T('adm_ref'),'yellow'));
+  (S.me.spk||[]).forEach(function(ctry){roles.push(chip(T('r_spk',{x:ctry}),'green'));});
   var mine=Object.keys(S.mem).map(function(id){return '<div class="li"><span class="grow t">'+C(canalOf(id).n)+'</span>'+statusChip(id)+'</div>';}).join('');
-  return '<section class="row">'+av(S.me.pseudo,52)+'<div class="grow"><h1 class="page" style="font-size:22px">@'+esc(S.me.pseudo)+'</h1></div></section>'+
+  return '<section class="row">'+av(S.me.pseudo,52)+'<div class="grow"><h1 class="page" style="font-size:22px">'+idInline(S.me.pseudo)+'</h1></div></section>'+
   '<section><h2 class="h2">'+T('roles')+'</h2><div class="chips">'+roles.join('')+'</div></section>'+
   (mine?'<section><h2 class="h2">'+T('my_canals')+'</h2><div class="card list">'+mine+'</div></section>':'')+
+  '<section class="card stack s8"><h2 class="h3">'+T('name_section')+'</h2><p class="muted small">'+T('name_public_note')+'</p><form data-form="myname" class="stack s8" novalidate>'+
+    '<div class="row wrap"><div class="field grow" style="min-width:140px"><label for="my-fn">'+T('firstname_label')+'</label><input type="text" id="my-fn" maxlength="60" autocomplete="given-name" value="'+esc(S.me.firstName)+'"></div>'+
+    '<div class="field grow" style="min-width:140px"><label for="my-ln">'+T('lastname_label')+'</label><input type="text" id="my-ln" maxlength="60" autocomplete="family-name" value="'+esc(S.me.lastName)+'"></div></div>'+
+    '<button class="btn sm" type="submit">'+T('sk_save')+'</button></form></section>'+
   '<section class="card stack s8"><h2 class="h3">'+T('country')+'</h2><form data-form="mycountry" class="row" novalidate><div class="grow">'+countryInput('my-country',S.me.country,'maxlength="60" autocomplete="country-name" aria-label="'+esc(t('country'))+'"')+'</div><button class="btn sm" type="submit">'+T('sk_save')+'</button></form></section>'+
   badgesSection()+skillsSection()+adminSection()+
   (S.anon?'<section class="card stack s8"><h2 class="h3">'+T('secure_t')+'</h2><p class="muted small">'+T('secure_note')+'</p>'+'<form data-form="setpw" class="stack s8" novalidate><input type="password" id="sp-w" autocomplete="new-password" minlength="8" maxlength="72" dir="ltr" placeholder="'+esc(t('pw_new'))+'" aria-label="'+esc(t('pw_new'))+'"><button class="btn sm" type="submit">'+T(S.anon?'secure_go':'change_pw')+'</button></form>'+'</section>':'<section class="card stack s8"><h2 class="h3">'+ic('lock',16)+' '+T('acct_ok_t')+'</h2><p class="muted small">'+T('acct_ok_note',{p:esc(S.me.pseudo)})+'</p>'+'<div class="stack s8"><h3 class="h3">'+T('sc_title')+'</h3><p class="muted small">'+T('sc_note')+' '+T('sc_gen_warn')+'</p><button class="btn sm" data-act="gen-code">'+T('sc_gen')+'</button></div>'+'<form data-form="setpw" class="stack s8" novalidate><input type="password" id="sp-w" autocomplete="new-password" minlength="8" maxlength="72" dir="ltr" placeholder="'+esc(t('pw_new'))+'" aria-label="'+esc(t('pw_new'))+'"><button class="btn sm" type="submit">'+T(S.anon?'secure_go':'change_pw')+'</button></form>'+'<button class="btn sm" data-act="logout">'+T('logout_t')+'</button></section>')+
@@ -920,7 +939,8 @@ function shareMessage(kind,id){
 }
 function openAnnForm(){
   var ids=S.me.admin?CANALS.map(function(k){return k.id;}):S.me.mod;
-  openSheet(t('publish_ann'),'<form data-form="ann" class="stack" novalidate><div class="field"><label for="an-t">'+T('f_title')+'</label><input type="text" id="an-t" maxlength="140" autocomplete="off"></div><div class="field"><label for="an-b">'+T('f_body')+'</label><textarea id="an-b" maxlength="2000"></textarea></div><div class="field"><label for="an-c">'+T('f_target')+'</label><select id="an-c">'+(S.me.admin?'<option value="all">'+T('f_all')+'</option>':'')+ids.map(function(id){return '<option value="'+id+'">'+C(canalOf(id).n)+'</option>';}).join('')+'</select></div><div class="field"><label for="an-u">'+T('f_until')+'</label><input type="date" id="an-u"></div><p class="fb err" id="an-err"></p><button type="submit" class="btn primary block">'+T('publish')+'</button></form>');
+  var spkOpts=(S.me.spk||[]).map(function(ctry){return '<option value="pays:'+esc(ctry)+'">'+T('f_country_opt')+' : '+esc(ctry)+'</option>';}).join('');
+  openSheet(t('publish_ann'),'<form data-form="ann" class="stack" novalidate><div class="field"><label for="an-t">'+T('f_title')+'</label><input type="text" id="an-t" maxlength="140" autocomplete="off"></div><div class="field"><label for="an-b">'+T('f_body')+'</label><textarea id="an-b" maxlength="2000"></textarea></div><div class="field"><label for="an-c">'+T('f_target')+'</label><select id="an-c">'+(S.me.admin?'<option value="all">'+T('f_all')+'</option>':'')+ids.map(function(id){return '<option value="'+id+'">'+C(canalOf(id).n)+'</option>';}).join('')+spkOpts+'</select></div><div class="field"><label for="an-u">'+T('f_until')+'</label><input type="date" id="an-u"></div><p class="fb err" id="an-err"></p><button type="submit" class="btn primary block">'+T('publish')+'</button></form>');
 }
 
 /* ============ Actions ============ */
@@ -1038,6 +1058,7 @@ var FORMS={
    mut(function(){return client().auth.signInWithPassword({email:pseudoMail(p),password:w}).then(function(x){if(x.error)throw x.error;return x;});},'t_logged_in',function(){clearHash();S.auth={code:null,peek:null,err:''};S.stack=[];S.route={name:'home',params:{}};});
  },
  mycountry:function(){var v=($('#my-country').value||'').trim();mut(function(){return q(tbl('profiles').update({country:v}).eq('id',S.me.id));},'t_saved');},
+ myname:function(){var fn=($('#my-fn').value||'').trim().slice(0,60),ln=($('#my-ln').value||'').trim().slice(0,60);mut(function(){return q(tbl('profiles').update({first_name:fn,last_name:ln}).eq('id',S.me.id));},'t_saved');},
  forgot:function(){
    var p=$('#fg-p').value.trim().toLowerCase().replace(/^@/,''),cd=$('#fg-c').value.trim(),w=$('#fg-w').value;
    if(!p||!cd){toast(t('e_code'));return;} if(w.length<8){toast(t('pw_short'));return;}
@@ -1077,9 +1098,10 @@ var FORMS={
  helpreply:function(f){var v=$('#hr-txt').value.trim();if(!v)return;closeSheet(true);mut(function(){return rpc('solve_help',{p_help:f.dataset.id,p_reply:v});},'t_solved');},
  ann:function(){
    var title=need('an-t','an-err'),body=title&&need('an-b','an-err');if(!title||!body)return;
-   var cv=$('#an-c').value,until=$('#an-u').value,aid=null;
+   var cv=$('#an-c').value,until=$('#an-u').value,aid=null,canalId=null,country=null;
+   if(cv.indexOf('pays:')===0)country=cv.slice(5);else if(cv!=='all')canalId=cv;
    closeSheet(true);
-   mut(function(){return q(tbl('announcements').insert({canal_id:cv==='all'?null:cv,author_id:S.me.id,title:title,body:body,orig_lang:S.lang,valid_until:until||null}).select('id').single()).then(function(r){aid=r.id;});},'t_ann_pub',function(){setTimeout(function(){if(aid&&annOf(aid))openShare('ann',aid);},50);});
+   mut(function(){return q(tbl('announcements').insert({canal_id:canalId,country:country,author_id:S.me.id,title:title,body:body,orig_lang:S.lang,valid_until:until||null}).select('id').single()).then(function(r){aid=r.id;});},'t_ann_pub',function(){setTimeout(function(){if(aid&&annOf(aid))openShare('ann',aid);},50);});
  },
  wa:function(f){var v=$('#wa-in').value.trim();mut(function(){return rpc('set_canal_wa',{p_canal:f.dataset.id,p_link:v});},'t_saved');},
  recovery:function(){var p=$('#rc-p').value.trim().toLowerCase().replace(/^@/,'');if(!p)return;
@@ -1087,7 +1109,9 @@ var FORMS={
  setrole:function(){var p=$('#ad-p').value.trim().toLowerCase().replace(/^@/,'');if(!p)return;
    mut(function(){return rpc('set_role',{p_pseudo:p,p_canal:$('#ad-c').value,p_moderator:$('#ad-m').checked,p_relay:$('#ad-r').checked});},'t_saved');},
  setref:function(){var p=$('#ar-p').value.trim().toLowerCase().replace(/^@/,'');if(!p)return;
-   mut(function(){return rpc('set_referent',{p_pseudo:p,p_on:$('#ar-o').checked});},'t_saved');}
+   mut(function(){return rpc('set_referent',{p_pseudo:p,p_on:$('#ar-o').checked});},'t_saved');},
+ setspk:function(){var p=$('#as-p').value.trim().toLowerCase().replace(/^@/,''),ctry=($('#as-c').value||'').trim();if(!p||!ctry)return;
+   mut(function(){return rpc('set_spokesperson',{p_pseudo:p,p_country:ctry,p_on:$('#as-o').checked});},'t_saved');}
 };
 document.addEventListener('submit',function(e){e.preventDefault();var f=e.target,fn=FORMS[f.getAttribute('data-form')];if(fn)fn(f);});
 document.addEventListener('change',function(e){if(e.target.id==='noted'){var b=$('#enter');if(b)b.disabled=!e.target.checked;}});

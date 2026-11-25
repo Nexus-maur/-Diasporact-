@@ -17,6 +17,8 @@ create table profiles (
   id uuid primary key default gen_random_uuid(),
   auth_uid uuid unique,                       -- compte technique anonyme de l'appareil courant
   pseudo text not null unique check (pseudo ~ '^[a-z0-9][a-z0-9._-]{2,23}$'),
+  first_name text not null default '' check (char_length(first_name) <= 60),
+  last_name text not null default '' check (char_length(last_name) <= 60),
   country text not null default '',
   lang text not null default 'fr' check (lang in ('fr','ar')),
   skills text[] not null default '{}',
@@ -120,7 +122,8 @@ create table helps (
 
 create table announcements (
   id uuid primary key default gen_random_uuid(),
-  canal_id text references canals(id),         -- null = tous les canaux
+  canal_id text references canals(id),         -- null = tous les canaux (ou tout un pays, voir "country")
+  country text,                                -- diffusion à toute la diaspora d'un pays (canal_id doit alors être null)
   author_id uuid not null references profiles(id),
   title text not null check (char_length(title) between 3 and 140),
   title_ar text,
@@ -128,7 +131,8 @@ create table announcements (
   body_ar text,
   orig_lang text not null default 'fr',
   valid_until date,
-  created_at timestamptz not null default now()
+  created_at timestamptz not null default now(),
+  check (canal_id is null or country is null)
 );
 create table ann_reads (
   ann_id uuid references announcements(id) on delete cascade,
@@ -152,6 +156,13 @@ create table badge_grants (
   granted_by uuid references profiles(id),
   created_at timestamptz not null default now(),
   primary key (user_id, type)
+);
+
+create table spokespersons (                  -- porte-paroles : peuvent diffuser à toute la diaspora d'un pays
+  country text not null check (char_length(trim(country)) > 0),
+  user_id uuid references profiles(id) on delete cascade,
+  created_at timestamptz not null default now(),
+  primary key (country, user_id)
 );
 
 create table notifications (
@@ -188,6 +199,13 @@ $$ select is_admin() or exists (select 1 from canal_members where user_id = me()
 create or replace function is_ref() returns boolean language sql stable security definer set search_path = public as
 $$ select is_admin() or coalesce((select is_ref from profiles where auth_uid = auth.uid()), false) $$;
 
+-- Porte-parole d'un pays : peut publier une annonce visible de toute la diaspora de ce pays (pas seulement son canal).
+create or replace function is_spokesperson(p_country text) returns boolean language sql stable security definer set search_path = public as
+$$ select is_admin() or exists (select 1 from spokespersons where lower(trim(country)) = lower(trim(coalesce(p_country,''))) and user_id = me()) $$;
+
+create or replace function is_any_spokesperson() returns boolean language sql stable security definer set search_path = public as
+$$ select is_admin() or exists (select 1 from spokespersons where user_id = me()) $$;
+
 create or replace function project_canal(p uuid) returns text language sql stable security definer set search_path = public as
 $$ select canal_id from projects where id = p $$;
 
@@ -201,10 +219,15 @@ grant execute on function ping() to anon, authenticated;
 -- sans ce filtre, n'importe quelle session authentifiée (y compris une session anonyme Supabase créée
 -- sans la moindre invitation) pourrait les lire.
 create view public_profiles with (security_invoker = false) as
-  select id, pseudo, country, show_honor, is_admin, is_ref from profiles where me() is not null;
+  select id, pseudo, country, show_honor, is_admin, is_ref, first_name, last_name from profiles where me() is not null;
 create view skills_directory with (security_invoker = false) as
-  select id, pseudo, country, skills from profiles where matching and me() is not null;
+  select id, pseudo, country, skills, first_name, last_name from profiles where matching and me() is not null;
 grant select on public_profiles, skills_directory to authenticated;
+
+-- Porte-paroles d'un pays : visibles de tous les membres (comme les modérateurs de canal).
+create view spokesperson_list with (security_invoker = false) as
+  select s.country, p.pseudo from spokespersons s join profiles p on p.id = s.user_id where me() is not null;
+grant select on spokesperson_list to authenticated;
 
 create view canal_stats with (security_invoker = false) as
   select canal_id, count(*) as members from canal_members where status = 'member' and me() is not null group by canal_id;
@@ -326,6 +349,23 @@ begin
   update profiles set is_ref = p_on where pseudo = lower(p_pseudo);
 end $$;
 grant execute on function set_referent(text, boolean) to authenticated;
+
+-- Désignation des porte-paroles d'un pays (plusieurs possibles par pays) : administrateur uniquement.
+create or replace function set_spokesperson(p_pseudo text, p_country text, p_on boolean)
+returns void language plpgsql security definer set search_path = public as $$
+declare t uuid; ctry text := left(trim(coalesce(p_country,'')), 60);
+begin
+  if not is_admin() then raise exception 'forbidden'; end if;
+  if ctry = '' then raise exception 'bad_country'; end if;
+  select id into t from profiles where pseudo = lower(p_pseudo);
+  if t is null then raise exception 'unknown_pseudo'; end if;
+  if p_on then
+    insert into spokespersons(country, user_id) values (ctry, t) on conflict do nothing;
+  else
+    delete from spokespersons where user_id = t and lower(trim(country)) = lower(trim(ctry));
+  end if;
+end $$;
+grant execute on function set_spokesperson(text, text, boolean) to authenticated;
 
 -- Demande d'adhésion à un autre canal / décision du modérateur
 create or replace function request_join(p_canal text) returns void language plpgsql security definer set search_path = public as $$
@@ -488,6 +528,7 @@ begin
   delete from projects where owner_id = m;          -- cascade : jalons, tâches, équipe, suivis
   delete from helps where author_id = m;
   delete from announcements where author_id = m;    -- cascade : lectures
+  delete from spokespersons where user_id = m;
   update helps set claimed_by = null, status = 'open' where claimed_by = m;
   update invites set created_by = null where created_by = m;
   update badge_requests set decided_by = null where decided_by = m;
@@ -506,11 +547,13 @@ begin
   return json_build_object(
     'genere_le', now(),
     'profil', (select row_to_json(p) from (
-      select pseudo, country, lang, skills, matching, base, show_honor, is_admin, is_ref, created_at
+      select pseudo, first_name, last_name, country, lang, skills, matching, base, show_honor, is_admin, is_ref, created_at
       from profiles where id = pid) p),
     'canaux', (select coalesce(json_agg(row_to_json(c)), '[]') from (
       select canal_id, status, is_moderator, is_relay, created_at
       from canal_members where user_id = pid) c),
+    'porte_parole_de', (select coalesce(json_agg(row_to_json(x)), '[]') from (
+      select country, created_at from spokespersons where user_id = pid) x),
     'projets_crees', (select coalesce(json_agg(row_to_json(x)), '[]') from (
       select id, canal_id, title, objective, status, created_at, archived_at
       from projects where owner_id = pid) x),
@@ -531,7 +574,7 @@ begin
     'entraide_prise_en_charge', (select coalesce(json_agg(row_to_json(x)), '[]') from (
       select id, domain, country, status, created_at from helps where claimed_by = pid) x),
     'annonces_publiees', (select coalesce(json_agg(row_to_json(x)), '[]') from (
-      select id, canal_id, title, body, valid_until, created_at from announcements where author_id = pid) x),
+      select id, canal_id, country, title, body, valid_until, created_at from announcements where author_id = pid) x),
     'annonces_lues', (select coalesce(json_agg(row_to_json(x)), '[]') from (
       select ann_id, at from ann_reads where user_id = pid) x),
     'demandes_badge', (select coalesce(json_agg(row_to_json(x)), '[]') from (
@@ -619,7 +662,7 @@ create policy canals_admin on canals for all to authenticated using (is_admin())
 create policy profiles_self_read on profiles for select to authenticated using (auth_uid = auth.uid() or is_admin());
 create policy profiles_self_update on profiles for update to authenticated using (auth_uid = auth.uid()) with check (auth_uid = auth.uid());
 revoke update on profiles from authenticated;
-grant update (country, lang, skills, matching, base, show_honor) on profiles to authenticated;
+grant update (first_name, last_name, country, lang, skills, matching, base, show_honor) on profiles to authenticated;
 
 -- Adhésions : lisibles pour soi, les modérateurs du canal et les membres du canal
 create policy cm_read on canal_members for select to authenticated
@@ -665,12 +708,29 @@ create policy help_read on helps for select to authenticated using (author_id = 
 create policy help_insert on helps for insert to authenticated with check (author_id = me() and status = 'open' and claimed_by is null);
 create policy help_delete on helps for delete to authenticated using (author_id = me() or is_any_mod());
 
--- Annonces : générales (canal null) pour tous, sinon pour les membres du canal ; publication par modérateurs/admin
-create policy ann_read on announcements for select to authenticated using (me() is not null and (canal_id is null or is_member(canal_id)));
+-- Annonces : générales (canal et pays null) pour tous ; par canal pour ses membres ; par pays pour la diaspora
+-- de ce pays. Publication : admin (générale ou par pays, les deux réservées à l'admin sauf pays où les
+-- porte-paroles de ce pays peuvent aussi publier), modérateurs (leur canal), porte-paroles (leur pays).
+create policy ann_read on announcements for select to authenticated using (
+  me() is not null and (
+    (canal_id is null and country is null) or
+    (canal_id is not null and is_member(canal_id)) or
+    (canal_id is null and country is not null and exists (
+      select 1 from profiles pr where pr.id = me() and lower(trim(pr.country)) = lower(trim(announcements.country))
+    ))
+  )
+);
 create policy ann_insert on announcements for insert to authenticated
-  with check (author_id = me() and ((canal_id is null and is_admin()) or (canal_id is not null and is_mod(canal_id))));
+  with check (author_id = me() and (
+    (canal_id is null and country is null and is_admin()) or
+    (canal_id is not null and country is null and is_mod(canal_id)) or
+    (canal_id is null and country is not null and is_spokesperson(country))
+  ));
 create policy ann_update on announcements for update to authenticated using (author_id = me() or is_admin()) with check (author_id = me() or is_admin());
 create policy ann_delete on announcements for delete to authenticated using (author_id = me() or is_admin());
+
+alter table spokespersons enable row level security;
+create policy spk_admin on spokespersons for all to authenticated using (is_admin()) with check (is_admin());
 
 create policy reads_own on ann_reads for select to authenticated using (user_id = me() or is_any_mod());
 
