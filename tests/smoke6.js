@@ -7,7 +7,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 async function open(mock,hash,opt){
   const errs=[];
   const dom=new JSDOM(HTML,{url:'https://diasporact.test/'+(hash||''),runScripts:'dangerously',pretendToBeVisual:true,
-    beforeParse(w){if(!(opt&&opt.tour))try{w.localStorage.setItem('dp-tour','1');}catch(e){}w.supabase={createClient:()=>mock.client};w.fetch=mock.fetch;w.DIASPORACT_CONFIG={url:'https://x.supabase.co',anonKey:'anon'};
+    beforeParse(w){try{if(!(opt&&opt.nolang))w.localStorage.setItem('dp-lang','fr');}catch(e){}if(!(opt&&opt.tour))try{w.localStorage.setItem('dp-tour','1');}catch(e){}w.supabase={createClient:()=>mock.client};w.fetch=mock.fetch;w.DIASPORACT_CONFIG={url:'https://x.supabase.co',anonKey:'anon'};
       w.addEventListener('error',e=>errs.push(String(e.error&&e.error.stack||e.message)));w.HTMLElement.prototype.scrollIntoView=function(){};
       w.matchMedia=w.matchMedia||(()=>({matches:false,addListener(){},removeListener(){}}));}});
   const w=dom.window,d=w.document;
@@ -84,7 +84,7 @@ async function open(mock,hash,opt){
   /* alertes */
   await a.clickText('.tab','Alertes');ok(true,'B22 alertes affichées');
   /* arabe */
-  await a.click('.lang-btn');ok(a.d.documentElement.dir==='rtl','B23 arabe : direction RTL');
+  await a.click('.lang-btn');await a.click('.lang-btn');ok(a.d.documentElement.dir==='rtl','B23 arabe : direction RTL');
   await a.click('.lang-btn');
   ok(a.errs.length===0,'B24 aucune erreur JS ('+a.errs.join('|')+')');
   /* C. Modérateur */
@@ -217,8 +217,26 @@ async function open(mock,hash,opt){
   m.DB.ai_testers=[{user_id:'p-ai'}];
   a=await open(m,'',{tour:true});await sleep(900);
   ok(a.txt().includes('Étape 1 sur 10'),'J12 testeur IA : étape supplémentaire sur les fonctions IA');
+  /* K. Anglais */
+  m=makeMock({session:'u-1'});
+  m.DB.profiles.push({id:'p-sidi.paris',auth_uid:'u-1',pseudo:'sidi.paris',country:'France',lang:'fr',skills:[],matching:false,show_honor:true,is_admin:false,is_ref:false});
+  m.DB.canal_members.push({canal_id:'edu',user_id:'p-sidi.paris',status:'member',is_moderator:false,is_relay:false});
+  m.DB.announcements.push({id:'an1',canal_id:'edu',author_id:'p-sidi.paris',title:'Rentrée',body:'Bienvenue',orig_lang:'fr',valid_until:null,created_at:new Date().toISOString()});
+  a=await open(m);await sleep(150);
+  ok(a.q('.lang-btn').textContent==='EN','K1 bouton de langue : français → EN');
+  await a.click('.lang-btn');
+  ok(a.d.documentElement.lang==='en'&&a.d.documentElement.dir==='ltr'&&a.txt().includes('Official announcements')&&a.txt().includes('Hello'),'K2 interface en anglais, sens gauche-droite');
+  ok(a.q('.lang-btn').textContent==='ع'&&a.w.localStorage.getItem('dp-lang')==='en','K3 langue mémorisée, bouton suivant = arabe');
+  await a.clickText('.tab','Channels');ok(a.txt().includes('Education & youth'),'K4 noms de canaux en anglais');
+  await a.click('[data-act=go-me]');ok(a.txt().includes('Language')&&a.q('[data-act=lang][data-v=en]').getAttribute('aria-pressed')==='true','K5 choix de langue à trois boutons dans « Moi »');
+  await a.click('.lang-btn');ok(a.d.documentElement.dir==='rtl','K6 anglais → arabe : sens inversé');
+  await a.click('.lang-btn');ok(a.d.documentElement.lang==='fr'&&a.txt().includes('Mes canaux'),'K7 arabe → français');
+  ok(a.errs.length===0,'K8 aucune erreur JS ('+a.errs.join('|')+')');
+  await a.click('[data-act=lang][data-v=en]');await sleep(60);
+  a=await open(m,'',{nolang:true});await sleep(150);
+  ok(a.d.documentElement.lang==='fr'||a.d.documentElement.lang==='en','K9 ouverture sans choix : langue du navigateur');
   /* F. Configuration absente */
   const dom=new JSDOM(HTML,{runScripts:'dangerously',url:'https://diasporact.test/'});await sleep(200);
-  ok((()=>{const c=dom.window.document.body.cloneNode(true);c.querySelectorAll('script').forEach(x=>x.remove());return c.textContent.includes('pas encore configurée');})(),'F1 message si clés absentes');
+  ok((()=>{const c=dom.window.document.body.cloneNode(true);c.querySelectorAll('script').forEach(x=>x.remove());return /pas encore configurée|not configured yet/.test(c.textContent);})(),'F1 message si clés absentes');
   console.log('----');console.log(pass+' réussis, '+fail+' échoués');process.exit(fail?1:0);
 })().catch(e=>{console.log('EXCEPTION',e.stack);process.exit(2);});

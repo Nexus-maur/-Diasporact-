@@ -23,16 +23,16 @@ table{border-collapse:collapse;width:100%;min-width:520px;font-size:15px}
 th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:start;vertical-align:top}
 tr:last-child td{border-bottom:0}
 th{font-size:13px;color:var(--ink2);text-transform:uppercase;letter-spacing:.04em}
-#ar{display:none}
-#ar:target{display:block}
-body:has(#ar:target) #fr{display:none}
+#ar,#en{display:none}
+#ar:target,#en:target{display:block}
+body:has(#ar:target) #fr,body:has(#en:target) #fr{display:none}
 </style>
 </head>
 <body>
 <main>
 
 <article id="fr" lang="fr" dir="ltr">
-<div class="top"><a href="./">← Retour à Diasporact</a><span class="lang"><a href="#ar" lang="ar">العربية</a></span></div>
+<div class="top"><a href="./">← Retour à Diasporact</a><span class="lang"><a href="#en" lang="en">English</a> <a href="#ar" lang="ar">العربية</a></span></div>
 <h1>Politique de confidentialité</h1>
 <p class="meta">Dernière mise à jour : 25 novembre 2026</p>
 <p>Diasporact est l’espace numérique de la diaspora mauritanienne : canaux, projets, entraide et annonces. Cette page explique, simplement, quelles données sont utilisées, pourquoi, et comment vous gardez la main dessus.</p>
@@ -80,7 +80,7 @@ body:has(#ar:target) #fr{display:none}
 <li><strong>Vercel</strong> : sert les fichiers du site. Comme tout hébergeur, il enregistre des informations techniques de connexion (par exemple l’adresse IP) ; il ne reçoit pas le contenu de votre compte, qui circule directement entre votre appareil et Supabase.</li>
 <li><strong>GitHub</strong> (société américaine) : héberge, dans un espace privé, la sauvegarde quotidienne mentionnée plus haut. Ce transfert hors de l’Union européenne s’appuie sur le cadre « EU-U.S. Data Privacy Framework » auquel GitHub adhère.</li>
 <li><strong>Google Fonts</strong> : les polices d’écriture de l’application sont chargées depuis les serveurs de Google, qui reçoivent à cette occasion votre adresse IP.</li>
-<li><strong>Anthropic</strong> (société américaine) : uniquement pour les fonctions d’IA de la phase test (traduction français/arabe, proposition de fiche projet à partir d’une discussion). Voir ci-dessous.</li>
+<li><strong>Anthropic</strong> (société américaine) : uniquement pour les fonctions d’IA de la phase test (traduction entre français, anglais et arabe, proposition de fiche projet à partir d’une discussion). Voir ci-dessous.</li>
 </ul>
 <p><strong>Fonctions d’IA (phase test).</strong> Elles ne sont accessibles qu’aux testeurs désignés par l’administrateur, avec une limite quotidienne. Quand un testeur clique sur « Traduire » ou « Proposer une fiche », seul le texte concerné est envoyé à Anthropic pour obtenir le résultat, après une information préalable. Diasporact ne conserve ni ce texte ni la réponse ; leur traitement par Anthropic est soumis aux conditions de son service d’API. Le résultat est une suggestion générée par IA, à relire : rien n’est publié automatiquement. Ne collez que des contenus que vous pouvez partager, en particulier des discussions dont les participants acceptent le partage.</p>
 
@@ -104,8 +104,81 @@ body:has(#ar:target) #fr{display:none}
 <p>Cette politique peut évoluer, par exemple si un hébergeur change. La date de mise à jour figure en haut de la page.</p>
 </article>
 
+<article id="en" lang="en" dir="ltr">
+<div class="top"><a href="./">← Back to Diasporact</a><span class="lang"><a href="#fr" lang="fr">Français</a> <a href="#ar" lang="ar">العربية</a></span></div>
+<h1>Privacy policy</h1>
+<p class="meta">Last updated: 25 November 2026</p>
+<p>Diasporact is the digital space of the Mauritanian diaspora: channels, projects, mutual help and announcements. This page explains, simply, which data is used, why, and how you stay in control of it.</p>
+
+<h2>1. Who is responsible</h2>
+<p>The data controller is <strong>Nexus Mauritanie</strong>. For any question or request about your data: <a href="mailto:board.kalidia@gmail.com">board.kalidia@gmail.com</a>.</p>
+
+<h2>2. The data used</h2>
+<div class="tbl"><table>
+<tr><th>Data</th><th>Required?</th><th>What it is for</th></tr>
+<tr><td>Username</td><td>Yes</td><td>To identify you in the application.</td></tr>
+<tr><td>Password</td><td>Yes</td><td>To log in from several devices. It is stored in encrypted (hashed) form and nobody can read it.</td></tr>
+<tr><td>Backup code</td><td>Yes</td><td>To regain access if you lose your password. It is also stored in encrypted form.</td></tr>
+<tr><td>First and last name</td><td>No</td><td>If you provide them, they are shown instead of the username alone. Your username stays visible, in smaller type.</td></tr>
+<tr><td>Country of residence</td><td>No</td><td>Shown to other members. It is also used to decide who receives the announcements a spokesperson sends to the whole diaspora of that country.</td></tr>
+<tr><td>Skills</td><td>No</td><td>Matching between members, only if you turn on the “Appear in search” option.</td></tr>
+<tr><td>Content you create</td><td>—</td><td>Projects, tasks, comments, help requests, announcements: needed for the service to work.</td></tr>
+<tr><td>AI tester status and number of uses per day</td><td>—</td><td>Only for designated testers: to reserve the AI features for the test phase and limit their use.</td></tr>
+</table></div>
+<p>Diasporact asks for <strong>no email address, no phone number, no identity document, no precise location and no banking data</strong>. Registration is by invitation only.</p>
+
+<h2>3. Who sees what</h2>
+<ul>
+<li>Your username, your first and last name (if provided) and your country are visible to other registered members.</li>
+<li>Projects, comments and channel announcements are visible to the members of that channel.</li>
+<li>A spokesperson’s announcement is visible to members whose country of residence is the one it targets. An announcement from the administrator may be visible to all members.</li>
+<li>A help request is visible only to its author, the help referents, the moderators and the administrator.</li>
+<li>Your skills are visible only if you have turned on the corresponding option.</li>
+<li>Your data is neither sold nor handed over to third parties, and is not used for any advertising.</li>
+</ul>
+
+<h2>4. Why we may use this data</h2>
+<p>The data needed for your account to work (username, password, content) is used to provide the service you request. Optional data (first and last name, country, skills) relies on your consent: you provide it freely and can change or erase it at any time from “Me”. No automated decision-making or profiling is carried out: matching shows a list that people consult, and they then decide whether or not to contact a member.</p>
+
+<h2>5. How long</h2>
+<ul>
+<li>Your data is kept for as long as your account exists.</li>
+<li>You can delete your account at any time from “Me”: your profile and personal content are then erased.</li>
+<li>A daily backup of the database is kept so the service can be restored after an incident. It is kept for <strong>30 days at most</strong>: a deleted account may therefore remain in the backups during that time, then disappears.</li>
+</ul>
+
+<h2>6. Where the data is and who hosts it</h2>
+<ul>
+<li><strong>Supabase</strong> (database and login): servers located in Ireland, in the European Union.</li>
+<li><strong>Vercel</strong>: serves the site’s files. Like any host, it records technical connection information (for example the IP address); it does not receive the content of your account, which travels directly between your device and Supabase.</li>
+<li><strong>GitHub</strong> (a US company): stores, in a private space, the daily backup mentioned above. This transfer outside the European Union relies on the “EU-U.S. Data Privacy Framework” to which GitHub adheres.</li>
+<li><strong>Google Fonts</strong>: the application’s fonts are loaded from Google’s servers, which receive your IP address on that occasion.</li>
+<li><strong>Anthropic</strong> (a US company): only for the AI features of the test phase (translation between French, English and Arabic, and suggesting a project sheet from a discussion). See below.</li>
+</ul>
+<p><strong>AI features (test phase).</strong> They are only available to testers designated by the administrator, with a daily limit. When a tester taps “Translate” or “Suggest a project sheet”, only the text concerned is sent to Anthropic to obtain the result, after prior notice. Diasporact keeps neither this text nor the reply; its processing by Anthropic is subject to the terms of its API service. The result is an AI-generated suggestion to be reviewed: nothing is published automatically. Only paste content you can share, in particular discussions whose participants agree to share them.</p>
+
+<h2>7. Cookies and storage on your device</h2>
+<p>Diasporact uses no advertising cookies, no audience-measurement tool and no tracker. The application only stores on your device what it needs to work: your login session, your choice of language and theme (light or dark), and a copy of the application so it opens faster.</p>
+
+<h2>8. Your rights</h2>
+<ul>
+<li><strong>Access and copy</strong>: “Me” → “Download my data” gives you a file with everything the application knows about you.</li>
+<li><strong>Rectification</strong>: you edit your own first name, last name, country, skills and password.</li>
+<li><strong>Erasure</strong>: “Me” → “Delete my account”.</li>
+<li><strong>Objection, withdrawal of consent</strong>: empty the field concerned or turn off the option, the effect is immediate.</li>
+<li><strong>Restriction</strong> and any request the application does not let you make yourself: write to <a href="mailto:board.kalidia@gmail.com">board.kalidia@gmail.com</a>.</li>
+</ul>
+<p>If you believe your rights are not being respected, you can also contact the French data protection authority, the CNIL (<a href="https://www.cnil.fr" rel="noopener">cnil.fr</a>).</p>
+
+<h2>9. Security</h2>
+<p>Exchanges are encrypted (HTTPS). Access rights are enforced directly in the database: each member can only read what their role allows. To report a security issue, write to <a href="mailto:board.kalidia@gmail.com">board.kalidia@gmail.com</a>.</p>
+
+<h2>10. Changes</h2>
+<p>This policy may change, for example if a host changes. The update date appears at the top of the page.</p>
+</article>
+
 <article id="ar" lang="ar" dir="rtl">
-<div class="top"><a href="./">→ العودة إلى Diasporact</a><span class="lang"><a href="#fr" lang="fr">Français</a></span></div>
+<div class="top"><a href="./">→ العودة إلى Diasporact</a><span class="lang"><a href="#fr" lang="fr">Français</a> <a href="#en" lang="en">English</a></span></div>
 <h1>سياسة الخصوصية</h1>
 <p class="meta">آخر تحديث: 25 نوفمبر 2026</p>
 <p>Diasporact هو الفضاء الرقمي للجالية الموريتانية في الخارج: قنوات ومشاريع وتضامن وإعلانات. توضح هذه الصفحة ببساطة ما هي البيانات المستخدمة ولماذا وكيف تبقى متحكماً بها.</p>
@@ -153,7 +226,7 @@ body:has(#ar:target) #fr{display:none}
 <li><strong>Vercel</strong>: يقدّم ملفات الموقع. وكأي مستضيف يسجّل معلومات تقنية عن الاتصال (مثل عنوان IP)، لكنه لا يتلقى محتوى حسابك الذي يمر مباشرة بين جهازك وSupabase.</li>
 <li><strong>GitHub</strong> (شركة أمريكية): يستضيف في مساحة خاصة النسخة الاحتياطية اليومية المذكورة أعلاه. يستند هذا النقل خارج الاتحاد الأوروبي إلى إطار «EU-U.S. Data Privacy Framework» الذي تنضم إليه GitHub.</li>
 <li><strong>Google Fonts</strong>: تُحمَّل خطوط التطبيق من خوادم Google، التي تتلقى عنوان IP الخاص بك بهذه المناسبة.</li>
-<li><strong>Anthropic</strong> (شركة أمريكية): فقط لميزات الذكاء الاصطناعي في مرحلة التجربة (الترجمة بين الفرنسية والعربية، واقتراح بطاقة مشروع انطلاقاً من نقاش). انظر أدناه.</li>
+<li><strong>Anthropic</strong> (شركة أمريكية): فقط لميزات الذكاء الاصطناعي في مرحلة التجربة (الترجمة بين الفرنسية والإنجليزية والعربية، واقتراح بطاقة مشروع انطلاقاً من نقاش). انظر أدناه.</li>
 </ul>
 <p><strong>ميزات الذكاء الاصطناعي (مرحلة التجربة).</strong> لا تتاح إلا للمختبرين الذين يعيّنهم المسؤول، مع حد يومي. عندما ينقر المختبِر على «ترجمة» أو «اقتراح بطاقة» يُرسل النص المعني فقط إلى Anthropic للحصول على النتيجة، بعد إعلامه مسبقاً. لا يحتفظ Diasporact بهذا النص ولا بالرد؛ ومعالجتهما لدى Anthropic تخضع لشروط خدمة واجهتها البرمجية. النتيجة اقتراح مولَّد بالذكاء الاصطناعي ينبغي مراجعته: لا يُنشر شيء تلقائياً. لا تلصق إلا ما يمكنك مشاركته، خصوصاً النقاشات التي يوافق مشاركوها على مشاركتها.</p>
 

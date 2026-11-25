@@ -45,8 +45,10 @@ const run = async (over, body, headers) => {
   ok(r.code === 400 && calls.length === 0, 'texte trop long refusé avant tout appel');
   r = await run(null, { task: 'hack', text: 'abc', target: 'fr' });
   ok(r.code === 400, 'tâche inconnue refusée');
-  r = await run(null, { task: 'translate', text: 'abc', target: 'en' });
+  r = await run(null, { task: 'translate', text: 'abc', target: 'es' });
   ok(r.code === 400, 'langue inconnue refusée');
+  r = await run(null, { task: 'translate', text: 'Bonjour à tous', target: 'en' });
+  ok(r.code === 200 && /anglais/.test(JSON.parse(calls[1].opt.body).system), 'traduction vers l’anglais acceptée');
   const g = mkRes(); await handler({ method: 'GET', headers: {} }, g); ok(g.code === 405, 'GET refusé');
   console.log('----'); console.log(pass + ' réussis, ' + fail + ' échoués'); process.exit(fail ? 1 : 0);
 })();

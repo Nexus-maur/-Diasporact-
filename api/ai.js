@@ -5,7 +5,7 @@
 // Sans ANTHROPIC_API_KEY, la fonction répond « ai_unavailable » et l'application affiche que l'IA est indisponible.
 const MAX_IN = 6000;
 const MODEL = () => process.env.AI_MODEL || 'claude-sonnet-5-5';
-const LANG = { fr: 'français', ar: 'arabe standard moderne' };
+const LANG = { fr: 'français', en: 'anglais', ar: 'arabe standard moderne' };
 
 const SYSTEM = {
   translate: (t) =>

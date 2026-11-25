@@ -20,7 +20,7 @@ create table profiles (
   first_name text not null default '' check (char_length(first_name) <= 60),
   last_name text not null default '' check (char_length(last_name) <= 60),
   country text not null default '',
-  lang text not null default 'fr' check (lang in ('fr','ar')),
+  lang text not null default 'fr' check (lang in ('fr','en','ar')),
   skills text[] not null default '{}',
   matching boolean not null default false,    -- visible dans la recherche de compétences
   base text,
