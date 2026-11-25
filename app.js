@@ -1115,7 +1115,7 @@ function vNewHelp(){
   '<p class="muted small row">'+ic('lock',14)+' '+T('help_priv')+'</p><p class="fb err" id="nh-err"></p>'+
   '<div class="row"><button type="button" class="btn grow" data-act="back">'+T('cancel')+'</button><button type="submit" class="btn primary grow">'+T('send')+'</button></div></form>';
 }
-function heroBlock(eyebrow,title,sub){return '<section class="hero">'+logoSvg()+'<p class="eyebrow">'+eyebrow+'</p><h1>'+title+'</h1><p>'+sub+'</p></section>';}
+function heroBlock(eyebrow,title,sub){return '<section class="hero"><img class="logo" src="logo-large.png" width="260" height="260" alt="Diaspor ACT">'+'<p class="eyebrow">'+eyebrow+'</p><h1>'+title+'</h1><p>'+sub+'</p></section>';}
 function vLoad(){return heroBlock('','Diasporact',S.fatal?esc(S.fatal):T('loading'));}
 function vInv0(){
   return heroBlock(T('inv_from'),T('inv0_title'),T('inv0_sub'))+(S.auth.err?'<div class="banner">'+ic('lock',18)+'<span>'+esc(S.auth.err)+'</span></div>':'')+
