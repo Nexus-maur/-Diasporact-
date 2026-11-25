@@ -43,8 +43,15 @@ q $D "select take_task('$TID')" >/dev/null
 ok "R16 membre prend une tâche libre" "$(q $B "select a.pseudo from tasks t join public_profiles a on a.id=t.assignee_id")" "ahmed.lille"
 has "R17 membre ne modifie pas une tâche directement" "$(q $D "update tasks set title='piraté' where id='$TID' returning 1")" ""
 ok "R18 modification directe sans effet" "$(q $B "select title from tasks")" "Cahier des charges"
-q $D "select set_task_status('$TID','done')" >/dev/null
-ok "R19 assigné termine sa tâche" "$(q $B "select status from tasks")" "done"
+q $D "select 1" >/dev/null
+has "R19x un membre non assigné ne signale pas la tâche" "$(q $C "select request_task_review('$TID')")" "forbidden"
+ok "R19y l'assigné signale sa tâche terminée" "$(q $D "select request_task_review('$TID')" ; q $B "select count(*) from notifications where kind='review'")" "1"
+has "R19z un second signalement immédiat est refusé" "$(q $D "select request_task_review('$TID')")" "too_soon"
+has "R19a l'assigné ne peut pas passer sa tâche en fait" "$(q $D "select set_task_status('$TID','done')")" "forbidden"
+ok "R19b la tâche reste en cours" "$(q $B "select status from tasks")" "doing"
+q $A "select set_task_status('$TID','done')" >/dev/null
+ok "R19 le modérateur/administrateur passe la tâche en fait" "$(q $B "select status from tasks")" "done"
+has "R19c l'assigné ne rouvre pas une tâche terminée" "$(q $D "select set_task_status('$TID','doing')")" "forbidden"
 ok "R20 engagement compté" "$(q $D "select tasks from engagement where user_id=me()")" "1"
 ok "R21 notification de tâche reçue" "$(q $D "select count(*) from notifications where kind='task'")" "0"
 

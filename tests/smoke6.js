@@ -66,7 +66,10 @@ async function open(mock,hash,opt){
   await a.click('[data-act=task-view][data-v=board]');
   await a.click('[data-act=take]');ok(m.DB.tasks[0].assignee_id==='p-sidi.paris','B7 tâche prise');
   ok(a.d.querySelectorAll('.kb-col')[1].textContent.includes('Cahier des charges'),'B7b la tâche prise passe dans la colonne En cours');
-  await a.click('[data-act=finish]');ok(m.DB.tasks[0].status==='done','B8 tâche terminée');
+  ok(!a.q('[data-act=finish]')&&!!a.q('[data-act=task-review]'),'B8 l\'assigné ne peut pas passer sa tâche en fait mais peut alerter le chef de projet');
+  await a.click('[data-act=task-review]');ok(m.DB.tasks[0].review_at&&m.DB.notifications.some(n=>n.kind==='review'&&n.user_id==='p-mariem.paris'),'B8b alerte envoyée au chef de projet (notification)');
+  ok(a.txt().includes('Chef de projet alerté')&&!a.q('[data-act=task-review]'),'B8c l\'assigné voit que l\'alerte est partie');
+  m.DB.tasks[0].status='done';
   a.set('#cmt-text','Je m\'en occupe');await a.submit('[data-form=comment]');
   ok(m.DB.comments.length===1&&a.txt().includes('Je m\'en occupe'),'B9 commentaire publié');
   ok(m.DB.notifications.filter(n=>n.kind==='comment').length===1,'B10 propriétaire notifié');
@@ -242,6 +245,17 @@ async function open(mock,hash,opt){
   await a.click('[data-act=lang][data-v=en]');await sleep(60);
   a=await open(m,'',{nolang:true});await sleep(150);
   ok(a.d.documentElement.lang==='fr'||a.d.documentElement.lang==='en','K9 ouverture sans choix : langue du navigateur');
+  /* L. Validation d'une tâche par le chef de projet */
+  m=makeMock({session:'u-2'});
+  m.DB.profiles.push({id:'p-sidi.paris',auth_uid:null,pseudo:'sidi.paris',country:'France',lang:'fr',skills:[],matching:false,show_honor:true,is_admin:false,is_ref:false},{id:'p-mariem.paris',auth_uid:'u-2',pseudo:'mariem.paris',country:'France',lang:'fr',skills:[],matching:false,show_honor:true,is_admin:false,is_ref:false});
+  ['p-sidi.paris','p-mariem.paris'].forEach(u=>m.DB.canal_members.push({canal_id:'edu',user_id:u,status:'member',is_moderator:false,is_relay:false}));
+  m.DB.projects.push({id:'pj1',canal_id:'edu',owner_id:'p-mariem.paris',title:'École numérique',objective:'Équiper',orig_lang:'fr',status:'progress',needs:[],created_at:new Date().toISOString()});
+  m.DB.tasks.push({id:'t1',project_id:'pj1',title:'Cahier des charges',status:'doing',assignee_id:'p-sidi.paris',review_at:new Date().toISOString()});
+  a=await open(m);await sleep(150);
+  await a.clickText('.tab','Projets');await a.clickText('[data-act=proj-tab]','Tous');await a.click('[data-act=open-project]');
+  ok(!!a.q('[data-act=finish]'),'L1 le chef de projet voit « Marquer fait » sur la tâche d\'un membre');
+  ok(a.txt().includes('Validation demandée'),'L1b le chef de projet voit que la validation est demandée');
+  await a.click('[data-act=finish]');ok(m.DB.tasks[0].status==='done'&&a.d.querySelectorAll('.kb-col')[2].textContent.includes('Cahier des charges'),'L2 la tâche passe dans la colonne Fait');
   /* F. Configuration absente */
   const dom=new JSDOM(HTML,{runScripts:'dangerously',url:'https://diasporact.test/'});await sleep(200);
   ok((()=>{const c=dom.window.document.body.cloneNode(true);c.querySelectorAll('script').forEach(x=>x.remove());return /pas encore configurée|not configured yet/.test(c.textContent);})(),'F1 message si clés absentes');
