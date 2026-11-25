@@ -801,9 +801,11 @@ function visibleAnns(){
   return S.anns.filter(function(a){return (a.canal==='all'||a.canal.indexOf('country:')===0||isMember(a.canal))&&(!a.until||a.until>=today);});
 }
 function tilesHtml(){
-  if(!Object.keys(S.mem).some(isMember))return '';
-  var ts=[['life','new-help','th_help'],['folder','new-project','th_proj'],['hash','tab','th_canals']];
-  if(S.me.admin||S.me.mod.length||(S.me.spk&&S.me.spk.length))ts.push(['mega','publish-ann','publish_ann']);
+  var isM=Object.keys(S.mem).some(isMember),canPub=S.me.admin||S.me.mod.length||(S.me.spk&&S.me.spk.length);
+  if(!isM&&!canPub)return '';
+  /* Un porte-parole (ou l'admin) sans canal ne voit que la publication ; aide et projets exigent d'être membre d'un canal. */
+  var ts=isM?[['life','new-help','th_help'],['folder','new-project','th_proj'],['hash','tab','th_canals']]:[];
+  if(canPub)ts.push(['mega','publish-ann','publish_ann']);
   return '<section><h2 class="h2">'+T('act_title')+'</h2><div class="tiles">'+ts.map(function(x){return '<button class="tile" data-act="'+x[1]+'"'+(x[1]==='tab'?' data-tab="canals"':'')+'><span class="ico">'+ic(x[0],20)+'</span>'+T(x[2])+'</button>';}).join('')+'</div></section>';
 }
 function startCard(){

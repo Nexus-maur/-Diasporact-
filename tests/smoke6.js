@@ -1,5 +1,7 @@
 const {JSDOM}=require('jsdom');const fs=require('fs');const makeMock=require('./mock_sb.js');
-const HTML=fs.readFileSync(''+require('path').resolve(__dirname,'..','index.html')+'','utf8');
+const ROOT=require('path').resolve(__dirname,'..');
+/* index.html charge app.js en fichier externe : on l'incorpore pour jsdom ; config.js et supabase.js sont simulés par le test. */
+const HTML=fs.readFileSync(ROOT+'/index.html','utf8').replace(/<script src="(config|vendor\/supabase)\.js"><\/script>/g,'').replace('<script src="app.js"></script>',()=>'<script>'+fs.readFileSync(ROOT+'/app.js','utf8').replace(/<\/script/g,'<\\/script')+'</script>');
 let pass=0,fail=0;function ok(c,m){if(c){pass++;console.log('PASS',m);}else{fail++;console.log('FAIL',m);}}
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 async function open(mock,hash){
@@ -28,7 +30,7 @@ async function open(mock,hash){
   ok(a.q('#pseudo')!==null,'A2 lien valide → formulaire de pseudo');
   a.set('#pseudo','Ab');ok(a.q('#pseudo-go').disabled,'A3 pseudo trop court refusé');
   a.set('#pseudo','sidi.paris');await sleep(450);ok(!a.q('#pseudo-go').disabled,'A4 pseudo libre accepté');
-  await a.submit('[data-form=pseudo]');await sleep(150);
+  a.set('#pw','motdepasse1');await a.submit('[data-form=pseudo]');await sleep(250);
   ok(a.txt().includes('@sidi.paris'),'A5 compte créé, accueil affiché');
   ok(m.DB.canal_members.some(x=>x.canal_id==='edu'&&x.status==='member'),'A6 adhésion au canal du lien');
   ok(a.errs.length===0,'A7 aucune erreur JS ('+a.errs.join('|')+')');
@@ -119,6 +121,45 @@ async function open(mock,hash){
   await a.click('[data-act=publish-ann]');a.set('#an-t','Assemblée générale');a.set('#an-b','Le 12 décembre');a.set('#an-c','all');await a.submit('[data-form=ann]');await sleep(150);
   ok(m.DB.announcements.length===1&&m.DB.announcements[0].canal_id===null,'E5 annonce générale publiée');
   ok(a.errs.length===0,'E6 aucune erreur JS ('+a.errs.join('|')+')');
+  /* G. Nom/prénom facultatifs, sélecteur de pays par drapeaux, porte-parole */
+  m=makeMock({session:'u-4'});m.DB.profiles.push(P('sidi.paris',{auth_uid:'u-4',country:'France'}),P('awa.dakar',{country:'Sénégal'}));
+  m.DB.canal_members.push({canal_id:'edu',user_id:'p-sidi.paris',status:'member',is_moderator:false,is_relay:false});
+  a=await open(m);await sleep(120);
+  await a.click('[data-act=go-me]');
+  ok(!!a.q('#my-fn')&&!!a.q('#my-ln'),'G1 champs prénom et nom dans « Moi »');
+  ok(a.q('[data-act=cp-toggle]')!==null,'G2 bouton drapeau à côté du champ pays');
+  await a.click('.cp-btn[data-id=my-country]');
+  ok(a.d.querySelectorAll('#cpg-my-country .cp-item').length>20,'G3 grille de pays affichée');
+  a.set('.cp-q','sen');ok([...a.d.querySelectorAll('#cpg-my-country .cp-item')].some(b=>b.dataset.v==='Sénégal'),'G4 recherche sans accent');
+  await a.click('#cpg-my-country .cp-item[data-v="Sénégal"]');
+  ok(a.q('#my-country').value==='Sénégal'&&a.q('#cpp-my-country').hidden,'G5 pays choisi, grille refermée');
+  await a.click('.cp-btn[data-id=my-country]');a.set('.cp-q','zzzz');ok(a.txt().includes('Aucun pays trouvé'),'G6 aucun résultat expliqué');
+  a.set('#my-fn','Sidi');a.set('#my-ln','Ould Ahmed');await a.submit('[data-form=myname]');await sleep(150);
+  ok(m.DB.profiles[0].first_name==='Sidi'&&m.DB.profiles[0].last_name==='Ould Ahmed','G7 nom et prénom enregistrés');
+  ok(a.txt().includes('Sidi Ould Ahmed @sidi.paris'),'G8 nom affiché, pseudo en grisé à côté');
+  ok(!!a.q('.muted.small')&&[...a.d.querySelectorAll('span.muted.small')].some(e=>e.textContent.indexOf('@sidi.paris')===0),'G9 pseudo grisé');
+  ok(a.errs.length===0,'G10 aucune erreur JS ('+a.errs.join('|')+')');
+  /* H. Porte-parole : désignation par l'admin, annonce à tout un pays */
+  m=makeMock({session:'u-5'});m.DB.profiles.push(P('admin.nkc',{auth_uid:'u-5',is_admin:true}),P('awa.dakar',{country:'Sénégal'}),P('moussa.dakar',{country:'senegal'}));
+  a=await open(m);await sleep(120);await a.click('[data-act=go-me]');
+  a.set('#as-p','awa.dakar');a.set('#as-c','Sénégal');a.q('#as-o').checked=true;await a.submit('[data-form=setspk]');
+  ok(m.DB.spokespersons.length===1&&m.DB.spokespersons[0].country==='Sénégal','H1 porte-parole désigné par l\'admin');
+  a.set('#as-p','awa.dakar');a.set('#as-c','sénégal');a.q('#as-o').checked=true;await a.submit('[data-form=setspk]');
+  ok(m.DB.spokespersons.length===1,'H2 pas de doublon (casse ignorée)');
+  m.DB.profiles.push(P('autre.membre',{auth_uid:'u-6'}));
+  m.setSession('u-6');a=await open(m);await sleep(120);
+  ok(!a.txt().includes('Publier une annonce'),'H3 un simple membre ne peut pas publier');
+  m.setSession(null);m.DB.profiles.find(x=>x.pseudo==='awa.dakar').auth_uid='u-7';m.setSession('u-7');
+  a=await open(m);await sleep(150);
+  ok(a.txt().includes('Publier une annonce'),'H4 le porte-parole voit « Publier une annonce »');
+  await a.click('[data-act=publish-ann]');
+  const opts=[...a.d.querySelectorAll('#an-c option')].map(o=>o.value);
+  ok(opts.includes('pays:Sénégal')&&!opts.includes('all'),'H5 option « diaspora du Sénégal » proposée, pas « tous les canaux »');
+  a.set('#an-t','Rencontre à Dakar');a.set('#an-b','Samedi à 15h');a.set('#an-c','pays:Sénégal');await a.submit('[data-form=ann]');await sleep(150);
+  const an=m.DB.announcements[0];
+  ok(an&&an.country==='Sénégal'&&an.canal_id===null,'H6 annonce enregistrée pour le pays, sans canal');
+  await a.click('[data-act=go-me]');ok(a.txt().includes('Porte-parole (Sénégal)'),'H7 rôle affiché dans « Moi »');
+  ok(a.errs.length===0,'H8 aucune erreur JS ('+a.errs.join('|')+')');
   /* F. Configuration absente */
   const dom=new JSDOM(HTML,{runScripts:'dangerously',url:'https://diasporact.test/'});await sleep(200);
   ok((()=>{const c=dom.window.document.body.cloneNode(true);c.querySelectorAll('script').forEach(x=>x.remove());return c.textContent.includes('pas encore configurée');})(),'F1 message si clés absentes');
