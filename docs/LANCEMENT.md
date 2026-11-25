@@ -17,10 +17,10 @@ Dernière mise à jour : 25/11/2026.
 
 ## 2. Décisions et actions d'Élie (avant toute ouverture)
 
-- [ ] **SAU-04** — Vérifier que le plan Vercel retenu (Hobby ou Pro) autorise cet usage ; consigner la décision par écrit.
-- [ ] **SAU-03** — Décider : plan gratuit Supabase (sauvegardes limitées) ou plan Pro ; consigner la décision.
-- [ ] Activer la **double authentification** sur les comptes Supabase, Vercel et GitHub de l'organisation.
-- [ ] Définir un mot de passe fort pour le compte administrateur `nexus`.
+- [x] **SAU-04** — Décision (25/11/2026) : plan gratuit Vercel conservé jusqu'à fin 2026, à réexaminer en janvier 2027 (vérifier alors que l'usage reste autorisé par les conditions du plan).
+- [x] **SAU-03** — Décision (25/11/2026) : plan gratuit Supabase conservé jusqu'à fin 2026 ; la sauvegarde quotidienne GitHub (backup-data) fait office de filet, à réexaminer en janvier 2027.
+- [x] Activer la **double authentification** sur les comptes Supabase, Vercel et GitHub de l'organisation.
+- [x] Définir un mot de passe fort pour le compte administrateur `nexus`.
 - [ ] Relire `confidentialite.html` ; ajouter, si souhaité, les mentions légales de Nexus Mauritanie (adresse, immatriculation).
 
 ## 2 bis. Activer les fonctions IA pour la phase test
@@ -33,7 +33,7 @@ Dernière mise à jour : 25/11/2026.
 ## 3. Vérifications techniques
 
 - [ ] **INS-06/07** — Le cron Vercel `/api/keepalive` s'est exécuté sans erreur au moins une fois (Vercel > Settings > Cron Jobs).
-- [ ] **INS-08** — Secrets GitHub `SUPABASE_URL` et `SUPABASE_SERVICE_KEY` présents ; lancer à la main le workflow « Sauvegarde des données ». Vérifier : table `spokespersons` dans l'export, 30 commits au plus sur `backup-data`.
+- [x] **INS-08** — Secrets GitHub `SUPABASE_URL` et `SUPABASE_SERVICE_KEY` présents ; lancer à la main le workflow « Sauvegarde des données ». Vérifier : table `spokespersons` dans l'export, 30 commits au plus sur `backup-data`.
 - [ ] **INS-10** — Essai de restauration d'un export dans un projet Supabase vierge (moins d'une heure).
 - [ ] **SEC-06** — Limite de création de comptes anonymes par IP active ; activer un CAPTCHA si nécessaire.
 - [ ] Supprimer les 5 comptes de test `test-sec*` créés pendant la recette du 25/11.
