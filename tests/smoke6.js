@@ -107,6 +107,8 @@ async function open(mock,hash,opt){
   await a.click('[data-act=open-canal]');await a.click('[data-act=canal-tab][data-tab=mod]');
   ok(a.txt().includes('@ahmed.lille')&&a.txt().includes('Générer le lien d’invitation'),'C2 onglet modération');
   await a.click('[data-act=accept]');ok(m.DB.canal_members.find(x=>x.user_id==='p-ahmed.lille').status==='member','C3 adhésion acceptée');
+  await a.click('[data-act=canal-tab][data-tab=members]');ok(a.txt().includes('@ahmed.lille')&&a.txt().includes('@mariem.paris')&&a.txt().includes('Membres'),'C3b onglet Membres : le modérateur voit la liste des membres du canal');
+  await a.click('[data-act=canal-tab][data-tab=mod]');
   await a.click('[data-act=gen-link]');ok(a.txt().includes('#/i/edu-'),'C4 lien d\'invitation généré');
   a.set('#wa-in','https://chat.whatsapp.com/AbC123');await a.submit('[data-form=wa]');ok(m.DB.canals[0].wa_link==='https://chat.whatsapp.com/AbC123','C5 groupe WhatsApp enregistré');
   a.set('#rc-p','ahmed.lille');await a.submit('[data-form=recovery]');ok(a.txt().includes('Lien prêt')&&m.DB.invites.some(i=>i.kind==='recovery'),'C6 lien de reconnexion généré');

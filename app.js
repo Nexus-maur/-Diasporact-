@@ -387,17 +387,21 @@ function vCanals(){
 }
 function vCanal(p){
   var k=canalOf(p.id),st=mem(p.id);
-  var tabs=[['ann','tab_ann']];if(st==='member'){tabs.push(['proj','tab_proj'],['help','tab_help'],['honor','tab_honor']);}if(isMod(p.id))tabs.push(['mod','tab_mod']);
+  var tabs=[['ann','tab_ann']];if(st==='member'){tabs.push(['proj','tab_proj'],['help','tab_help'],['honor','tab_honor']);}if(isMod(p.id))tabs.push(['members',null],['mod','tab_mod']);
   var cur=p.tab||S.canalTab[p.id]||'ann';if(!tabs.some(function(x){return x[0]===cur;}))cur='ann';S.canalTab[p.id]=cur;
   var h='<section class="card stack s8"><div class="row"><span class="ico-lg">'+ic(k.ico,22)+'</span><div class="grow"><h2 class="h3">'+C(k.n)+'</h2><p class="muted small">'+k.count+' '+T('canal_members')+(k.mod?' · '+T('canal_mod')+' '+idInline(k.mod):'')+'</p></div>'+statusChip(p.id)+'</div><p>'+C(k.d)+'</p>';
   h+='<button class="btn block" data-act="wa-group" data-id="'+k.id+'">'+ic('chat',18)+T('canal_wa')+'</button><p class="muted small">'+T('canal_wa_note')+'</p></section>';
   if(!st)h+='<button class="btn primary block" data-act="join" data-id="'+k.id+'">'+T('canal_join')+'</button>';
   if(st==='pending')h+='<div class="banner">'+ic('clock',18)+'<span>'+T('canal_pending_banner',{m:k.mod})+'</span></div>';
-  h+='<div class="tabs" role="tablist">'+tabs.map(function(x){return '<button role="tab" aria-selected="'+(cur===x[0])+'" data-act="canal-tab" data-id="'+k.id+'" data-tab="'+x[0]+'">'+T(x[1])+'</button>';}).join('')+'</div>';
+  h+='<div class="tabs" role="tablist">'+tabs.map(function(x){return '<button role="tab" aria-selected="'+(cur===x[0])+'" data-act="canal-tab" data-id="'+k.id+'" data-tab="'+x[0]+'">'+(x[1]?T(x[1]):L3('Membres','الأعضاء','Members'))+'</button>';}).join('')+'</div>';
   if(cur==='ann'){var as=S.anns.filter(function(a){return a.canal===k.id||a.canal==='all';});h+='<div class="stack">'+(as.length?as.map(function(a){return annCard(a,st!=='member');}).join(''):'<p class="empty">'+T('no_ann')+'</p>')+'</div>';if(!st)h+='<p class="muted small">'+T('canal_locked')+'</p>';}
   if(cur==='proj'){var ps=S.projects.filter(function(x){return x.canal===k.id;});h+='<button class="btn block" data-act="new-project" data-id="'+k.id+'">'+ic('plus',18)+T('new_project')+'</button><div class="stack">'+(ps.length?ps.map(projCard).join(''):'<p class="empty">'+T('no_proj')+'</p>')+'</div>';}
   if(cur==='help'){h+='<button class="btn primary block" data-act="new-help">'+ic('plus',18)+T('new_help')+'</button><p class="muted small">'+ic('lock',14)+' '+T('help_priv')+'</p>';}
   if(cur==='honor')h+=honorHtml(k.id);
+  if(cur==='members'){var ml=(S.cmem[k.id]||[]).filter(Boolean).slice().sort(function(x,y){return x.localeCompare(y);});
+    h+='<section><h2 class="h2">'+L3('Membres','الأعضاء','Members')+'<span class="count">'+ml.length+'</span></h2>'+(ml.length?'<div class="card list">'+ml.map(function(m){var r=S.roles[m]||{},nm=nameOf(m),fl=S.flags[m]||'';
+      var rc=(r.mod&&r.mod.indexOf(k.id)>-1?chip(T('canal_mod'),'green'):'')+(r.speaker?chip(T('r_speaker'),'red'):'')+(r.ref?chip(L3('Référent','مرجعي','Referent')):'');
+      return '<div class="li">'+av(m)+'<span class="grow" style="min-width:0"><span class="t">'+(nm?esc(nm)+'<br><span class="muted small">@'+esc(m)+'</span>':'@'+esc(m))+'</span></span>'+(fl?'<span aria-hidden="true">'+fl+'</span>':'')+rc+'</div>';}).join('')+'</div>':'<p class="empty">'+L3('Aucun membre pour le moment.','لا يوجد أعضاء بعد.','No members yet.')+'</p>')+'</section>';}
   if(cur==='mod'){var rq=S.reqs[k.id]||[];
     h+='<section><h2 class="h2">'+T('mod_reqs')+(rq.length?'<span class="count">'+rq.length+'</span>':'')+'</h2>'+(rq.length?'<div class="card list">'+rq.map(function(r){return '<div class="li">'+av(r.p)+'<span class="grow t">@'+esc(r.p)+'</span><button class="btn sm primary" data-act="accept" data-id="'+k.id+'" data-p="'+esc(r.p)+'" data-uid="'+esc(r.id)+'">'+T('accept')+'</button><button class="btn sm" data-act="refuse" data-id="'+k.id+'" data-p="'+esc(r.p)+'" data-uid="'+esc(r.id)+'">'+T('refuse')+'</button></div>';}).join('')+'</div>':'<p class="empty">'+T('mod_none')+'</p>')+'</section>';
     h+=modTools(k);}
