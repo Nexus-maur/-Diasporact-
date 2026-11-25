@@ -258,7 +258,7 @@ SEC-04, CAN-03 — le reste suit la légende Statut ci-dessous).
 | N° | À vérifier | Résultat attendu |
 |---|---|---|
 | TAC-01 | Un membre prend une tâche | Il n'a pas de bouton « Marquer fait » ; il voit « Signaler : j'ai terminé » |
-| TAC-02 | Il touche « Signaler : j'ai terminé » | Le chef de projet reçoit une notification « Tâche terminée à valider » ; le membre voit « Chef de projet alerté » |
+| TAC-02 | Il touche « Signaler : j’ai terminé » | Le chef de projet et les modérateurs du canal (sans doublon) reçoivent une notification « Tâche terminée à valider » ; le membre voit « Chef de projet alerté » |
 | TAC-03 | Il retouche le signalement dans l'heure | Refusé, message « Alerte déjà envoyée » |
 | TAC-04 | Le chef de projet (ou un modérateur / l'administrateur) ouvre le projet | La tâche porte « Validation demandée » et un bouton « Marquer fait » ; la tâche passe en « Fait » |
 | TAC-05 | Un membre tente de passer une tâche en fait ou de la rouvrir (même par l'API) | Refusé par la base (`forbidden`) |

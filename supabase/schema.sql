@@ -469,6 +469,12 @@ begin
     insert into notifications(user_id, kind, ref, body)
     values (own, 'review', t.project_id::text, (select pseudo from profiles where id = me()) || ' · ' || t.title);
   end if;
+  -- Les modérateurs du canal sont informés aussi (sans doublon avec le chef de projet).
+  insert into notifications(user_id, kind, ref, body)
+  select cm.user_id, 'review', t.project_id::text, (select pseudo from profiles where id = me()) || ' · ' || t.title
+  from canal_members cm
+  where cm.canal_id = project_canal(t.project_id) and cm.status = 'member' and cm.is_moderator
+    and cm.user_id <> me() and cm.user_id is distinct from own;
 end $$;
 grant execute on function request_task_review(uuid) to authenticated;
 

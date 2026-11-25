@@ -44,8 +44,13 @@ ok "R16 membre prend une tâche libre" "$(q $B "select a.pseudo from tasks t joi
 has "R17 membre ne modifie pas une tâche directement" "$(q $D "update tasks set title='piraté' where id='$TID' returning 1")" ""
 ok "R18 modification directe sans effet" "$(q $B "select title from tasks")" "Cahier des charges"
 q $D "select 1" >/dev/null
+sa "update canal_members set is_moderator=true where canal_id='edu' and user_id=(select id from profiles where pseudo='sidi.paris')" >/dev/null
 has "R19x un membre non assigné ne signale pas la tâche" "$(q $C "select request_task_review('$TID')")" "forbidden"
 ok "R19y l'assigné signale sa tâche terminée" "$(q $D "select request_task_review('$TID')" ; q $B "select count(*) from notifications where kind='review'")" "1"
+EXPECT=$(sa "select count(*) from (select owner_id u from projects union select user_id from canal_members where canal_id='edu' and status='member' and is_moderator) x where u <> (select id from profiles where pseudo='ahmed.lille')" | tr -d ' \n' | grep -o '[0-9]*' | head -1)
+GOT=$(sa "select count(*) from notifications where kind='review'" | tr -d ' ' | grep -o '^[0-9]*$' | head -1)
+ok "R19y2 le chef de projet et les modérateurs du canal sont tous alertés (sans doublon)" "$GOT" "$EXPECT"
+sa "update canal_members set is_moderator=false where canal_id='edu' and user_id=(select id from profiles where pseudo='sidi.paris')" >/dev/null
 has "R19z un second signalement immédiat est refusé" "$(q $D "select request_task_review('$TID')")" "too_soon"
 has "R19a l'assigné ne peut pas passer sa tâche en fait" "$(q $D "select set_task_status('$TID','done')")" "forbidden"
 ok "R19b la tâche reste en cours" "$(q $B "select status from tasks")" "doing"
