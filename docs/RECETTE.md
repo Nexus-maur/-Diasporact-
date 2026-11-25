@@ -207,4 +207,21 @@ SEC-04, CAN-03 — le reste suit la légende Statut ci-dessous).
 | PERF-02 | Volume de données | Technique | Mesurer la taille de la base après le jeu d’essai. | < 50 Mo (limite gratuite : 500 Mo). | Manuel | Mineur | À faire |
 | PERF-03 | Volume de contenus | Technique | Générer 100 projets et 1 000 commentaires ; mesurer le chargement. | Chargement < 5 s ; sinon pagination à prévoir (V1.1). | Manuel | Majeur | À faire |
 
-**Total : 102 cas** (56 bloquants, 36 majeurs, 10 mineurs).
+## Nouveautés du 25/11/2026 (nom/prénom, porte-paroles, pays par drapeaux, confidentialité)
+
+| ID | Scénario | Rôle | Étapes | Résultat attendu | Mode | Priorité | Statut |
+|---|---|---|---|---|---|---|---|
+| NOM-01 | Saisir son nom et prénom | Membre | Moi > Nom et prénom > saisir > Enregistrer. | Le nom s’affiche partout à la place du pseudo seul, le pseudo apparaît en grisé à côté. | Auto | Majeur | OK (tests UI G7-G9) ; à rejouer en réel |
+| NOM-02 | Effacer son nom | Membre | Vider les deux champs > Enregistrer. | Retour à l’affichage par pseudo seul. | Manuel | Majeur | À faire |
+| NOM-03 | Nom visible des autres membres | Deux membres | Membre A renseigne son nom ; membre B ouvre un projet, une liste, une annonce d’A. | B voit le nom d’A, pseudo en grisé. | Manuel | Majeur | OK côté base (25/11, public_profiles) ; écran à vérifier |
+| PAR-01 | Désigner un porte-parole | Admin | Moi > Administration > Porte-parole d’un pays : pseudo, pays (drapeau), case cochée. | Rôle enregistré ; plusieurs porte-paroles possibles par pays. | Auto | Bloquant | OK (25/11, test base annulé + tests UI H1-H2) |
+| PAR-02 | Seul l’admin désigne | Membre | Tenter d’appeler set_spokesperson. | Refusé (forbidden). | Auto | Bloquant | OK (25/11, test base annulé) |
+| PAR-03 | Annonce à toute la diaspora d’un pays | Porte-parole | Accueil > Publier une annonce > « Toute la diaspora d’un pays : X ». | Annonce reçue par les membres dont le pays est X. | Auto | Bloquant | OK côté base (25/11) ; à rejouer à l’écran avec un vrai compte |
+| PAR-04 | Limites du porte-parole | Porte-parole | Tenter de publier pour un autre pays ou pour tous. | Refusé ; l’option « Tous les canaux » n’est pas proposée. | Auto | Bloquant | OK (25/11, test base annulé + test UI H5) |
+| PAR-05 | Réception par pays | Membre d’un autre pays | Ouvrir l’accueil après une annonce de porte-parole. | L’annonce n’apparaît pas. | Auto | Bloquant | OK (25/11, test base annulé) |
+| PAR-06 | Orthographe du pays | Admin + porte-parole | Désigner le porte-parole avec « Senegal » alors que les membres ont « Sénégal ». | Limite connue : les accents ne sont pas normalisés, l’annonce ne leur parvient pas. Toujours choisir le pays par le drapeau. | Manuel | Majeur | À faire |
+| PAY-01 | Choisir son pays par drapeau | Membre | Moi > Pays > bouton drapeau > rechercher > choisir. | Le champ est rempli, le drapeau mis à jour, la grille se referme. | Auto | Majeur | OK (tests UI G2-G6, vérifié en ligne) |
+| CONF-01 | Politique de confidentialité | Visiteur / membre | Ouvrir confidentialite.html ; basculer en arabe ; ouvrir le lien depuis Moi et depuis l’inscription. | Page lisible en FR et AR, liens fonctionnels, application toujours installée et utilisable ensuite. | Manuel | Bloquant | À faire (page vérifiée en ligne le 25/11) |
+| SAU-05 | Rotation des sauvegardes | Admin | Lancer le workflow « Sauvegarde des données » ; compter les commits de la branche backup-data. | 30 commits au plus ; la table spokespersons figure dans l’export. | Manuel | Majeur | À faire |
+
+**Total : 102 cas** (56 bloquants, 36 majeurs, 10 mineurs), plus les 12 cas de la section « Nouveautés du 25/11/2026 ».
