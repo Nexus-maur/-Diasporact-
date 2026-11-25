@@ -26,3 +26,13 @@ jobs:
           cp -r "$RUNNER_TEMP/dump/." .
           git add -A
           if git diff --cached --quiet; then echo "Aucun changement"; else git commit -m "Sauvegarde $(date -u +%F)"; git push origin backup-data; fi
+      - name: Purger les sauvegardes de plus de 30 jours
+        run: |
+          # Ne garde que les 30 derniers commits : le plus ancien devient la nouvelle racine (droit à l'effacement).
+          N=$(git rev-list --count backup-data)
+          if [ "$N" -gt 30 ]; then
+            BASE=$(git rev-parse backup-data~29)
+            ROOT=$(git commit-tree "$BASE^{tree}" -m "Sauvegarde (début de l'historique conservé)")
+            git rebase --onto "$ROOT" "$BASE" backup-data
+            git push --force-with-lease origin backup-data
+          fi

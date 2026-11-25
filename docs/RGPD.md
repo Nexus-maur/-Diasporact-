@@ -67,12 +67,12 @@ des membres humains, qui décident eux-mêmes de contacter ou non quelqu'un.
   `delete_my_account()`). Cela supprime son profil et anonymise/retire ses
   contenus personnels selon la logique de la fonction en base.
 - **Sauvegardes** : la sauvegarde quotidienne automatique (branche GitHub
-  privée `backup-data`) conserve un historique des dumps JSON. À ce jour,
-  cet historique n'a **pas de purge automatique** — un compte supprimé peut
-  donc rester visible dans une sauvegarde ancienne jusqu'à ce qu'elle soit
-  elle-même purgée. **Action restant à faire** : mettre en place une
-  rotation (ex. conserver seulement les 30 derniers jours) pour aligner les
-  sauvegardes sur le droit à l'effacement — voir section 9.
+  privée `backup-data`) ne conserve que les **30 derniers jours** : le workflow
+  `.github/workflows/backup.yml` supprime l'historique plus ancien à chaque
+  exécution (le plus ancien des 30 commits devient la nouvelle racine). Un
+  compte supprimé peut donc subsister dans les sauvegardes 30 jours au plus.
+  Mis en place le 25/11/2026 ; à vérifier au prochain passage du workflow
+  (GitHub peut garder un temps les objets devenus inaccessibles).
 - **Comptes inactifs** : aucune purge automatique pour inactivité prolongée
   n'est en place actuellement. À envisager (ex. email ou notification après
   12-24 mois d'inactivité avant suppression), mais difficile tant qu'aucun
@@ -244,12 +244,16 @@ Le signalement initial d'une faille (par un tiers ou un membre) se fait à
 
 ## 10. Ce qui reste à faire (suivi)
 
-- [ ] Mettre en place une rotation/purge des sauvegardes (`backup-data`)
-      pour qu'un compte supprimé ne reste pas indéfiniment dans un dump
-      historique (section 4).
-- [ ] Décider avec Élie d'une politique de confidentialité autonome et
-      publique, plus complète que le résumé actuellement affiché dans
-      l'app (section 7).
+- [x] Rotation des sauvegardes sur 30 jours (workflow `backup.yml`,
+      25/11/2026) — à confirmer au prochain passage du workflow.
+- [x] Politique de confidentialité publique : page `confidentialite.html`
+      (FR/AR, 25/11/2026), liée depuis l'écran « Moi » et l'inscription.
+      À faire relire par Élie ; à tenir à jour en cas de changement de
+      sous-traitant ou de donnée collectée.
+- [ ] Envisager d'héberger soi-même les polices (Google Fonts reçoit l'adresse
+      IP des visiteurs ; mentionné dans la politique en attendant).
+- [ ] Ajouter à la politique les mentions légales de Nexus Mauritanie
+      (adresse, immatriculation) si Élie le souhaite.
 - [ ] Décider d'une politique de purge des comptes inactifs, une fois
       qu'un canal de contact (autre que WhatsApp via un relais) sera
       disponible si besoin.

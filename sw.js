@@ -1,4 +1,4 @@
-const V = 'dp-v5';
+const V = 'dp-v6';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './vendor/supabase.js'];
 
 self.addEventListener('install', e => {
@@ -19,6 +19,7 @@ self.addEventListener('fetch', e => {
   const u = new URL(r.url);
 
   // Pages : réseau d'abord, puis copie hors ligne
+  if (r.mode === 'navigate' && u.origin === location.origin && !/^\/(index\.html)?$/.test(u.pathname)) return; // ex. confidentialite.html : réseau normal, sans toucher à la copie de l'app
   if (r.mode === 'navigate') {
     e.respondWith(
       fetch(r)
