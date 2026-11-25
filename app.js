@@ -488,7 +488,7 @@ function vNewProject(p){
 
 function titleFor(r,p){
   switch(r){case 'canals':return t('nav_canals');case 'projects':return t('nav_projects');case 'help':return t('nav_help');case 'alerts':return t('nav_alerts');
-    case 'canal':return c(canalOf(p.id).n);case 'project':return projOf(p.id)?c(projOf(p.id).t):'';case 'newProject':return t('new_project');case 'newHelp':return t('new_help');case 'me':return t('my_account');case 'feedback':return L3('Votre avis','رأيك','Your feedback');default:return t('app_short');}
+    case 'canal':return c(canalOf(p.id).n);case 'project':return projOf(p.id)?c(projOf(p.id).t):'';case 'newProject':return t('new_project');case 'newHelp':return t('new_help');case 'me':return t('my_account');case 'feedback':return L3('Votre avis','رأيك','Your feedback');case 'prereg':return L3('Préinscription','التسجيل المسبق','Pre-registration');default:return t('app_short');}
 }
 
 /* ============ Rendu ============ */
@@ -536,11 +536,11 @@ function decorateFlags(el){
 }
 function render(resetScroll){
   var acct=hasAccount(),r=S.route.name,p=S.route.params||{};
-  if(!acct&&['load','inv0','inv1','invRec'].indexOf(r)<0){S.route={name:'inv0',params:{}};r='inv0';p={};}
+  if(!acct&&['load','inv0','inv1','invRec','prereg'].indexOf(r)<0){S.route={name:'inv0',params:{}};r='inv0';p={};}
   root.lang=S.lang;root.dir=S.lang==='ar'?'rtl':'ltr';
   root.setAttribute('data-theme',S.theme==='dark'?'dark':'light');
   var tc=document.querySelector('meta[name="theme-color"]');if(tc)tc.setAttribute('content',S.theme==='dark'?'#0E1511':'#FFFFFF');
-  var onb=r.indexOf('inv')===0||r==='load',detail=['canal','project','newProject','newHelp','me','feedback'].indexOf(r)>-1&&S.stack.length>0;
+  var onb=r.indexOf('inv')===0||r==='load'||r==='prereg',detail=['canal','project','newProject','newHelp','me','feedback'].indexOf(r)>-1&&S.stack.length>0;
   var tb=(detail?'<button class="icon-btn flip" data-act="back" aria-label="'+T('back')+'">'+ic('back',22)+'</button>':logoSvg())+'<h1>'+esc(titleFor(r,p))+'</h1><button class="icon-btn lang-btn" data-act="toggle-lang" aria-label="'+esc(S.lang==='fr'?'English':S.lang==='en'?'العربية':'Français')+'">'+(S.lang==='fr'?'EN':S.lang==='en'?'ع':'FR')+'</button><button class="icon-btn" data-act="toggle-theme" aria-label="'+esc(S.theme==='dark'?t('th_light'):t('th_dark'))+'">'+ic(S.theme==='dark'?'sun':'moon',20)+'</button>'+(acct&&!onb?'<button class="icon-btn me-btn" data-act="go-me" aria-label="'+T('my_account')+'">'+av(S.me.pseudo,32)+'</button>':'');
   $('#topbar').innerHTML=tb;
   var view=$('#view'),y=view.scrollTop;
@@ -747,16 +747,18 @@ function doRefresh(){
         q(cl.from('invites').select('*').eq('active',true).eq('kind','join').order('created_at')),
         q(cl.from('spokesperson_list').select('*')),
         q(cl.from('ai_testers').select('user_id')),
-        q(cl.from('feedback').select('*').order('created_at',{ascending:false}))
+        q(cl.from('feedback').select('*').order('created_at',{ascending:false})),
+        q(cl.from('preregistrations').select('*').order('created_at',{ascending:false}))
       ]).then(function(d){applyData(meRow,d);return true;});
     });
   });
 }
 function applyData(me,d){
-  var canals=d[0],stats=d[1],mods=d[2],pubs=d[3],cms=d[4],projs=d[5],mss=d[6],tks=d[7],team=d[8],cmts=d[9],helps=d[10],anns=d[11],myReads=d[12],rcount=d[13],notifs=d[14],breqs=d[15],grants=d[16],eng=d[17],dir=d[18],fol=d[19],props=d[20],invs=d[21],spks=d[22]||[],aits=d[23]||[],fbs=d[24]||[];
+  var canals=d[0],stats=d[1],mods=d[2],pubs=d[3],cms=d[4],projs=d[5],mss=d[6],tks=d[7],team=d[8],cmts=d[9],helps=d[10],anns=d[11],myReads=d[12],rcount=d[13],notifs=d[14],breqs=d[15],grants=d[16],eng=d[17],dir=d[18],fol=d[19],props=d[20],invs=d[21],spks=d[22]||[],aits=d[23]||[],fbs=d[24]||[],pres=d[25]||[];
   var pp={};S.pubId={};S.honorOk={};S.names={};pubs.forEach(function(p){pp[p.id]=p.pseudo;S.pubId[p.pseudo]=p.id;S.honorOk[p.pseudo]=p.show_honor!==false;var nm=((p.first_name||'')+' '+(p.last_name||'')).trim();if(nm)S.names[p.pseudo]=nm;});S.pub=pp;S.flags={};pubs.forEach(function(p){var f=flagFor(p.country);if(f)S.flags[p.pseudo]=f;});
   S.spkCountries=[];spks.forEach(function(s){if(s.pseudo===me.pseudo)S.spkCountries.push(s.country);});
   S.fb=fbs.map(function(r){return {uid:r.user_id,who:pp[r.user_id]||'',a:r.answers||{},lang:r.lang||'',at:(r.created_at||'').slice(0,16).replace('T',' ')};});
+  S.pre=pres.map(function(r){return {fn:r.first_name||'',ct:r.contact,co:r.country||'',cn:r.canals||[],lang:r.lang||'',at:(r.created_at||'').slice(0,16).replace('T',' ')};});
   /* canaux */
   canals.forEach(function(row){var k=CANALS.filter(function(x){return x.id===row.id;})[0];
     if(!k){k={id:row.id,ico:row.ico,n:{fr:row.name_fr,ar:row.name_ar},d:{fr:row.desc_fr,ar:row.desc_ar}};CANALS.push(k);}
@@ -1037,6 +1039,37 @@ function fbAdmin(){
   return '<section class="card stack s8"><h2 class="h3">'+esc(L3('Retours des testeurs','ملاحظات المختبرين','Tester feedback'))+'</h2><p class="muted small">'+esc(L3('Lien direct à envoyer aux testeurs :','رابط مباشر لإرساله للمختبرين:','Direct link to send to testers:'))+'</p><p class="linkbox" dir="ltr" style="overflow-wrap:anywhere">'+esc(u)+'</p>'+
   '<div class="row wrap"><button class="btn sm grow" data-act="fb-copy">'+ic('copy',16)+esc(L3('Copier le lien','نسخ الرابط','Copy link'))+'</button><button class="btn sm grow" data-act="fb-sum">'+esc(L3('Synthèse','الملخص','Summary'))+' ('+(S.fb||[]).length+')</button><button class="btn sm grow" data-act="fb-csv">CSV</button></div></section>';
 }
+/* ============ Préinscription (avant le lancement) ============ */
+function vPrereg(){
+  if(S.preDone)return heroBlock(L3('Préinscription','التسجيل المسبق','Pre-registration'),L3('Merci, vous êtes préinscrit(e) !','شكرًا، تم تسجيلك مسبقًا!','Thank you, you are pre-registered!'),L3('Nous vous contacterons dès l’ouverture de Diasporact, avec votre lien d’invitation.','سنتواصل معك فور افتتاح Diasporact مع رابط الدعوة الخاص بك.','We will contact you as soon as Diasporact opens, with your invitation link.'))+
+    '<button class="btn block" data-act="pre-back">'+esc(L3('Retour','رجوع','Back'))+'</button>';
+  var ck=CANALS.map(function(k){return '<label class="fbo"><input type="checkbox" name="pr_canal" value="'+k.id+'"><span>'+C(k.n)+'</span></label>';}).join('');
+  return heroBlock(L3('Préinscription','التسجيل المسبق','Pre-registration'),L3('Rejoignez Diasporact dès son ouverture','انضم إلى Diasporact فور افتتاحه','Join Diasporact as soon as it opens'),L3('Laissez-nous votre contact : vous recevrez votre lien d’invitation au lancement.','اترك لنا وسيلة تواصل لتصلك دعوتك عند الإطلاق.','Leave us your contact and you will get your invitation link at launch.'))+
+  '<form data-form="prereg" class="stack" novalidate>'+
+  '<div class="field"><label for="pr-fn">'+esc(L3('Prénom (facultatif)','الاسم الأول (اختياري)','First name (optional)'))+'</label><input type="text" id="pr-fn" maxlength="60" autocomplete="given-name"></div>'+
+  '<div class="field"><label for="pr-ct">'+esc(L3('E-mail ou numéro WhatsApp','البريد الإلكتروني أو رقم واتساب','Email or WhatsApp number'))+'</label><input type="text" id="pr-ct" maxlength="120" autocomplete="email" autocapitalize="none" spellcheck="false" dir="ltr" inputmode="email"></div>'+
+  '<div class="field"><label for="pr-c">'+esc(L3('Pays de résidence (facultatif)','بلد الإقامة (اختياري)','Country of residence (optional)'))+'</label>'+countryInput('pr-c','','maxlength="60" autocomplete="country-name"')+'</div>'+
+  '<fieldset class="card stack s8 fbq"><legend class="lbl">'+esc(L3('Vos centres d’intérêt (facultatif)','اهتماماتك (اختياري)','Your interests (optional)'))+'</legend><div class="fbopts">'+ck+'</div></fieldset>'+
+  '<div style="position:absolute;left:-9999px" aria-hidden="true"><input type="text" id="pr-hp" tabindex="-1" autocomplete="off"></div>'+
+  '<label class="pick" for="pr-ok"><input type="checkbox" id="pr-ok"><span class="grow t small">'+esc(L3('J’accepte d’être contacté(e) pour le lancement de Diasporact. Mes données ne servent qu’à cela et seront supprimées sur simple demande.','أوافق على التواصل معي بخصوص إطلاق Diasporact. تُستخدم بياناتي لهذا الغرض فقط وتُحذف عند الطلب.','I agree to be contacted about the Diasporact launch. My data is used only for that and deleted on request.'))+'</span></label>'+
+  '<p class="muted small"><a href="confidentialite.html" target="_blank" rel="noopener">'+esc(L3('Politique de confidentialité','سياسة الخصوصية','Privacy policy'))+'</a></p>'+
+  '<p class="fb err" id="pr-err" aria-live="polite"></p><button class="btn primary block" type="submit">'+esc(L3('Me préinscrire','سجّلني مسبقًا','Pre-register me'))+'</button><button class="btn block" type="button" data-act="pre-back">'+esc(L3('Retour','رجوع','Back'))+'</button></form>';
+}
+function preCard(){
+  return '<section class="card stack s8"><h2 class="h3">'+esc(L3('Pas encore d’invitation ?','ليس لديك دعوة بعد؟','No invitation yet?'))+'</h2><p class="muted small">'+esc(L3('Préinscrivez-vous : nous vous enverrons votre lien au lancement.','سجّل مسبقًا: سنرسل لك رابطك عند الإطلاق.','Pre-register: we will send you your link at launch.'))+'</p><button class="btn sm primary" data-act="pre-open">'+esc(L3('Me préinscrire','سجّلني مسبقًا','Pre-register me'))+'</button></section>';
+}
+function preAdmin(){
+  if(!S.me.admin)return '';
+  return '<section class="card stack s8"><h2 class="h3">'+esc(L3('Préinscriptions','التسجيلات المسبقة','Pre-registrations'))+' ('+(S.pre||[]).length+')</h2><p class="muted small">'+esc(L3('Lien public à diffuser :','الرابط العام للنشر:','Public link to share:'))+'</p><p class="linkbox" dir="ltr" style="overflow-wrap:anywhere">'+esc(appUrl('preinscription'))+'</p>'+
+  '<div class="row wrap"><button class="btn sm grow" data-act="pre-copy">'+ic('copy',16)+esc(L3('Copier le lien','نسخ الرابط','Copy link'))+'</button><button class="btn sm grow" data-act="pre-list">'+esc(L3('Voir la liste','عرض القائمة','View list'))+'</button><button class="btn sm grow" data-act="pre-csv">CSV</button></div></section>';
+}
+function preCsv(){
+  function cell(v){v=v==null?'':Array.isArray(v)?v.join('|'):String(v);if(/^[=+\-@]/.test(v))v="'"+v;return '"'+v.replace(/"/g,'""')+'"';}
+  var out=[['date','prenom','contact','pays','interets','langue'].map(cell).join(',')];
+  (S.pre||[]).forEach(function(r){out.push([r.at,r.fn,r.ct,r.co,r.cn,r.lang].map(cell).join(','));});
+  return '﻿'+out.join('\r\n');
+}
+function downloadText(name,txt,type){var blob=new Blob([txt],{type:type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(url);},1000);}
 function adminSection(){
   if(!S.me.admin)return '';
   return '<section class="card stack s8"><h2 class="h3">'+T('adm_title')+'</h2>'+
@@ -1065,7 +1098,7 @@ function vMe(){
     '<button class="btn sm" type="submit">'+T('sk_save')+'</button></form></section>'+
   '<section class="card stack s8"><h2 class="h3">'+T('country')+'</h2><form data-form="mycountry" class="row" novalidate><div class="grow">'+countryInput('my-country',S.me.country,'maxlength="60" autocomplete="country-name" aria-label="'+esc(t('country'))+'"')+'</div><button class="btn sm" type="submit">'+T('sk_save')+'</button></form></section>'+
   '<section class="card stack s8"><h2 class="h3">'+T('tour_title')+'</h2><p class="muted small">'+T('tour_again_sub')+'</p><button class="btn sm" data-act="tour-open">'+T('tour_again')+'</button></section>'+
-  fbCard()+badgesSection()+skillsSection()+adminSection()+fbAdmin()+
+  fbCard()+badgesSection()+skillsSection()+adminSection()+fbAdmin()+preAdmin()+
   (S.anon?'<section class="card stack s8"><h2 class="h3">'+T('secure_t')+'</h2><p class="muted small">'+T('secure_note')+'</p>'+'<form data-form="setpw" class="stack s8" novalidate><input type="text" name="username" autocomplete="username" value="'+esc(S.me.pseudo)+'" tabindex="-1" aria-hidden="true" readonly style="position:absolute;opacity:0;height:0;width:0;pointer-events:none"><input type="password" id="sp-w" name="password" autocomplete="new-password" minlength="8" maxlength="72" dir="ltr" placeholder="'+esc(t('pw_new'))+'" aria-label="'+esc(t('pw_new'))+'"><button class="btn sm" type="submit">'+T(S.anon?'secure_go':'change_pw')+'</button></form>'+'</section>':'<section class="card stack s8"><h2 class="h3">'+ic('lock',16)+' '+T('acct_ok_t')+'</h2><p class="muted small">'+T('acct_ok_note',{p:esc(S.me.pseudo)})+'</p>'+'<div class="stack s8"><h3 class="h3">'+T('sc_title')+'</h3><p class="muted small">'+T('sc_note')+' '+T('sc_gen_warn')+'</p><button class="btn sm" data-act="gen-code">'+T('sc_gen')+'</button></div>'+'<form data-form="setpw" class="stack s8" novalidate><input type="text" name="username" autocomplete="username" value="'+esc(S.me.pseudo)+'" tabindex="-1" aria-hidden="true" readonly style="position:absolute;opacity:0;height:0;width:0;pointer-events:none"><input type="password" id="sp-w" name="password" autocomplete="new-password" minlength="8" maxlength="72" dir="ltr" placeholder="'+esc(t('pw_new'))+'" aria-label="'+esc(t('pw_new'))+'"><button class="btn sm" type="submit">'+T(S.anon?'secure_go':'change_pw')+'</button></form>'+'<button class="btn sm" data-act="logout">'+T('logout_t')+'</button></section>')+
   '<section class="card stack s8"><h2 class="h3">'+T('recov')+'</h2><p class="muted small">'+T('recov_note')+'</p></section>'+
   '<section class="stack s8"><div class="lbl">'+T('lang')+'</div><div class="seg"><button aria-pressed="'+(S.lang==='fr')+'" data-act="lang" data-v="fr">Français</button><button aria-pressed="'+(S.lang==='en')+'" data-act="lang" data-v="en">English</button><button aria-pressed="'+(S.lang==='ar')+'" data-act="lang" data-v="ar">العربية</button></div>'+
@@ -1087,7 +1120,7 @@ function vLoad(){return heroBlock('','Diasporact',S.fatal?esc(S.fatal):T('loadin
 function vInv0(){
   return heroBlock(T('inv_from'),T('inv0_title'),T('inv0_sub'))+(S.auth.err?'<div class="banner">'+ic('lock',18)+'<span>'+esc(S.auth.err)+'</span></div>':'')+
   '<form data-form="invlink" class="stack" novalidate><div class="field"><label for="il-in">'+T('inv0_ph')+'</label><input type="text" id="il-in" autocomplete="off" autocapitalize="none" spellcheck="false" dir="ltr"></div><button class="btn primary block" type="submit">'+T('inv0_go')+'</button></form>'+
-  '<section class="card stack s8"><h2 class="h3">'+T('have_acct')+'</h2><p class="muted small">'+T('login_sub')+'</p><form data-form="login" class="stack s8" novalidate><div class="pfx" dir="ltr">@<input type="text" id="lg-p" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="24" aria-label="'+esc(t('pseudo_label'))+'"></div><input type="password" id="lg-w" name="password" autocomplete="current-password" maxlength="72" dir="ltr" aria-label="'+esc(t('pw_label'))+'"><button class="btn block" type="submit">'+T('login_go')+'</button></form><button class="btn sm" type="button" data-act="forgot">'+T('forgot')+'</button></section>';
+  '<section class="card stack s8"><h2 class="h3">'+T('have_acct')+'</h2><p class="muted small">'+T('login_sub')+'</p><form data-form="login" class="stack s8" novalidate><div class="pfx" dir="ltr">@<input type="text" id="lg-p" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="24" aria-label="'+esc(t('pseudo_label'))+'"></div><input type="password" id="lg-w" name="password" autocomplete="current-password" maxlength="72" dir="ltr" aria-label="'+esc(t('pw_label'))+'"><button class="btn block" type="submit">'+T('login_go')+'</button></form><button class="btn sm" type="button" data-act="forgot">'+T('forgot')+'</button></section>'+preCard();
 }
 function vInv1(){
   var pk=S.auth.peek||{},adm=pk.kind==='admin',k=pk.canal?canalOf(pk.canal):null;
@@ -1099,7 +1132,7 @@ function vInv1(){
   '<p class="muted small">'+t('privacy_link')+'</p><button type="submit" class="btn primary block" id="pseudo-go" disabled>'+T('create_account')+'</button></form>';
 }
 function vInvRec(){return heroBlock(T('inv_from'),T('rec_title'),T('rec_sub'))+'<button class="btn primary block" data-act="rec-go">'+T('rec_go')+'</button>';}
-var VIEWS={load:vLoad,inv0:vInv0,inv1:vInv1,invRec:vInvRec,home:vHome,canals:vCanals,canal:vCanal,projects:vProjects,project:vProject,newProject:vNewProject,help:vHelp,newHelp:vNewHelp,alerts:vAlerts,me:vMe,feedback:vFeedback};
+var VIEWS={load:vLoad,inv0:vInv0,inv1:vInv1,invRec:vInvRec,home:vHome,canals:vCanals,canal:vCanal,projects:vProjects,project:vProject,newProject:vNewProject,help:vHelp,newHelp:vNewHelp,alerts:vAlerts,me:vMe,feedback:vFeedback,prereg:vPrereg};
 var pseudoTimer,pseudoSeq=0;
 function updatePseudo(){
   var inp=$('#pseudo');if(!inp)return;var v=inp.value.trim().toLowerCase(),fb=$('#pseudo-fb'),go=$('#pseudo-go');S.draft.pseudo=inp.value;
@@ -1173,6 +1206,11 @@ Object.assign(I18N.fr,{tour10_b:'Donner mon avis (3 min)'});Object.assign(I18N.a
 var ACT={
  'tour-open':function(){openTour(0);},
  'fb-open':function(){go('feedback');},
+ 'pre-open':function(){S.preDone=false;S.route={name:'prereg',params:{}};render(true);},
+ 'pre-back':function(){S.preDone=false;clearHash();S.route={name:'inv0',params:{}};render(true);},
+ 'pre-copy':function(){S._msg=appUrl('preinscription');ACT['copy-msg']();},
+ 'pre-csv':function(){downloadText('diasporact-preinscriptions.csv',preCsv(),'text/csv;charset=utf-8');},
+ 'pre-list':function(){var r=S.pre||[];openSheet(L3('Préinscriptions','التسجيلات المسبقة','Pre-registrations'),r.length?'<div class="card list">'+r.map(function(x){return '<div class="li"><span class="grow t">'+esc(x.fn||'—')+' · <span dir="ltr">'+esc(x.ct)+'</span><br><span class="muted small">'+esc((x.co?x.co+' · ':'')+x.at)+'</span></span></div>';}).join('')+'</div>':'<p class="muted">—</p>');},
  'fb-copy':function(){S._msg=appUrl('q');ACT['copy-msg']();},
  'fb-sum':function(){openSheet(L3('Synthèse des retours','ملخص الملاحظات','Feedback summary'),fbSummary());},
  'fb-csv':function(){var blob=new Blob([fbCsv()],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='diasporact-retours-testeurs.csv';document.body.appendChild(a);a.click();setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(url);},1000);},
@@ -1284,6 +1322,15 @@ function need(id,errId,msgKey){var el=$('#'+id);if(!el||!el.value.trim()){var e=
 function list(v){return v.split(',').map(function(x){return x.trim();}).filter(Boolean);}
 function codeFromInput(v){var parts=String(v||'').trim().split(/[\/#?\s]+/).filter(Boolean);return parts.length?parts[parts.length-1]:'';}
 var FORMS={
+ prereg:function(f){
+   var e=$('#pr-err'),ct=($('#pr-ct').value||'').trim(),fn=($('#pr-fn').value||'').trim().slice(0,60),co=($('#pr-c').value||'').trim().slice(0,60);
+   if($('#pr-hp').value){S.preDone=true;render(true);return;}
+   if(!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(ct)&&!/^\+?[0-9 ().-]{8,20}$/.test(ct)){e.textContent=L3('Saisissez un e-mail ou un numéro WhatsApp valide.','أدخل بريدًا إلكترونيًا أو رقم واتساب صحيحًا.','Enter a valid email or WhatsApp number.');return;}
+   if(!$('#pr-ok').checked){e.textContent=L3('Veuillez accepter d’être contacté(e).','يرجى الموافقة على التواصل معك.','Please agree to be contacted.');return;}
+   var cn=[].slice.call(f.querySelectorAll('input[name=pr_canal]:checked')).map(function(i){return i.value;});
+   if(S.busy)return;S.busy=true;e.textContent='';
+   rpc('preregister',{p_first:fn,p_contact:ct,p_country:co,p_canals:cn,p_lang:S.lang}).then(function(){S.busy=false;S.preDone=true;render(true);}).catch(function(x){S.busy=false;e.textContent=/busy/.test(String(x&&x.message))?L3('Trop de demandes en ce moment, réessayez dans quelques minutes.','طلبات كثيرة حاليًا، أعد المحاولة بعد دقائق.','Too many requests right now, try again in a few minutes.'):L3('Une erreur est survenue. Réessayez dans un instant.','حدث خطأ. أعد المحاولة بعد قليل.','Something went wrong. Please try again shortly.');});
+ },
  feedback:function(f){
    var a=fbAnswers(f);
    if(!Object.keys(a).length){var e=$('#fb-err');if(e)e.textContent=L3('Répondez à au moins une question.','أجب عن سؤال واحد على الأقل.','Answer at least one question.');return;}
@@ -1363,7 +1410,7 @@ document.addEventListener('submit',function(e){e.preventDefault();var f=e.target
 document.addEventListener('change',function(e){if(e.target.id==='noted'){var b=$('#enter');if(b)b.disabled=!e.target.checked;}});
 
 /* ============ Démarrage ============ */
-function hashInfo(){if(/^#\/q\/?$/.test(location.hash||''))return {k:'q',v:''};var m=(location.hash||'').match(/^#\/(i|p|a)\/([^\/?#]+)/);return m?{k:m[1],v:decodeURIComponent(m[2])}:null;}
+function hashInfo(){if(/^#\/preinscription\/?$/.test(location.hash||''))return {k:'pre',v:''};if(/^#\/q\/?$/.test(location.hash||''))return {k:'q',v:''};var m=(location.hash||'').match(/^#\/(i|p|a)\/([^\/?#]+)/);return m?{k:m[1],v:decodeURIComponent(m[2])}:null;}
 function clearHash(){try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}}
 function goHome(){
   S.stack=[];var h=S.deep;S.deep=null;
@@ -1396,7 +1443,7 @@ function boot(){
   client().auth.getSession().then(function(r){return r.data.session?refresh():false;}).then(function(ok){
     if(ok){if(h&&h.k==='i')return inviteWhileRegistered(h.v);S.deep=(h&&(h.k==='p'||h.k==='q'))?h:null;goHome();return;}
     if(h&&h.k==='i')return startOnboarding(h.v);
-    S.route={name:'inv0',params:{}};render(true);
+    S.route={name:(h&&h.k==='pre')?'prereg':'inv0',params:{}};render(true);
   }).catch(function(e){S.fatal=errMsg(e);render(true);});
   window.addEventListener('hashchange',function(){if(/^#\/i\//.test(location.hash))location.reload();else if(/^#\/q\/?$/.test(location.hash)&&hasAccount()&&S.route.name!=='feedback'){S.stack=[{name:'home',params:{}}];S.route={name:'feedback',params:{}};render(true);}});
   setInterval(function(){

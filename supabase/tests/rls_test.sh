@@ -268,4 +268,19 @@ has "R137 un membre ne modifie pas ses réponses" "$(q $C "update feedback set a
 has "R138 réponses trop lourdes refusées" "$(q $C "insert into feedback(user_id, answers) values (me(), jsonb_build_object('x', repeat('a', 25000)))")" "check"
 ok "R139 export des données : réponses incluses" "$(q $C "select json_array_length(export_my_data()->'questionnaire_retours')")" "1"
 
+# Préinscriptions
+qa(){ $DB -c "set role anon;" -c "$*" 2>&1 | grep -v '^$' | grep -v '^SET$'; }
+has "R140 visiteur se préinscrit (e-mail)" "$(qa "select preregister('Aïcha','aicha@example.com','France','{edu}','fr')")" "ok"
+ok "R141 préinscription enregistrée" "$(sa "select count(*) from preregistrations" | tail -1)" "1"
+qa "select preregister('Autre','AICHA@example.com','FR','{}','fr')" >/dev/null
+ok "R142 doublon ignoré (sans distinction de casse)" "$(sa "select count(*) from preregistrations" | tail -1)" "1"
+has "R143 numéro WhatsApp accepté" "$(qa "select preregister('','+222 36 12 34 56','Mauritanie','{}','ar')")" "ok"
+has "R144 contact invalide refusé" "$(qa "select preregister('x','pas un contact','FR','{}','fr')")" "bad_contact"
+has "R145 prénom trop long refusé" "$(qa "select preregister(repeat('a',70),'long@example.com','FR','{}','fr')")" "too_long"
+ok "R146 un visiteur ne lit pas la liste" "$(qa "select count(*) from preregistrations")" "0"
+ok "R147 un membre ne lit pas la liste" "$(q $B "select count(*) from preregistrations")" "0"
+ok "R148 l'administrateur lit la liste" "$(q $A "select count(*) from preregistrations")" "2"
+ok "R149 un membre ne supprime pas" "$(q $B "delete from preregistrations returning 1" | wc -l | tr -d ' ')" "0"
+ok "R150 l'administrateur supprime" "$(q $A "delete from preregistrations returning 1" | wc -l | tr -d ' ')" "2"
+
 echo "----"; echo "$pass réussis, $fail échoués"; [ $fail -eq 0 ]

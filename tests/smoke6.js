@@ -278,6 +278,23 @@ async function open(mock,hash,opt){
   ok(a.txt().includes('#/q')&&a.txt().includes('Retours des testeurs'),'M8 l\'admin voit le lien direct à diffuser');
   await a.click('[data-act=fb-sum]');ok(a.txt().includes('4.0/5')&&a.txt().includes('8.0/10')&&a.txt().includes('Très clair'),'M9 synthèse : moyennes et verbatims');
   ok(a.errs.length===0,'M10 aucune erreur JS ('+a.errs.join('|')+')');
+  /* N. Préinscription publique */
+  m=makeMock({});
+  a=await open(m);await sleep(150);
+  ok(a.txt().includes('Pas encore')&&!!a.q('[data-act=pre-open]'),'N1 l\'écran d\'accueil propose la préinscription');
+  await a.click('[data-act=pre-open]');ok(!!a.q('[data-form=prereg]'),'N2 le formulaire de préinscription s\'ouvre');
+  a.set('#pr-ct','pas un contact');a.q('#pr-ok').click();await a.submit('[data-form=prereg]');ok(m.DB.preregistrations.length===0&&a.txt().includes('valide'),'N3 contact invalide refusé');
+  a.set('#pr-ct','aicha@example.com');a.q('#pr-ok').click();await a.submit('[data-form=prereg]');ok(m.DB.preregistrations.length===0&&a.txt().includes('accepter'),'N4 consentement obligatoire');
+  a.set('#pr-fn','Aïcha');a.set('#pr-c','France');a.q('#pr-ok').click();a.q('input[name=pr_canal]').click();await a.submit('[data-form=prereg]');await sleep(150);
+  ok(m.DB.preregistrations.length===1&&m.DB.preregistrations[0].contact==='aicha@example.com'&&m.DB.preregistrations[0].canals.length===1&&a.txt().includes('préinscrit'),'N5 préinscription enregistrée, remerciement affiché');
+  a=await open(makeMock({}),'#/preinscription');await sleep(200);ok(!!a.q('[data-form=prereg]'),'N6 lien direct #/preinscription');
+  a.set('#pr-hp','robot');a.set('#pr-ct','bot@example.com');a.q('#pr-ok').click();await a.submit('[data-form=prereg]');ok(a.txt().includes('préinscrit'),'N7 piège anti-robot : succès simulé sans enregistrement');
+  m=makeMock({session:'u-3'});m.DB.profiles.push({id:'p-adm',auth_uid:'u-3',pseudo:'admin.nkc',country:'Mauritanie',lang:'fr',skills:[],matching:false,show_honor:true,is_admin:true,is_ref:false});
+  m.DB.preregistrations.push({id:'x1',first_name:'Aïcha',contact:'aicha@example.com',country:'France',canals:['edu'],lang:'fr',created_at:new Date().toISOString()});
+  a=await open(m);await sleep(150);await a.click('[data-act=go-me]');
+  ok(a.txt().includes('Préinscriptions (1)')&&a.txt().includes('#/preinscription'),'N8 l\'admin voit le lien public et le nombre');
+  await a.click('[data-act=pre-list]');ok(a.txt().includes('aicha@example.com'),'N9 liste des préinscrits');
+  ok(a.errs.length===0,'N10 aucune erreur JS ('+a.errs.join('|')+')');
   /* F. Configuration absente */
   const dom=new JSDOM(HTML,{runScripts:'dangerously',url:'https://diasporact.test/'});await sleep(200);
   ok((()=>{const c=dom.window.document.body.cloneNode(true);c.querySelectorAll('script').forEach(x=>x.remove());return /pas encore configurée|not configured yet/.test(c.textContent);})(),'F1 message si clés absentes');

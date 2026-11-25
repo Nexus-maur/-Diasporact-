@@ -269,3 +269,9 @@ SEC-04, CAN-03 — le reste suit la légende Statut ci-dessous).
 - [ ] Testeur IA : question supplémentaire sur l'assistant ; non-testeur : absente.
 - [ ] Administrateur (Moi) : lien à copier, synthèse (moyennes, verbatims) et export CSV.
 - [ ] Dernière étape de la visite guidée : bouton « Donner mon avis ».
+
+## Préinscription
+- [ ] Écran d'accueil visiteur : carte « Pas encore d'invitation ? » ; le lien public `…/#/preinscription` ouvre directement le formulaire.
+- [ ] E-mail ou WhatsApp invalide refusé ; case de consentement obligatoire ; remerciement après envoi ; un doublon donne le même message.
+- [ ] Administrateur (Moi) : nombre, lien public à copier, liste et export CSV.
+- [ ] Au lancement : envoyer les liens d'invitation aux préinscrits, puis supprimer la liste.

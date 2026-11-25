@@ -302,3 +302,13 @@ Le signalement initial d'une faille (par un tiers ou un membre) se fait à
   compte ; incluse dans l'export (`questionnaire_retours`) et la sauvegarde.
 - Facultatif, aucune donnée sensible demandée ; texte libre limité à 1 000
   caractères par champ ; usage : amélioration de l'application en phase test.
+
+## Préinscriptions publiques (avant le lancement)
+- Table `preregistrations` (prénom facultatif, e-mail ou WhatsApp, pays et
+  centres d'intérêt facultatifs, langue, date). Écriture uniquement par la
+  fonction `preregister` (ouverte aux visiteurs : format contrôlé, doublons
+  ignorés sans rien révéler, 300 demandes par heure au maximum, champ piège
+  anti-robot). Lecture et suppression : administrateur seul.
+- Base légale : consentement (case à cocher). Conservation : jusqu'à l'envoi de
+  l'invitation, 12 mois au plus ; suppression sur demande. Incluse dans la
+  sauvegarde chiffrée du dépôt privé.

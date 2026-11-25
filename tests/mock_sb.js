@@ -1,7 +1,7 @@
 /* Faux client Supabase en mémoire, pour tester le câblage de l'interface (les règles de sécurité sont testées en SQL). */
 module.exports=function makeMock(opts){
   var uid=0;function id(){return 'id-'+(++uid);}
-  var DB={ai_testers:[],spokespersons:[],profiles:[],canals:[],canal_members:[],invites:[],projects:[],milestones:[],tasks:[],project_team:[],comments:[],follows:[],proposals:[],helps:[],announcements:[],ann_reads:[],badge_requests:[],badge_grants:[],notifications:[],feedback:[]};
+  var DB={ai_testers:[],spokespersons:[],profiles:[],canals:[],canal_members:[],invites:[],projects:[],milestones:[],tasks:[],project_team:[],comments:[],follows:[],proposals:[],helps:[],announcements:[],ann_reads:[],badge_requests:[],badge_grants:[],notifications:[],feedback:[],preregistrations:[]};
   ['edu','inv','san','adm','num','cul'].forEach(function(k,i){DB.canals.push({id:k,ico:'hash',name_fr:k,name_ar:k,desc_fr:'',desc_ar:'',wa_link:null,sort:i});});
   var session=opts.session?{user:{id:opts.session}}:null;
   var calls=[];
@@ -66,6 +66,7 @@ module.exports=function makeMock(opts){
     decide_join:function(a){var m=DB.canal_members.filter(function(x){return x.canal_id===a.p_canal&&x.user_id===a.p_user;})[0];m.status=a.p_accept?'member':'refused';},
     mark_read:function(a){if(!DB.ann_reads.some(function(r){return r.ann_id===a.p_ann&&r.user_id===me().id;}))DB.ann_reads.push({ann_id:a.p_ann,user_id:me().id});},
     take_task:function(a){var t=DB.tasks.filter(function(x){return x.id===a.p_task;})[0];t.assignee_id=me().id;t.status='doing';},
+    preregister:function(a){if(!/@|^\+?[0-9 ().-]{8,20}$/.test(a.p_contact))throw new Error('bad_contact');if(!DB.preregistrations.some(function(x){return x.contact.toLowerCase()===a.p_contact.toLowerCase();}))DB.preregistrations.push({id:'pr'+DB.preregistrations.length,first_name:a.p_first,contact:a.p_contact,country:a.p_country,canals:a.p_canals,lang:a.p_lang,created_at:new Date().toISOString()});return {ok:true};},
     request_task_review:function(a){var tk=DB.tasks.filter(function(x){return x.id===a.p_task;})[0];if(tk.review_at)throw new Error('too_soon');tk.review_at=new Date().toISOString();var pj=DB.projects.filter(function(x){return x.id===tk.project_id;})[0];DB.notifications.push({id:'n-rv'+DB.notifications.length,user_id:pj.owner_id,kind:'review',ref:pj.id,body:'sidi.paris · '+tk.title,read:false,created_at:new Date().toISOString()});},
     set_task_status:function(a){DB.tasks.filter(function(x){return x.id===a.p_task;})[0].status=a.p_status;},
     claim_help:function(a){var h=DB.helps.filter(function(x){return x.id===a.p_help;})[0];h.status='doing';h.claimed_by=me().id;},
