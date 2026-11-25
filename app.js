@@ -8,6 +8,17 @@ var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(ch){
 /* ============ Textes ============ */
 var I18N={
 fr:{
+tour_title:'Visite guidée',tour_of:'Étape {a} sur {b}',tour_next:'Suivant',tour_prev:'Précédent',tour_skip:'Passer la visite',tour_end:'Terminer',tour_again:'Revoir la visite guidée',tour_again_sub:'Un tour rapide pour prendre en main Diasporact.',
+tour1_t:'Bienvenue sur Diasporact',tour1_d:'Diasporact est l’espace de la diaspora mauritanienne : on s’y informe, on s’entraide et on monte des projets ensemble. Cette visite dure deux minutes. Vous pouvez la rouvrir à tout moment.',
+tour2_t:'Les cinq onglets du bas',tour2_d:'Accueil : vos tâches et les annonces. Canaux : les groupes par thème ou par pays. Projets : ce qui se construit. Entraide : demander ou apporter de l’aide. Alertes : ce qui vous concerne.',
+tour3_t:'Rejoignez un canal',tour3_d:'Un canal réunit les membres autour d’un thème. Demandez à le rejoindre : le modérateur valide votre demande, puis vous accédez aux projets et à l’entraide du canal.',tour3_b:'Voir les canaux',
+tour4_t:'Les annonces officielles',tour4_d:'Les annonces des porte-parole et de l’équipe s’affichent sur l’accueil. Touchez « Lu » pour confirmer votre lecture, et le bouton de partage pour les envoyer sur WhatsApp.',tour4_b:'Voir l’accueil',
+tour5_t:'Les projets',tour5_d:'Proposez un projet ou rejoignez-en un : prenez une tâche, marquez-la terminée, commentez. Chaque projet indique les compétences recherchées.',tour5_b:'Voir les projets',
+tour6_t:'L’entraide',tour6_d:'Une difficulté (papiers, études, santé, installation…) ? Décrivez votre situation : seuls les référents du domaine la voient. Rien n’est public.',tour6_b:'Voir l’entraide',
+tour7_t:'Votre profil et votre sécurité',tour7_d:'Dans « Moi », ajoutez votre nom, votre pays et vos compétences. Protégez aussi votre compte avec un mot de passe, et gardez précieusement votre code de secours : c’est lui qui permet de retrouver l’accès.',tour7_b:'Ouvrir « Moi »',
+tour8_t:'Langue et thème',tour8_d:'Le bouton FR / ع en haut de l’écran change la langue (français et arabe sont complets). La lune active le mode sombre.',
+tour9_t:'Fonctions IA (phase test)',tour9_d:'Vous testez deux fonctions : la traduction français ↔ arabe sous les textes, et « Discussion → projet » à la création d’un projet. L’IA peut se tromper : vérifiez toujours. Le texte envoyé n’est pas conservé.',tour9_b:'Créer un projet',
+tour10_t:'Vos retours comptent',tour10_d:'Vous testez Diasporact avant son ouverture. Si quelque chose est confus, lent ou ne marche pas, notez la page, ce que vous attendiez et ce qui s’est passé, puis transmettez-le à l’équipe qui vous a invité.',
 app_name:'Diasporact',app_short:'Diasporact',demo:'Démo',close:'Fermer',back:'Retour',cancel:'Annuler',
 continue:'Continuer',send:'Envoyer',copy:'Copier',publish:'Publier',share:'Partager',
 nav_home:'Accueil',nav_canals:'Canaux',nav_projects:'Projets',nav_help:'Entraide',nav_alerts:'Alertes',
@@ -61,6 +72,17 @@ n_welcome:'Bienvenue. Vos demandes sont en cours de validation.',
 now:'à l’instant',min:'il y a {n} min',hour:'il y a {n} h',day:'il y a {n} j',ai_tag:'Généré par IA · à vérifier',ai_sim:'Dans cette démo, l’analyse est simulée par des règles simples.',from_chat:'Depuis une discussion',chat_btn:'À partir d’une discussion',chat_intro:'Collez une discussion WhatsApp : l’IA propose une fiche projet avec décisions, questions ouvertes et actions. Vous relisez et corrigez avant de publier.',chat_consent:'Ne collez qu’une discussion dont les participants acceptent le partage. Rien n’est conservé.',chat_ph:'Un message par ligne : « Prénom : message »',chat_sample:'Utiliser un exemple',chat_go:'Analyser la discussion',chat_loading:'Analyse en cours…',chat_empty:'Collez d’abord une discussion.',chat_back:'Modifier le texte',cr_actions:'Actions repérées (décochez pour écarter)',cr_decisions:'Décisions repérées',cr_questions:'Questions restées ouvertes',cr_none:'Rien repéré',cr_create:'Créer le projet',cr_by:'proposé par @{x}',ch_decisions:'Décisions de la discussion : ',ch_questions:'Questions ouvertes : ',dictate:'Dicter',voice_sim:'Saisie vocale simulée dans la démo',voice_listen:'Je vous écoute…',voice_demo_c:'Je peux m’en occuper cette semaine.',voice_demo_h:'Bonjour, je dois renouveler mon passeport rapidement et je ne sais pas par où commencer.',voice_demo_x:'Sidi : on pourrait organiser une collecte de livres pour une bibliothèque ?',dg_title:'Votre résumé personnalisé',dg_sub:'Rédigé dans votre langue à partir de votre activité.',dg_freq:'Fréquence',dg_daily:'Chaque jour',dg_weekly:'Chaque semaine',dg_task:'Tâche à faire : {x} ({p})',dg_ann:'Annonce officielle à lire : {x}',dg_proj:'{x} : {a}/{b} tâches terminées',dg_help:'{x} demande(s) d’entraide attendent un référent',dg_reqs:'{x} demande(s) d’adhésion à traiter',dg_myhelp:'Votre demande d’entraide est suivie par @{x}',dg_none:'Rien de nouveau.',dg_wa:'Aperçu dans WhatsApp',dg_note:'Les annonces officielles sont citées telles quelles, jamais reformulées.',dg_wa_note:'Message envoyé sur WhatsApp avec un lien vers l’app (prévu via l’API WhatsApp Business).',sk_title:'Compétences',sk_opt:'Mises en relation par compétences',sk_opt_note:'Si activé, votre pseudo et vos compétences peuvent être proposés aux porteurs de projets. Vous décidez toujours de répondre.',sk_in:'Mes compétences (séparées par des virgules)',sk_save:'Enregistrer',sk_saved:'Compétences enregistrées',match_title:'Membres qui pourraient aider',match_note:'Seuls les membres ayant activé les mises en relation apparaissent. Vous les sollicitez, ils décident.',match_why:'Compétence « {s} » ↔ besoin « {n} »',match_prop:'Proposer de contribuer',match_sent:'Proposition envoyée à @{x}',match_done:'Proposé',match_none:'Aucune suggestion pour le moment.',match_home:'Projets qui recherchent vos compétences',match_home_why:'Besoin : {n}',ai_help_t:'Suggestions de l’assistant',ai_help_dom:'Domaine suggéré : {x}',ai_help_urg:'Cela semble urgent : marquer comme urgent',ai_help_faq:'Une fiche pratique pourrait répondre :',ai_help_view:'Voir la fiche',ai_help_ok:'Cela répond à ma question',ai_help_ok_t:'Content d’avoir pu aider. Votre demande n’a pas été envoyée.',ai_help_note:'Ne remplace pas l’avis d’un référent.',faq_title:'Fiches pratiques',faq_sub:'Rédigées et validées par les référents.',faq_by:'Validée par @{x}',faq_note:'Information indicative : vérifiez toujours auprès de l’organisme officiel.',draft_btn:'Brouillon de réponse',draft_title:'Brouillon de réponse',draft_note:'Proposition de l’IA à partir des fiches existantes. Relisez et modifiez : rien n’est envoyé sans vous.',draft_faq:'Ajouter cette réponse aux fiches pratiques',draft_send:'Envoyer la réponse',draft_sent:'Réponse envoyée à @{x}',draft_hi:'Bonjour @{x}, merci pour votre message.',draft_generic:'Voici ce que je peux vous indiquer : …',draft_bye:'Je reste disponible pour préciser. — @{x}',reply_from:'Réponse de @{x}',n_reply:'Réponse reçue à votre demande d’entraide.',tr_do:'Traduire',tr_auto:'Traduction automatique',tr_orig:'Voir l’original',cr_add:'Ajouter',act_title:'Que voulez-vous faire ?',th_help:'Demander de l’aide',th_proj:'Lancer un projet',th_chat:'Projet depuis une discussion',th_canals:'Découvrir les canaux',fs_title:'Premiers pas',fs_sub:'On discute sur WhatsApp, on agit ici : projets, entraide et annonces officielles.',fs_1:'Rejoindre un canal',fs_1p:'Demande envoyée : en attente du modérateur',fs_2:'Lire une annonce officielle',fs_3:'Prendre une tâche ou lancer un projet',fs_4:'Indiquer vos compétences',fs_hide:'Masquer',fs_prog:'{a}/{b} faits',see_projects:'Voir les projets ouverts',search_proj:'Rechercher un projet, un besoin…',search_none:'Aucun résultat.',proj_see_all:'Voir tous les projets',cf_ok:'Confirmer',cf_logout:'Vous allez être déconnecté. Vérifiez que vous avez noté votre code de récupération : il est indispensable pour retrouver votre compte.',cf_rotate:'Renouveler le lien d’invitation',cf_rotate_t:'L’ancien lien sera révoqué : les personnes qui ne l’ont pas encore utilisé ne pourront plus rejoindre avec celui-ci.',cr_add_ph:'Saisir un élément…',cr_del:'Retirer',cr_empty_hint:'Rien n’a été repéré automatiquement : complétez vous-même les éléments ci-dessous.',tab_honor:'À l’honneur',bd_title:'Badges',bd_rules:'Les badges d’engagement comptent uniquement des actions validées (tâche terminée, entraide résolue, lecture confirmée), jamais le nombre de messages. Les badges de profil sont attribués après vérification par un modérateur.',bd_profile:'Badges de profil vérifiés',bd_none:'Aucun badge de profil pour le moment.',bd_req:'Demander un badge de profil',bd_eng:'Badges d’engagement',bd_next:'{a}/{b} pour le niveau suivant',bd_max:'niveau maximum',bd_honor:'Apparaître parmi les membres à l’honneur',bd_honor_note:'Les canaux mettent en avant leurs membres les plus actifs. Vous pouvez choisir de ne pas y figurer.',bd_type:'Type de badge',bd_note:'Justification (profession, organisation…)',bd_note_help:'Un modérateur vérifie votre demande avant d’attribuer le badge. Aucun justificatif n’est conservé dans cette démo.',bd_sent:'Demande envoyée aux modérateurs',bd_pending:'En attente : {x}',bd_reqs:'Demandes de badge',bd_none_req:'Aucune demande de badge.',bd_grant:'Attribuer',bd_granted:'Badge attribué à @{x}',bd_denied:'Demande refusée',b_mod:'Modérateur',b_ref:'Référent',b_speaker:'Porte-parole',b_relay:'Relais au pays',b_expert:'Expert vérifié · {x}',hn_title:'Membres à l’honneur',hn_sub:'Les plus actifs de ce canal ces dernières semaines.',hn_line:'{t} tâches · {h} entraides · {p} projets',hn_note:'Basé sur des actions validées. Merci à celles et ceux qui font avancer la communauté.',hn_none:'Pas encore de membre à l’honneur.',n_badge:'Nouveau badge : {x}'
 },
 ar:{
+tour_title:'جولة تعريفية',tour_of:'الخطوة {a} من {b}',tour_next:'التالي',tour_prev:'السابق',tour_skip:'تخطي الجولة',tour_end:'إنهاء',tour_again:'إعادة الجولة التعريفية',tour_again_sub:'جولة سريعة للتعرّف على Diasporact.',
+tour1_t:'مرحباً بك في Diasporact',tour1_d:'Diasporact فضاء الجالية الموريتانية: نتابع فيه الأخبار، ونتعاون، ونبني المشاريع معاً. تستغرق هذه الجولة دقيقتين، ويمكنك إعادتها في أي وقت.',
+tour2_t:'علامات التبويب الخمس في الأسفل',tour2_d:'الرئيسية: مهامك والإعلانات. القنوات: المجموعات حسب الموضوع أو البلد. المشاريع: ما يُبنى الآن. المساعدة: طلب العون أو تقديمه. التنبيهات: ما يخصّك.',
+tour3_t:'انضمّ إلى قناة',tour3_d:'تجمع القناة الأعضاء حول موضوع واحد. اطلب الانضمام، ويوافق المشرف على طلبك، ثم تصل إلى مشاريع القناة ومساعدتها.',tour3_b:'عرض القنوات',
+tour4_t:'الإعلانات الرسمية',tour4_d:'تظهر إعلانات المتحدثين والفريق في الصفحة الرئيسية. اضغط «تمت القراءة» لتأكيد قراءتك، وزر المشاركة لإرسالها عبر واتساب.',tour4_b:'عرض الرئيسية',
+tour5_t:'المشاريع',tour5_d:'اقترح مشروعاً أو انضمّ إلى مشروع: خذ مهمة، وأنهِها، وعلّق. يذكر كل مشروع المهارات المطلوبة.',tour5_b:'عرض المشاريع',
+tour6_t:'المساعدة',tour6_d:'تواجه صعوبة (أوراق، دراسة، صحة، استقرار…)؟ صِف وضعك: لا يراه إلا مرجعو المجال. لا شيء منشور للعموم.',tour6_b:'عرض المساعدة',
+tour7_t:'ملفك وأمان حسابك',tour7_d:'في «أنا» أضف اسمك وبلدك ومهاراتك. احمِ حسابك أيضاً بكلمة مرور، واحتفظ برمز الاسترجاع جيداً: به تستعيد الوصول إلى حسابك.',tour7_b:'فتح «أنا»',
+tour8_t:'اللغة والمظهر',tour8_d:'يغيّر زر FR / ع أعلى الشاشة اللغة (الفرنسية والعربية متوفرتان بالكامل). ويفعّل القمر الوضع الداكن.',
+tour9_t:'ميزات الذكاء الاصطناعي (مرحلة التجربة)',tour9_d:'تجرّب ميزتين: الترجمة بين الفرنسية والعربية أسفل النصوص، و«من النقاش إلى مشروع» عند إنشاء مشروع. قد يخطئ الذكاء الاصطناعي، فتحقّق دائماً. النص المُرسَل لا يُحفظ.',tour9_b:'إنشاء مشروع',
+tour10_t:'ملاحظاتك مهمة',tour10_d:'أنت تجرّب Diasporact قبل افتتاحه. إن كان شيء غامضاً أو بطيئاً أو لا يعمل، دوّن الصفحة وما كنت تتوقعه وما حدث، ثم أبلغ به الفريق الذي دعاك.',
 app_name:'Diasporact',app_short:'Diasporact',demo:'تجربة',close:'إغلاق',back:'رجوع',cancel:'إلغاء',
 continue:'متابعة',send:'إرسال',copy:'نسخ',publish:'نشر',share:'مشاركة',
 nav_home:'الرئيسية',nav_canals:'القنوات',nav_projects:'المشاريع',nav_help:'المساعدة',nav_alerts:'التنبيهات',
@@ -338,7 +360,7 @@ function todoItems(){
 }
 function vHome(){
   var todo=todoItems(),anns=visibleAnns(),rec=S.projects.filter(function(p){return p.status==='recruit'&&isMember(p.canal);});
-  var h='<section><p class="eyebrow">'+T('hello')+'</p><h1 class="page">'+idInline(S.me.pseudo)+'</h1></section>';
+  var h='<section><p class="eyebrow">'+T('hello')+'</p><h1 class="page">'+idInline(S.me.pseudo)+'</h1><button class="lnk" data-act="tour-open">'+ic('life',14)+' '+T('tour_again')+'</button></section>';
   h+=startCard()+tilesHtml();
   h+='<section><h2 class="h2">'+T('todo')+(todo.length?'<span class="count">'+todo.length+'</span>':'')+'</h2>';
   h+=todo.length?'<div class="card list">'+todo.map(function(i){return '<button class="li" data-act="'+i.act+'" '+dataAttrs(i.data)+'><span class="ico">'+ic(i.ico,18)+'</span><span class="grow"><span class="t">'+i.title+'</span><br><span class="muted small">'+i.sub+'</span></span><span class="flip muted">'+ic('chev',18)+'</span></button>';}).join('')+'</div>':'<div class="empty">'+T('nothing')+'<br><button class="btn sm" style="margin-top:8px" data-act="tab" data-tab="projects">'+T('see_projects')+'</button></div>';
@@ -498,7 +520,7 @@ function render(resetScroll){
   var bar=$('#tabbar');
   if(acct&&!onb){bar.hidden=false;var cur=tabOf(r),un=unread();bar.innerHTML=TABS.map(function(x){return '<button class="tab" data-act="tab" data-tab="'+x[0]+'"'+(cur===x[0]?' aria-current="page"':'')+'>'+ic(x[1],22)+'<span class="tab-l">'+T(x[2])+'</span>'+tabBadge(x[0],un)+'</button>';}).join('');}
   else bar.hidden=true;
-  mount(r);
+  mount(r);maybeTour();
 }
 function mount(r){
   var tbs=document.querySelector('.tabs'),at=tbs&&tbs.querySelector('[aria-selected="true"]');if(at&&root.dir!=='rtl')tbs.scrollLeft=at.offsetLeft-tbs.clientWidth/2+at.offsetWidth/2;
@@ -925,6 +947,7 @@ function vMe(){
     '<div class="field grow" style="min-width:140px"><label for="my-ln">'+T('lastname_label')+'</label><input type="text" id="my-ln" maxlength="60" autocomplete="family-name" value="'+esc(S.me.lastName)+'"></div></div>'+
     '<button class="btn sm" type="submit">'+T('sk_save')+'</button></form></section>'+
   '<section class="card stack s8"><h2 class="h3">'+T('country')+'</h2><form data-form="mycountry" class="row" novalidate><div class="grow">'+countryInput('my-country',S.me.country,'maxlength="60" autocomplete="country-name" aria-label="'+esc(t('country'))+'"')+'</div><button class="btn sm" type="submit">'+T('sk_save')+'</button></form></section>'+
+  '<section class="card stack s8"><h2 class="h3">'+T('tour_title')+'</h2><p class="muted small">'+T('tour_again_sub')+'</p><button class="btn sm" data-act="tour-open">'+T('tour_again')+'</button></section>'+
   badgesSection()+skillsSection()+adminSection()+
   (S.anon?'<section class="card stack s8"><h2 class="h3">'+T('secure_t')+'</h2><p class="muted small">'+T('secure_note')+'</p>'+'<form data-form="setpw" class="stack s8" novalidate><input type="password" id="sp-w" autocomplete="new-password" minlength="8" maxlength="72" dir="ltr" placeholder="'+esc(t('pw_new'))+'" aria-label="'+esc(t('pw_new'))+'"><button class="btn sm" type="submit">'+T(S.anon?'secure_go':'change_pw')+'</button></form>'+'</section>':'<section class="card stack s8"><h2 class="h3">'+ic('lock',16)+' '+T('acct_ok_t')+'</h2><p class="muted small">'+T('acct_ok_note',{p:esc(S.me.pseudo)})+'</p>'+'<div class="stack s8"><h3 class="h3">'+T('sc_title')+'</h3><p class="muted small">'+T('sc_note')+' '+T('sc_gen_warn')+'</p><button class="btn sm" data-act="gen-code">'+T('sc_gen')+'</button></div>'+'<form data-form="setpw" class="stack s8" novalidate><input type="password" id="sp-w" autocomplete="new-password" minlength="8" maxlength="72" dir="ltr" placeholder="'+esc(t('pw_new'))+'" aria-label="'+esc(t('pw_new'))+'"><button class="btn sm" type="submit">'+T(S.anon?'secure_go':'change_pw')+'</button></form>'+'<button class="btn sm" data-act="logout">'+T('logout_t')+'</button></section>')+
   '<section class="card stack s8"><h2 class="h3">'+T('recov')+'</h2><p class="muted small">'+T('recov_note')+'</p></section>'+
@@ -1002,7 +1025,39 @@ function openRecoveryLink(code,pseudo){
   var u=appUrl('i/'+code),msg=(S.lang==='ar'?'رابط إعادة الاتصال بحسابك على Diasporact: ':'Lien de reconnexion à votre compte Diasporact : ')+u;S._msg=msg;
   openSheet(t('rc_ready')+' · @'+pseudo,'<p class="linkbox" dir="ltr" style="overflow-wrap:anywhere">'+esc(u)+'</p><p class="muted small">'+T('rc_help')+'</p><div class="row wrap"><button class="btn grow" data-act="copy-msg">'+ic('copy',18)+T('share_copy')+'</button><a class="btn primary grow" target="_blank" rel="noopener" href="https://wa.me/?text='+encodeURIComponent(msg)+'">'+ic('chat',18)+T('share_open')+'</a></div>');
 }
+/* ============ Visite guidée (assistant de prise en main) ============ */
+function tourDone(){try{return localStorage.getItem('dp-tour')==='1';}catch(e){return false;}}
+function tourMark(){try{localStorage.setItem('dp-tour','1');}catch(e){}}
+function tourSteps(){
+  var st=[
+   {i:'home',k:1},{i:'hash',k:2},
+   {i:'hash',k:3,a:'tab:canals'},{i:'mega',k:4,a:'tab:home'},{i:'folder',k:5,a:'tab:projects'},{i:'life',k:6,a:'tab:help'},
+   {i:'lock',k:7,a:'me'},{i:'globe',k:8}];
+  if(S.me&&S.me.ai)st.push({i:'chat',k:9,a:'newproj'});
+  st.push({i:'check',k:10});
+  return st;
+}
+function openTour(n){
+  var st=tourSteps(),i=Math.max(0,Math.min(n||0,st.length-1)),x=st[i],last=i===st.length-1,dots='';
+  S.tourI=i;
+  for(var j=0;j<st.length;j++)dots+='<i'+(j===i?' class="on"':'')+'></i>';
+  openSheet(t('tour_title'),'<div class="tour"><span class="ico-lg tour-ic">'+ic(x.i,26)+'</span><p class="muted small">'+T('tour_of',{a:i+1,b:st.length})+'</p><div class="tdots" aria-hidden="true">'+dots+'</div><h3 class="h3">'+T('tour'+x.k+'_t')+'</h3><p>'+T('tour'+x.k+'_d')+'</p>'+
+   (x.a?'<button class="btn block" data-act="tour-go" data-go="'+x.a+'">'+T('tour'+x.k+'_b')+'</button>':'')+
+   '<div class="row"><button class="btn grow" data-act="tour-prev"'+(i?'':' disabled')+'>'+T('tour_prev')+'</button><button class="btn primary grow" data-act="'+(last?'tour-end':'tour-next')+'">'+T(last?'tour_end':'tour_next')+'</button></div>'+
+   (last?'':'<button class="lnk" data-act="tour-end">'+T('tour_skip')+'</button>')+'</div>','tour-sheet');
+}
+function maybeTour(){
+  if(S._tourTry||tourDone()||!hasAccount()||S.route.name!=='home')return;
+  S._tourTry=true;
+  setTimeout(function(){var sh=$('#sheets');if(!sh||!sh.hidden||S.route.name!=='home'){S._tourTry=false;return;}openTour(0);},600);
+}
+
 var ACT={
+ 'tour-open':function(){openTour(0);},
+ 'tour-next':function(){openTour((S.tourI||0)+1);},
+ 'tour-prev':function(){openTour((S.tourI||0)-1);},
+ 'tour-end':function(){tourMark();closeSheet();},
+ 'tour-go':function(d){tourMark();closeSheet(true);var a=String(d.go||'');if(a.indexOf('tab:')===0)tab(a.slice(4));else if(a==='me'){S.stack=[];go('me');}else if(a==='newproj')ACT['new-project']({});},
  tab:function(d){tab(d.tab);},
  back:function(){back();},
  'go-me':function(){go('me');},

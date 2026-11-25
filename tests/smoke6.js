@@ -4,10 +4,10 @@ const ROOT=require('path').resolve(__dirname,'..');
 const HTML=fs.readFileSync(ROOT+'/index.html','utf8').replace(/<script src="(config|vendor\/supabase)\.js"><\/script>/g,'').replace('<script src="app.js"></script>',()=>'<script>'+fs.readFileSync(ROOT+'/app.js','utf8').replace(/<\/script/g,'<\\/script')+'</script>');
 let pass=0,fail=0;function ok(c,m){if(c){pass++;console.log('PASS',m);}else{fail++;console.log('FAIL',m);}}
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-async function open(mock,hash){
+async function open(mock,hash,opt){
   const errs=[];
   const dom=new JSDOM(HTML,{url:'https://diasporact.test/'+(hash||''),runScripts:'dangerously',pretendToBeVisual:true,
-    beforeParse(w){w.supabase={createClient:()=>mock.client};w.fetch=mock.fetch;w.DIASPORACT_CONFIG={url:'https://x.supabase.co',anonKey:'anon'};
+    beforeParse(w){if(!(opt&&opt.tour))try{w.localStorage.setItem('dp-tour','1');}catch(e){}w.supabase={createClient:()=>mock.client};w.fetch=mock.fetch;w.DIASPORACT_CONFIG={url:'https://x.supabase.co',anonKey:'anon'};
       w.addEventListener('error',e=>errs.push(String(e.error&&e.error.stack||e.message)));w.HTMLElement.prototype.scrollIntoView=function(){};
       w.matchMedia=w.matchMedia||(()=>({matches:false,addListener(){},removeListener(){}}));}});
   const w=dom.window,d=w.document;
@@ -192,6 +192,31 @@ async function open(mock,hash){
   ok(m.DB.projects.length===1,'I15 rien n\'est publié automatiquement');
   await a.click('[data-act=go-me]');ok(a.txt().includes('Testeur IA'),'I16 statut affiché dans « Moi »');
   ok(a.errs.length===0,'I17 aucune erreur JS ('+a.errs.join('|')+')');
+  /* J. Visite guidée */
+  m=makeMock({session:'u-1'});
+  m.DB.profiles.push({id:'p-sidi.paris',auth_uid:'u-1',pseudo:'sidi.paris',country:'France',lang:'fr',skills:[],matching:false,show_honor:true,is_admin:false,is_ref:false});
+  m.DB.canal_members.push({canal_id:'edu',user_id:'p-sidi.paris',status:'member',is_moderator:false,is_relay:false});
+  a=await open(m,'',{tour:true});await sleep(900);
+  ok(a.txt().includes('Bienvenue sur Diasporact')&&a.txt().includes('Étape 1 sur 9'),'J1 première connexion : la visite s\'ouvre (9 étapes sans IA)');
+  await a.click('[data-act=tour-next]');ok(a.txt().includes('Étape 2 sur 9')&&a.txt().includes('cinq onglets'),'J2 étape suivante');
+  await a.click('[data-act=tour-prev]');ok(a.txt().includes('Étape 1 sur 9'),'J3 étape précédente');
+  await a.click('[data-act=tour-next]');await a.click('[data-act=tour-next]');
+  ok(!!a.q('[data-act=tour-go]'),'J4 une étape propose « Essayer » (voir les canaux)');
+  await a.click('[data-act=tour-go]');
+  ok(a.q('#sheets').hidden&&a.w.localStorage.getItem('dp-tour')==='1'&&a.txt().includes('Canaux'),'J5 le bouton mène à l\'écran concerné et la visite est marquée vue');
+  await a.click('[data-act=tab][data-tab=home]');await sleep(900);
+  ok(a.q('#sheets').hidden,'J6 la visite ne se rouvre pas toute seule');
+  await a.click('[data-act=tour-open]');ok(a.txt().includes('Étape 1 sur 9'),'J7 « Revoir la visite guidée » depuis l\'accueil');
+  await a.click('[data-act=tour-end]');ok(a.q('#sheets').hidden,'J8 la visite se ferme');
+  await a.click('[data-act=go-me]');ok(!!a.q('[data-act=tour-open]'),'J9 relançable depuis « Moi »');
+  await a.click('[data-act=lang][data-v=ar]');await a.click('[data-act=tour-open]');
+  ok(a.txt().includes('جولة تعريفية')&&a.txt().includes('الخطوة 1 من 9'),'J10 visite en arabe');
+  ok(a.errs.length===0,'J11 aucune erreur JS ('+a.errs.join('|')+')');
+  m=makeMock({session:'u-9'});
+  m.DB.profiles.push({id:'p-ai',auth_uid:'u-9',pseudo:'ai.tester',country:'France',lang:'fr',skills:[],matching:false,show_honor:true,is_admin:false,is_ref:false});
+  m.DB.ai_testers=[{user_id:'p-ai'}];
+  a=await open(m,'',{tour:true});await sleep(900);
+  ok(a.txt().includes('Étape 1 sur 10'),'J12 testeur IA : étape supplémentaire sur les fonctions IA');
   /* F. Configuration absente */
   const dom=new JSDOM(HTML,{runScripts:'dangerously',url:'https://diasporact.test/'});await sleep(200);
   ok((()=>{const c=dom.window.document.body.cloneNode(true);c.querySelectorAll('script').forEach(x=>x.remove());return c.textContent.includes('pas encore configurée');})(),'F1 message si clés absentes');

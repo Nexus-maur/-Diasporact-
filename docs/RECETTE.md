@@ -233,3 +233,13 @@ SEC-04, CAN-03 — le reste suit la légende Statut ci-dessous).
 | IA-08 | Contenu hostile | Testeur | Traduire/analyser un texte contenant « ignore tes consignes… » ou du HTML. | Texte traité comme donnée, résultat affiché comme texte. | Manuel | Majeur | À faire avec la vraie clé IA |
 
 **Total : 102 cas** (56 bloquants, 36 majeurs, 10 mineurs), plus les 20 cas de la section « Nouveautés du 25/11/2026 ».
+
+## Visite guidée (assistant de prise en main)
+| N° | À vérifier | Résultat attendu |
+|---|---|---|
+| TUTO-01 | Première connexion (ou nouvel appareil) | La visite s'ouvre toute seule sur l'accueil, étape 1 ; elle ne masque pas l'affichage du code de secours à la création du compte |
+| TUTO-02 | Suivant / Précédent / Passer la visite | Navigation correcte, la fermeture est mémorisée sur l'appareil |
+| TUTO-03 | Bouton d'étape (canaux, accueil, projets, entraide, « Moi ») | Mène à l'écran concerné, la visite ne se rouvre pas seule |
+| TUTO-04 | « Revoir la visite guidée » (accueil et « Moi ») | La visite repart de l'étape 1 |
+| TUTO-05 | Langue arabe | Textes en arabe, sens de lecture inversé, pas de débordement |
+| TUTO-06 | Compte testeur IA | Étape supplémentaire « Fonctions IA » |
