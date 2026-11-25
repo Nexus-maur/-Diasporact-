@@ -1,7 +1,7 @@
 /* Faux client Supabase en mémoire, pour tester le câblage de l'interface (les règles de sécurité sont testées en SQL). */
 module.exports=function makeMock(opts){
   var uid=0;function id(){return 'id-'+(++uid);}
-  var DB={ai_testers:[],spokespersons:[],profiles:[],canals:[],canal_members:[],invites:[],projects:[],milestones:[],tasks:[],project_team:[],comments:[],follows:[],proposals:[],helps:[],announcements:[],ann_reads:[],badge_requests:[],badge_grants:[],notifications:[]};
+  var DB={ai_testers:[],spokespersons:[],profiles:[],canals:[],canal_members:[],invites:[],projects:[],milestones:[],tasks:[],project_team:[],comments:[],follows:[],proposals:[],helps:[],announcements:[],ann_reads:[],badge_requests:[],badge_grants:[],notifications:[],feedback:[]};
   ['edu','inv','san','adm','num','cul'].forEach(function(k,i){DB.canals.push({id:k,ico:'hash',name_fr:k,name_ar:k,desc_fr:'',desc_ar:'',wa_link:null,sort:i});});
   var session=opts.session?{user:{id:opts.session}}:null;
   var calls=[];

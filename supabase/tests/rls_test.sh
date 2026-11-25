@@ -258,4 +258,14 @@ has "R131 un membre ne s'ajoute pas comme testeur" "$(q $C "insert into ai_teste
 q $A "select set_ai_tester('awa.dakar',false)" >/dev/null
 has "R132 testeur retiré : refusé" "$(q $E "select ai_consume()")" "not_tester"
 
+# Questionnaire de retours
+q $C "insert into feedback(user_id, answers, lang) values (me(), '{\"easy\":4}', 'fr')" >/dev/null
+ok "R133 un membre enregistre ses réponses" "$(q $C "select count(*) from feedback")" "1"
+has "R134 un membre ne répond pas au nom d'un autre" "$(q $C "insert into feedback(user_id, answers) values ((select id from profiles where pseudo='sidi.paris'), '{}')")" "row-level security"
+ok "R135 un membre ne lit pas les réponses des autres" "$(q $B "select count(*) from feedback")" "0"
+ok "R136 l'administrateur lit toutes les réponses" "$(q $A "select count(*) from feedback")" "1"
+has "R137 un membre ne modifie pas ses réponses" "$(q $C "update feedback set answers='{}' returning 1")" ""
+has "R138 réponses trop lourdes refusées" "$(q $C "insert into feedback(user_id, answers) values (me(), jsonb_build_object('x', repeat('a', 25000)))")" "check"
+ok "R139 export des données : réponses incluses" "$(q $C "select json_array_length(export_my_data()->'questionnaire_retours')")" "1"
+
 echo "----"; echo "$pass réussis, $fail échoués"; [ $fail -eq 0 ]

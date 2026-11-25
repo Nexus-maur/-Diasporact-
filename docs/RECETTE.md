@@ -262,3 +262,10 @@ SEC-04, CAN-03 — le reste suit la légende Statut ci-dessous).
 | TAC-03 | Il retouche le signalement dans l'heure | Refusé, message « Alerte déjà envoyée » |
 | TAC-04 | Le chef de projet (ou un modérateur / l'administrateur) ouvre le projet | La tâche porte « Validation demandée » et un bouton « Marquer fait » ; la tâche passe en « Fait » |
 | TAC-05 | Un membre tente de passer une tâche en fait ou de la rouvrir (même par l'API) | Refusé par la base (`forbidden`) |
+
+## Questionnaire de retours
+- [ ] Accueil et Moi : carte « Donnez votre avis » ; le lien direct `…/#/q` ouvre le questionnaire (membre connecté).
+- [ ] Envoi avec au moins une réponse → message de remerciement, carte masquée sur l'accueil ; envoi à vide refusé.
+- [ ] Testeur IA : question supplémentaire sur l'assistant ; non-testeur : absente.
+- [ ] Administrateur (Moi) : lien à copier, synthèse (moyennes, verbatims) et export CSV.
+- [ ] Dernière étape de la visite guidée : bouton « Donner mon avis ».

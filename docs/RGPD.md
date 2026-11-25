@@ -293,3 +293,12 @@ Le signalement initial d'une faille (par un tiers ou un membre) se fait à
       l'organisation (action d'Élie).
 - [ ] Décider d'un éventuel passage Supabase au plan Pro pour disposer de
       sauvegardes gérées avec point de restauration (action d'Élie).
+
+
+## Questionnaire de retours des testeurs
+- Table `feedback` (réponses en JSON, langue, date) ; un membre insère et lit
+  ses propres réponses, l'administrateur lit toutes les réponses ; aucune
+  modification ni suppression par les membres. Suppression en cascade avec le
+  compte ; incluse dans l'export (`questionnaire_retours`) et la sauvegarde.
+- Facultatif, aucune donnée sensible demandée ; texte libre limité à 1 000
+  caractères par champ ; usage : amélioration de l'application en phase test.

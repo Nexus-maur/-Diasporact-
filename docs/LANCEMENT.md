@@ -51,6 +51,7 @@ Dernière mise à jour : 25/11/2026.
 
 ## 5. Pilote puis ouverture
 
+- [ ] Envoyer aux testeurs le lien direct du questionnaire (Moi > Administration > Retours des testeurs > Copier le lien) ; lire la synthèse en fin de pilote.
 - [ ] Pilote de 7 jours avec 20 testeurs actifs, sans incident bloquant (critère Go/No-Go n°5) ; suivre PERF-01.
 - [ ] Revue des critères Go/No-Go de [RECETTE.md](RECETTE.md) : 100 % des cas bloquants réussis, 95 % des majeurs, aucun défaut de sécurité ouvert.
 - [ ] Ouverture : partager les liens d'invitation dans les groupes WhatsApp.

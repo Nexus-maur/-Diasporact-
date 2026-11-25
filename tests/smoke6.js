@@ -256,6 +256,28 @@ async function open(mock,hash,opt){
   ok(!!a.q('[data-act=finish]'),'L1 le chef de projet voit « Marquer fait » sur la tâche d\'un membre');
   ok(a.txt().includes('Validation demandée'),'L1b le chef de projet voit que la validation est demandée');
   await a.click('[data-act=finish]');ok(m.DB.tasks[0].status==='done'&&a.d.querySelectorAll('.kb-col')[2].textContent.includes('Cahier des charges'),'L2 la tâche passe dans la colonne Fait');
+  /* M. Questionnaire de retours */
+  m=makeMock({session:'u-1'});
+  m.DB.profiles.push({id:'p-sidi.paris',auth_uid:'u-1',pseudo:'sidi.paris',country:'France',lang:'fr',skills:[],matching:false,show_honor:true,is_admin:false,is_ref:false});
+  a=await open(m);await sleep(150);
+  ok(a.txt().includes('Donnez votre avis'),'M1 carte « Donnez votre avis » sur l\'accueil');
+  await a.click('[data-act=fb-open]');
+  ok(!!a.q('[data-form=feedback]')&&a.q('input[name=fb_nps]')&&!a.q('input[name=fb_ai]'),'M2 le questionnaire s\'ouvre (sans question IA pour un non-testeur)');
+  await a.submit('[data-form=feedback]');ok(m.DB.feedback.length===0&&a.txt().includes('au moins une question'),'M3 questionnaire vide refusé');
+  await a.click('input[name=fb_easy][value="4"]');await a.click('input[name=fb_used][value=help]');await a.click('input[name=fb_used][value=proj]');a.set('textarea[name=fb_issue]','Bouton trop petit');
+  await a.submit('[data-form=feedback]');await sleep(200);
+  ok(m.DB.feedback.length===1&&m.DB.feedback[0].answers.easy===4&&m.DB.feedback[0].answers.used.length===2&&m.DB.feedback[0].answers.issue==='Bouton trop petit'&&m.DB.feedback[0].user_id==='p-sidi.paris','M4 réponses enregistrées');
+  ok(!a.txt().includes('Donnez votre avis')&&a.txt().includes('@sidi.paris'),'M5 retour à l\'accueil, carte masquée après réponse');
+  a=await open(m,'#/q');await sleep(200);
+  ok(!!a.q('[data-form=feedback]')&&a.txt().includes('déjà répondu'),'M6 lien direct #/q ouvre le questionnaire');
+  m=makeMock({session:'u-9'});m.DB.profiles.push({id:'p-ai',auth_uid:'u-9',pseudo:'ai.tester',country:'France',lang:'fr',skills:[],matching:false,show_honor:true,is_admin:false,is_ref:false});m.DB.ai_testers=[{user_id:'p-ai'}];
+  a=await open(m,'#/q');await sleep(200);ok(!!a.q('input[name=fb_ai]'),'M7 le testeur IA a la question sur l\'assistant');
+  m=makeMock({session:'u-3'});m.DB.profiles.push({id:'p-adm',auth_uid:'u-3',pseudo:'admin.nkc',country:'Mauritanie',lang:'fr',skills:[],matching:false,show_honor:true,is_admin:true,is_ref:false});
+  m.DB.feedback.push({id:'f1',user_id:'p-adm',answers:{easy:5,nps:9,best:'Très clair'},lang:'fr',created_at:new Date().toISOString()},{id:'f2',user_id:'p-adm',answers:{easy:3,nps:7},lang:'en',created_at:new Date().toISOString()});
+  a=await open(m);await sleep(150);await a.click('[data-act=go-me]');
+  ok(a.txt().includes('#/q')&&a.txt().includes('Retours des testeurs'),'M8 l\'admin voit le lien direct à diffuser');
+  await a.click('[data-act=fb-sum]');ok(a.txt().includes('4.0/5')&&a.txt().includes('8.0/10')&&a.txt().includes('Très clair'),'M9 synthèse : moyennes et verbatims');
+  ok(a.errs.length===0,'M10 aucune erreur JS ('+a.errs.join('|')+')');
   /* F. Configuration absente */
   const dom=new JSDOM(HTML,{runScripts:'dangerously',url:'https://diasporact.test/'});await sleep(200);
   ok((()=>{const c=dom.window.document.body.cloneNode(true);c.querySelectorAll('script').forEach(x=>x.remove());return /pas encore configurée|not configured yet/.test(c.textContent);})(),'F1 message si clés absentes');

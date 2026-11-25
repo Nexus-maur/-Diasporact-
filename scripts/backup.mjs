@@ -4,7 +4,7 @@ const hdr = k => (k.startsWith('eyJ') ? { apikey: k, Authorization: 'Bearer ' + 
 import { mkdir, writeFile } from 'node:fs/promises';
 
 const TABLES = ['canals', 'profiles', 'canal_members', 'invites', 'projects', 'milestones', 'tasks', 'project_team',
-  'comments', 'follows', 'proposals', 'helps', 'announcements', 'ann_reads', 'badge_requests', 'badge_grants', 'notifications', 'spokespersons', 'ai_testers', 'ai_usage'];
+  'comments', 'follows', 'proposals', 'helps', 'announcements', 'ann_reads', 'badge_requests', 'badge_grants', 'notifications', 'spokespersons', 'ai_testers', 'ai_usage', 'feedback'];
 const url = (process.env.SUPABASE_URL || '').replace(/\/$/, ''), key = process.env.SUPABASE_SERVICE_KEY, out = process.argv[2];
 if (!url || !key || !out) { console.error('Usage: SUPABASE_URL, SUPABASE_SERVICE_KEY et dossier de sortie requis'); process.exit(2); }
 

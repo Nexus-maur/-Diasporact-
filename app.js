@@ -370,7 +370,7 @@ function todoItems(){
 function vHome(){
   var todo=todoItems(),anns=visibleAnns(),rec=S.projects.filter(function(p){return p.status==='recruit'&&isMember(p.canal);});
   var h='<section><p class="eyebrow">'+T('hello')+'</p><h1 class="page">'+idInline(S.me.pseudo)+'</h1><button class="lnk" data-act="tour-open">'+ic('life',14)+' '+T('tour_again')+'</button></section>';
-  h+=startCard()+tilesHtml();
+  h+=startCard()+tilesHtml()+((S.hideFb||(S.fb||[]).some(function(r){return r.uid===S.me.id;}))?'':fbCard());
   h+='<section><h2 class="h2">'+T('todo')+(todo.length?'<span class="count">'+todo.length+'</span>':'')+'</h2>';
   h+=todo.length?'<div class="card list">'+todo.map(function(i){return '<button class="li" data-act="'+i.act+'" '+dataAttrs(i.data)+'><span class="ico">'+ic(i.ico,18)+'</span><span class="grow"><span class="t">'+i.title+'</span><br><span class="muted small">'+i.sub+'</span></span><span class="flip muted">'+ic('chev',18)+'</span></button>';}).join('')+'</div>':'<div class="empty">'+T('nothing')+'<br><button class="btn sm" style="margin-top:8px" data-act="tab" data-tab="projects">'+T('see_projects')+'</button></div>';
   h+='</section><section id="ann-sec"><h2 class="h2">'+T('ann_title')+'</h2><div class="stack">'+anns.map(function(a){return annCard(a,false);}).join('')+'</div></section>';
@@ -488,7 +488,7 @@ function vNewProject(p){
 
 function titleFor(r,p){
   switch(r){case 'canals':return t('nav_canals');case 'projects':return t('nav_projects');case 'help':return t('nav_help');case 'alerts':return t('nav_alerts');
-    case 'canal':return c(canalOf(p.id).n);case 'project':return projOf(p.id)?c(projOf(p.id).t):'';case 'newProject':return t('new_project');case 'newHelp':return t('new_help');case 'me':return t('my_account');default:return t('app_short');}
+    case 'canal':return c(canalOf(p.id).n);case 'project':return projOf(p.id)?c(projOf(p.id).t):'';case 'newProject':return t('new_project');case 'newHelp':return t('new_help');case 'me':return t('my_account');case 'feedback':return L3('Votre avis','رأيك','Your feedback');default:return t('app_short');}
 }
 
 /* ============ Rendu ============ */
@@ -540,7 +540,7 @@ function render(resetScroll){
   root.lang=S.lang;root.dir=S.lang==='ar'?'rtl':'ltr';
   root.setAttribute('data-theme',S.theme==='dark'?'dark':'light');
   var tc=document.querySelector('meta[name="theme-color"]');if(tc)tc.setAttribute('content',S.theme==='dark'?'#0E1511':'#FFFFFF');
-  var onb=r.indexOf('inv')===0||r==='load',detail=['canal','project','newProject','newHelp','me'].indexOf(r)>-1&&S.stack.length>0;
+  var onb=r.indexOf('inv')===0||r==='load',detail=['canal','project','newProject','newHelp','me','feedback'].indexOf(r)>-1&&S.stack.length>0;
   var tb=(detail?'<button class="icon-btn flip" data-act="back" aria-label="'+T('back')+'">'+ic('back',22)+'</button>':logoSvg())+'<h1>'+esc(titleFor(r,p))+'</h1><button class="icon-btn lang-btn" data-act="toggle-lang" aria-label="'+esc(S.lang==='fr'?'English':S.lang==='en'?'العربية':'Français')+'">'+(S.lang==='fr'?'EN':S.lang==='en'?'ع':'FR')+'</button><button class="icon-btn" data-act="toggle-theme" aria-label="'+esc(S.theme==='dark'?t('th_light'):t('th_dark'))+'">'+ic(S.theme==='dark'?'sun':'moon',20)+'</button>'+(acct&&!onb?'<button class="icon-btn me-btn" data-act="go-me" aria-label="'+T('my_account')+'">'+av(S.me.pseudo,32)+'</button>':'');
   $('#topbar').innerHTML=tb;
   var view=$('#view'),y=view.scrollTop;
@@ -746,15 +746,17 @@ function doRefresh(){
         q(cl.from('follows').select('*').eq('user_id',id)),q(cl.from('proposals').select('*').eq('from_user',id)),
         q(cl.from('invites').select('*').eq('active',true).eq('kind','join').order('created_at')),
         q(cl.from('spokesperson_list').select('*')),
-        q(cl.from('ai_testers').select('user_id'))
+        q(cl.from('ai_testers').select('user_id')),
+        q(cl.from('feedback').select('*').order('created_at',{ascending:false}))
       ]).then(function(d){applyData(meRow,d);return true;});
     });
   });
 }
 function applyData(me,d){
-  var canals=d[0],stats=d[1],mods=d[2],pubs=d[3],cms=d[4],projs=d[5],mss=d[6],tks=d[7],team=d[8],cmts=d[9],helps=d[10],anns=d[11],myReads=d[12],rcount=d[13],notifs=d[14],breqs=d[15],grants=d[16],eng=d[17],dir=d[18],fol=d[19],props=d[20],invs=d[21],spks=d[22]||[],aits=d[23]||[];
+  var canals=d[0],stats=d[1],mods=d[2],pubs=d[3],cms=d[4],projs=d[5],mss=d[6],tks=d[7],team=d[8],cmts=d[9],helps=d[10],anns=d[11],myReads=d[12],rcount=d[13],notifs=d[14],breqs=d[15],grants=d[16],eng=d[17],dir=d[18],fol=d[19],props=d[20],invs=d[21],spks=d[22]||[],aits=d[23]||[],fbs=d[24]||[];
   var pp={};S.pubId={};S.honorOk={};S.names={};pubs.forEach(function(p){pp[p.id]=p.pseudo;S.pubId[p.pseudo]=p.id;S.honorOk[p.pseudo]=p.show_honor!==false;var nm=((p.first_name||'')+' '+(p.last_name||'')).trim();if(nm)S.names[p.pseudo]=nm;});S.pub=pp;S.flags={};pubs.forEach(function(p){var f=flagFor(p.country);if(f)S.flags[p.pseudo]=f;});
   S.spkCountries=[];spks.forEach(function(s){if(s.pseudo===me.pseudo)S.spkCountries.push(s.country);});
+  S.fb=fbs.map(function(r){return {uid:r.user_id,who:pp[r.user_id]||'',a:r.answers||{},lang:r.lang||'',at:(r.created_at||'').slice(0,16).replace('T',' ')};});
   /* canaux */
   canals.forEach(function(row){var k=CANALS.filter(function(x){return x.id===row.id;})[0];
     if(!k){k={id:row.id,ico:row.ico,n:{fr:row.name_fr,ar:row.name_ar},d:{fr:row.desc_fr,ar:row.desc_ar}};CANALS.push(k);}
@@ -956,6 +958,85 @@ function vAlerts(){
   h+=S.notifs.length?'<div class="card list">'+S.notifs.map(function(n){return '<button class="li" data-act="alert-open" data-id="'+esc(n.id)+'"><span class="ico" style="'+(n.read?'background:var(--surface2);color:var(--ink2)':'')+'">'+ic(n.type==='task'?'check':n.type==='help'?'life':n.type==='canal'?'hash':'folder',18)+'</span><span class="grow"><span class="t" style="'+(n.read?'font-weight:400':'')+'">'+esc(n[S.lang]||n.fr)+'</span><br><span class="muted small">'+esc(rel(n.at))+'</span></span>'+(n.read?'':'<span class="chip green" aria-label="new">•</span>')+'</button>';}).join('')+'</div>':'<p class="empty">'+T('no_alerts')+'</p>';
   return h;
 }
+/* ============ Questionnaire de retours des testeurs ============ */
+var FBQ=[
+ {k:'device',ty:'one',q:['Sur quel appareil testez-vous surtout ?','على أي جهاز تجرّب غالبًا؟','Which device do you mostly test on?'],o:[['iphone','iPhone','iPhone','iPhone'],['android','Android','Android','Android'],['pc','Ordinateur','حاسوب','Computer'],['other','Autre','آخر','Other']]},
+ {k:'easy',ty:'s5',q:['Prise en main : l’application est facile à comprendre.','سهولة الفهم: التطبيق سهل الاستيعاب.','Getting started: the app is easy to understand.']},
+ {k:'tour',ty:'s5',q:['Le tutoriel (visite guidée) m’a aidé.','الجولة الإرشادية ساعدتني.','The guided tour helped me.']},
+ {k:'nav',ty:'s5',q:['Je trouve facilement ce que je cherche.','أجد بسهولة ما أبحث عنه.','I easily find what I’m looking for.']},
+ {k:'speed',ty:'s5',q:['L’application est rapide et fluide.','التطبيق سريع وسلس.','The app is fast and smooth.']},
+ {k:'lang',ty:'s5',q:['Les textes (français, anglais, arabe) sont clairs et corrects.','النصوص (فرنسية، إنجليزية، عربية) واضحة وصحيحة.','The texts (French, English, Arabic) are clear and correct.']},
+ {k:'trust',ty:'s5',q:['Je me sens en confiance pour mes données personnelles.','أشعر بالثقة تجاه بياناتي الشخصية.','I feel confident about my personal data.']},
+ {k:'used',ty:'many',q:['Qu’avez-vous essayé ? (plusieurs choix)','ماذا جرّبت؟ (عدة خيارات)','What did you try? (several choices)'],o:[['canals','Canaux','القنوات','Channels'],['ann','Annonces','الإعلانات','Announcements'],['proj','Projets et tâches (Kanban)','المشاريع والمهام (كانبان)','Projects and tasks (Kanban)'],['help','Entraide','التضامن','Mutual help'],['ai','Assistant IA','المساعد الذكي','AI assistant','ai'],['notif','Notifications','الإشعارات','Notifications']]},
+ {k:'ai',ty:'s5',ai:1,q:['L’assistant IA m’a été utile.','المساعد الذكي كان مفيدًا لي.','The AI assistant was useful to me.']},
+ {k:'best',ty:'txt',q:['Ce qui vous a le plus plu','ما أعجبك أكثر','What you liked most']},
+ {k:'issue',ty:'txt',q:['Un bug ou un point confus (où et que s’est-il passé ?)','خلل أو أمر غير واضح (أين وماذا حدث؟)','A bug or confusing point (where and what happened?)']},
+ {k:'missing',ty:'txt',q:['Une fonction qu’il manque','ميزة ناقصة','A feature that is missing']},
+ {k:'nps',ty:'nps',q:['Recommanderiez-vous Diasporact à un proche ? (0 = pas du tout, 10 = sûrement)','هل توصي بـ Diasporact لقريب؟ (0 = أبدًا، 10 = بالتأكيد)','Would you recommend Diasporact to someone close? (0 = not at all, 10 = definitely)']}
+];
+function fbO(o){return L3(o[1],o[2],o[3]);}
+function fbQs(){return FBQ.filter(function(x){return !x.ai||S.me.ai;});}
+function vFeedback(){
+  var mine=(S.fb||[]).filter(function(r){return r.uid===S.me.id;}).length;
+  var h='<section><h1 class="page">'+esc(L3('Votre avis sur Diasporact','رأيك في Diasporact','Your feedback on Diasporact'))+'</h1><p class="muted">'+esc(L3('Environ 3 minutes. Aucune question n’est obligatoire ; répondez à ce que vous voulez. Vos réponses sont lues par l’équipe uniquement.','حوالي 3 دقائق. لا يوجد سؤال إلزامي؛ أجب عمّا تشاء. لا يطّلع على إجاباتك سوى الفريق.','About 3 minutes. No question is required; answer what you like. Only the team reads your answers.'))+'</p></section>';
+  if(mine)h+='<div class="banner">'+ic('check',18)+'<span>'+esc(L3('Vous avez déjà répondu — merci ! Vous pouvez envoyer un nouvel avis.','لقد أجبت من قبل — شكرًا! يمكنك إرسال رأي جديد.','You already answered — thank you! You can send a new one.'))+'</span></div>';
+  h+='<form data-form="feedback" class="stack" novalidate>';
+  fbQs().forEach(function(x,i){
+    var qt=L3(x.q[0],x.q[1],x.q[2]),b='';
+    if(x.ty==='s5'||x.ty==='nps'){
+      var a=x.ty==='nps'?0:1,z=x.ty==='nps'?10:5;
+      for(var n=a;n<=z;n++)b+='<label class="fbo"><input type="radio" name="fb_'+x.k+'" value="'+n+'"><span>'+n+'</span></label>';
+      b='<div class="fbopts" dir="ltr">'+b+'</div>'+(x.ty==='s5'?'<div class="row fbend muted small" dir="ltr"><span>'+esc(L3('Pas du tout d’accord','لا أوافق إطلاقًا','Strongly disagree'))+'</span><span class="grow"></span><span>'+esc(L3('Tout à fait d’accord','أوافق تمامًا','Strongly agree'))+'</span></div>':'');
+    }else if(x.ty==='one'||x.ty==='many'){
+      var ty=x.ty==='one'?'radio':'checkbox';
+      x.o.forEach(function(o){if(o[4]==='ai'&&!S.me.ai)return;b+='<label class="fbo"><input type="'+ty+'" name="fb_'+x.k+'" value="'+o[0]+'"><span>'+esc(fbO(o))+'</span></label>';});
+      b='<div class="fbopts">'+b+'</div>';
+    }else b='<textarea name="fb_'+x.k+'" maxlength="1000" rows="3" aria-label="'+esc(qt)+'"></textarea>';
+    h+='<fieldset class="card stack s8 fbq"><legend class="lbl">'+(i+1)+'. '+esc(qt)+'</legend>'+b+'</fieldset>';
+  });
+  return h+'<p class="fb err" id="fb-err" aria-live="polite"></p><button class="btn primary block" type="submit">'+esc(L3('Envoyer mon avis','إرسال رأيي','Send my feedback'))+'</button></form>';
+}
+function fbCard(){
+  return '<section class="card stack s8"><h2 class="h3">'+esc(L3('Donnez votre avis','شاركنا رأيك','Give your feedback'))+'</h2><p class="muted small">'+esc(L3('Questionnaire de 3 minutes pour nous aider à améliorer Diasporact.','استبيان من 3 دقائق لمساعدتنا على تحسين Diasporact.','A 3-minute questionnaire to help us improve Diasporact.'))+'</p><button class="btn sm primary" data-act="fb-open">'+esc(L3('Répondre au questionnaire','الإجابة على الاستبيان','Answer the questionnaire'))+'</button></section>';
+}
+function fbAnswers(f){
+  var a={},qs=fbQs();
+  qs.forEach(function(x){
+    var els=f.querySelectorAll('[name="fb_'+x.k+'"]');
+    if(x.ty==='txt'){var v=((els[0]||{}).value||'').trim().slice(0,1000);if(v)a[x.k]=v;}
+    else if(x.ty==='many'){var m=[];for(var i=0;i<els.length;i++)if(els[i].checked)m.push(els[i].value);if(m.length)a[x.k]=m;}
+    else{for(var j=0;j<els.length;j++)if(els[j].checked){a[x.k]=x.ty==='one'?els[j].value:+els[j].value;}}
+  });
+  return a;
+}
+function fbQLabel(k){var x=FBQ.filter(function(y){return y.k===k;})[0];return x?L3(x.q[0],x.q[1],x.q[2]):k;}
+function fbSummary(){
+  var rows=S.fb||[],h='<p class="muted small">'+esc(L3(rows.length+' réponse(s)',rows.length+' إجابة',rows.length+' response(s)'))+'</p>';
+  if(!rows.length)return h;
+  FBQ.forEach(function(x){
+    var vals=rows.map(function(r){return r.a[x.k];}).filter(function(v){return v!=null&&v!=='';}),b='';
+    if(!vals.length)return;
+    if(x.ty==='s5'||x.ty==='nps'){var s=0;vals.forEach(function(v){s+=+v;});b='<b>'+(s/vals.length).toFixed(1)+(x.ty==='nps'?'/10':'/5')+'</b> <span class="muted small">('+vals.length+')</span>';}
+    else if(x.ty==='txt'){b=vals.map(function(v){return '<blockquote class="small">'+esc(v)+'</blockquote>';}).join('');}
+    else{var c={};vals.forEach(function(v){(Array.isArray(v)?v:[v]).forEach(function(z){c[z]=(c[z]||0)+1;});});
+      b=Object.keys(c).map(function(z){var o=(x.o||[]).filter(function(oo){return oo[0]===z;})[0];return esc(o?fbO(o):z)+' : <b>'+c[z]+'</b>';}).join(' · ');}
+    h+='<div class="stack s8"><div class="lbl">'+esc(fbQLabel(x.k))+'</div><div>'+b+'</div></div>';
+  });
+  return h;
+}
+function fbCsv(){
+  var rows=S.fb||[],cols=FBQ.map(function(x){return x.k;});
+  function cell(v){v=v==null?'':Array.isArray(v)?v.join('|'):String(v);if(/^[=+\-@]/.test(v))v="'"+v;return '"'+v.replace(/"/g,'""')+'"';}
+  var out=[['date','pseudo','lang'].concat(cols).map(cell).join(',')];
+  rows.forEach(function(r){out.push([r.at,r.who,r.lang].concat(cols.map(function(k){return r.a[k];})).map(cell).join(','));});
+  return '﻿'+out.join('\r\n');
+}
+function fbAdmin(){
+  if(!S.me.admin)return '';
+  var u=appUrl('q');
+  return '<section class="card stack s8"><h2 class="h3">'+esc(L3('Retours des testeurs','ملاحظات المختبرين','Tester feedback'))+'</h2><p class="muted small">'+esc(L3('Lien direct à envoyer aux testeurs :','رابط مباشر لإرساله للمختبرين:','Direct link to send to testers:'))+'</p><p class="linkbox" dir="ltr" style="overflow-wrap:anywhere">'+esc(u)+'</p>'+
+  '<div class="row wrap"><button class="btn sm grow" data-act="fb-copy">'+ic('copy',16)+esc(L3('Copier le lien','نسخ الرابط','Copy link'))+'</button><button class="btn sm grow" data-act="fb-sum">'+esc(L3('Synthèse','الملخص','Summary'))+' ('+(S.fb||[]).length+')</button><button class="btn sm grow" data-act="fb-csv">CSV</button></div></section>';
+}
 function adminSection(){
   if(!S.me.admin)return '';
   return '<section class="card stack s8"><h2 class="h3">'+T('adm_title')+'</h2>'+
@@ -984,7 +1065,7 @@ function vMe(){
     '<button class="btn sm" type="submit">'+T('sk_save')+'</button></form></section>'+
   '<section class="card stack s8"><h2 class="h3">'+T('country')+'</h2><form data-form="mycountry" class="row" novalidate><div class="grow">'+countryInput('my-country',S.me.country,'maxlength="60" autocomplete="country-name" aria-label="'+esc(t('country'))+'"')+'</div><button class="btn sm" type="submit">'+T('sk_save')+'</button></form></section>'+
   '<section class="card stack s8"><h2 class="h3">'+T('tour_title')+'</h2><p class="muted small">'+T('tour_again_sub')+'</p><button class="btn sm" data-act="tour-open">'+T('tour_again')+'</button></section>'+
-  badgesSection()+skillsSection()+adminSection()+
+  fbCard()+badgesSection()+skillsSection()+adminSection()+fbAdmin()+
   (S.anon?'<section class="card stack s8"><h2 class="h3">'+T('secure_t')+'</h2><p class="muted small">'+T('secure_note')+'</p>'+'<form data-form="setpw" class="stack s8" novalidate><input type="text" name="username" autocomplete="username" value="'+esc(S.me.pseudo)+'" tabindex="-1" aria-hidden="true" readonly style="position:absolute;opacity:0;height:0;width:0;pointer-events:none"><input type="password" id="sp-w" name="password" autocomplete="new-password" minlength="8" maxlength="72" dir="ltr" placeholder="'+esc(t('pw_new'))+'" aria-label="'+esc(t('pw_new'))+'"><button class="btn sm" type="submit">'+T(S.anon?'secure_go':'change_pw')+'</button></form>'+'</section>':'<section class="card stack s8"><h2 class="h3">'+ic('lock',16)+' '+T('acct_ok_t')+'</h2><p class="muted small">'+T('acct_ok_note',{p:esc(S.me.pseudo)})+'</p>'+'<div class="stack s8"><h3 class="h3">'+T('sc_title')+'</h3><p class="muted small">'+T('sc_note')+' '+T('sc_gen_warn')+'</p><button class="btn sm" data-act="gen-code">'+T('sc_gen')+'</button></div>'+'<form data-form="setpw" class="stack s8" novalidate><input type="text" name="username" autocomplete="username" value="'+esc(S.me.pseudo)+'" tabindex="-1" aria-hidden="true" readonly style="position:absolute;opacity:0;height:0;width:0;pointer-events:none"><input type="password" id="sp-w" name="password" autocomplete="new-password" minlength="8" maxlength="72" dir="ltr" placeholder="'+esc(t('pw_new'))+'" aria-label="'+esc(t('pw_new'))+'"><button class="btn sm" type="submit">'+T(S.anon?'secure_go':'change_pw')+'</button></form>'+'<button class="btn sm" data-act="logout">'+T('logout_t')+'</button></section>')+
   '<section class="card stack s8"><h2 class="h3">'+T('recov')+'</h2><p class="muted small">'+T('recov_note')+'</p></section>'+
   '<section class="stack s8"><div class="lbl">'+T('lang')+'</div><div class="seg"><button aria-pressed="'+(S.lang==='fr')+'" data-act="lang" data-v="fr">Français</button><button aria-pressed="'+(S.lang==='en')+'" data-act="lang" data-v="en">English</button><button aria-pressed="'+(S.lang==='ar')+'" data-act="lang" data-v="ar">العربية</button></div>'+
@@ -1018,7 +1099,7 @@ function vInv1(){
   '<p class="muted small">'+t('privacy_link')+'</p><button type="submit" class="btn primary block" id="pseudo-go" disabled>'+T('create_account')+'</button></form>';
 }
 function vInvRec(){return heroBlock(T('inv_from'),T('rec_title'),T('rec_sub'))+'<button class="btn primary block" data-act="rec-go">'+T('rec_go')+'</button>';}
-var VIEWS={load:vLoad,inv0:vInv0,inv1:vInv1,invRec:vInvRec,home:vHome,canals:vCanals,canal:vCanal,projects:vProjects,project:vProject,newProject:vNewProject,help:vHelp,newHelp:vNewHelp,alerts:vAlerts,me:vMe};
+var VIEWS={load:vLoad,inv0:vInv0,inv1:vInv1,invRec:vInvRec,home:vHome,canals:vCanals,canal:vCanal,projects:vProjects,project:vProject,newProject:vNewProject,help:vHelp,newHelp:vNewHelp,alerts:vAlerts,me:vMe,feedback:vFeedback};
 var pseudoTimer,pseudoSeq=0;
 function updatePseudo(){
   var inp=$('#pseudo');if(!inp)return;var v=inp.value.trim().toLowerCase(),fb=$('#pseudo-fb'),go=$('#pseudo-go');S.draft.pseudo=inp.value;
@@ -1070,7 +1151,7 @@ function tourSteps(){
    {i:'hash',k:3,a:'tab:canals'},{i:'mega',k:4,a:'tab:home'},{i:'folder',k:5,a:'tab:projects'},{i:'life',k:6,a:'tab:help'},
    {i:'lock',k:7,a:'me'},{i:'globe',k:8}];
   if(S.me&&S.me.ai)st.push({i:'chat',k:9,a:'newproj'});
-  st.push({i:'check',k:10});
+  st.push({i:'check',k:10,a:'fb'});
   return st;
 }
 function openTour(n){
@@ -1088,12 +1169,17 @@ function maybeTour(){
   setTimeout(function(){var sh=$('#sheets');if(!sh||!sh.hidden||S.route.name!=='home'){S._tourTry=false;return;}openTour(0);},600);
 }
 
+Object.assign(I18N.fr,{tour10_b:'Donner mon avis (3 min)'});Object.assign(I18N.ar,{tour10_b:'شاركنا رأيك (3 دقائق)'});Object.assign(I18N.en,{tour10_b:'Give my feedback (3 min)'});
 var ACT={
  'tour-open':function(){openTour(0);},
+ 'fb-open':function(){go('feedback');},
+ 'fb-copy':function(){S._msg=appUrl('q');ACT['copy-msg']();},
+ 'fb-sum':function(){openSheet(L3('Synthèse des retours','ملخص الملاحظات','Feedback summary'),fbSummary());},
+ 'fb-csv':function(){var blob=new Blob([fbCsv()],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='diasporact-retours-testeurs.csv';document.body.appendChild(a);a.click();setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(url);},1000);},
  'tour-next':function(){openTour((S.tourI||0)+1);},
  'tour-prev':function(){openTour((S.tourI||0)-1);},
  'tour-end':function(){tourMark();closeSheet();},
- 'tour-go':function(d){tourMark();closeSheet(true);var a=String(d.go||'');if(a.indexOf('tab:')===0)tab(a.slice(4));else if(a==='me'){S.stack=[];go('me');}else if(a==='newproj')ACT['new-project']({});},
+ 'tour-go':function(d){tourMark();closeSheet(true);var a=String(d.go||'');if(a.indexOf('tab:')===0)tab(a.slice(4));else if(a==='me'){S.stack=[];go('me');}else if(a==='fb'){S.stack=[];go('feedback');}else if(a==='newproj')ACT['new-project']({});},
  'task-view':function(d){try{localStorage.setItem('dp-tv',d.v==='list'?'list':'board');}catch(e){}render();},
  'kb-cols':function(){openSheet(t('kb_cols_t'),'<p>'+T('kb_cols_d')+'</p><div class="kb-prev" aria-hidden="true"><span class="chip">'+T('tk_todo')+'</span><span class="chip">'+T('tk_doing')+'</span><span class="chip">'+T('tk_done')+'</span><span class="chip kb-add">+ '+T('kb_add')+'</span></div><button class="btn block" disabled aria-disabled="true">'+T('kb_cols')+' · '+T('kb_soon')+'</button><button class="btn primary block" data-act="close-sheet">'+T('close')+'</button>');},
  'task-review':function(d){mut(function(){return rpc('request_task_review',{p_task:d.task});},'t_review_sent');},
@@ -1198,6 +1284,11 @@ function need(id,errId,msgKey){var el=$('#'+id);if(!el||!el.value.trim()){var e=
 function list(v){return v.split(',').map(function(x){return x.trim();}).filter(Boolean);}
 function codeFromInput(v){var parts=String(v||'').trim().split(/[\/#?\s]+/).filter(Boolean);return parts.length?parts[parts.length-1]:'';}
 var FORMS={
+ feedback:function(f){
+   var a=fbAnswers(f);
+   if(!Object.keys(a).length){var e=$('#fb-err');if(e)e.textContent=L3('Répondez à au moins une question.','أجب عن سؤال واحد على الأقل.','Answer at least one question.');return;}
+   mut(function(){return q(tbl('feedback').insert({user_id:S.me.id,answers:a,lang:S.lang}));},function(){return L3('Merci pour votre avis !','شكرًا على رأيك!','Thank you for your feedback!');},function(){S.hideFb=true;S.stack=[];S.route={name:'home',params:{}};});
+ },
  invlink:function(){var code=codeFromInput($('#il-in').value);if(!code){S.auth.err=t('inv0_bad');render();return;}startOnboarding(code);},
  pseudo:function(){
    var v=$('#pseudo').value.trim().toLowerCase(),country=($('#country').value||'').trim(),code=S.auth.code,pw=($('#pw')||{}).value||'';if(!/^[a-z0-9][a-z0-9._-]{2,23}$/.test(v)||!code)return;
@@ -1272,11 +1363,12 @@ document.addEventListener('submit',function(e){e.preventDefault();var f=e.target
 document.addEventListener('change',function(e){if(e.target.id==='noted'){var b=$('#enter');if(b)b.disabled=!e.target.checked;}});
 
 /* ============ Démarrage ============ */
-function hashInfo(){var m=(location.hash||'').match(/^#\/(i|p|a)\/([^\/?#]+)/);return m?{k:m[1],v:decodeURIComponent(m[2])}:null;}
+function hashInfo(){if(/^#\/q\/?$/.test(location.hash||''))return {k:'q',v:''};var m=(location.hash||'').match(/^#\/(i|p|a)\/([^\/?#]+)/);return m?{k:m[1],v:decodeURIComponent(m[2])}:null;}
 function clearHash(){try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}}
 function goHome(){
   S.stack=[];var h=S.deep;S.deep=null;
   S.route=(h&&h.k==='p'&&projOf(h.v))?{name:'project',params:{id:h.v}}:{name:'home',params:{}};
+  if(h&&h.k==='q'){S.stack=[{name:'home',params:{}}];S.route={name:'feedback',params:{}};}
   render(true);
 }
 function startOnboarding(code){
@@ -1302,11 +1394,11 @@ function boot(){
   if(!client()){S.fatal=t('cfg_missing');render(true);return;}
   var h=hashInfo();
   client().auth.getSession().then(function(r){return r.data.session?refresh():false;}).then(function(ok){
-    if(ok){if(h&&h.k==='i')return inviteWhileRegistered(h.v);S.deep=(h&&h.k==='p')?h:null;goHome();return;}
+    if(ok){if(h&&h.k==='i')return inviteWhileRegistered(h.v);S.deep=(h&&(h.k==='p'||h.k==='q'))?h:null;goHome();return;}
     if(h&&h.k==='i')return startOnboarding(h.v);
     S.route={name:'inv0',params:{}};render(true);
   }).catch(function(e){S.fatal=errMsg(e);render(true);});
-  window.addEventListener('hashchange',function(){if(/^#\/i\//.test(location.hash))location.reload();});
+  window.addEventListener('hashchange',function(){if(/^#\/i\//.test(location.hash))location.reload();else if(/^#\/q\/?$/.test(location.hash)&&hasAccount()&&S.route.name!=='feedback'){S.stack=[{name:'home',params:{}}];S.route={name:'feedback',params:{}};render(true);}});
   setInterval(function(){
     if(document.hidden||!hasAccount()||S.busy)return;
     var a=document.activeElement;if(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))return;if(!$('#sheets').hidden)return;
