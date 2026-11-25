@@ -232,7 +232,7 @@ var ICONS={
  x:'<path d="M6 6l12 12M18 6L6 18"/>',eye:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>'
 };
 function ic(n,s){s=s||20;return '<svg class="ic" width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(ICONS[n]||'')+'</svg>';}
-function logoSvg(){var d='';for(var i=0;i<7;i++){var a=i/7*Math.PI*2-Math.PI/2;d+='<circle cx="'+(24+14*Math.cos(a)).toFixed(1)+'" cy="'+(24+14*Math.sin(a)).toFixed(1)+'" r="3.2" fill="var(--yellow)"/>';}return '<svg class="logo" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="13" fill="var(--hero-b)"/>'+d+'<circle cx="24" cy="24" r="4.5" fill="var(--red)" stroke="var(--hero-ink)" stroke-width="1.5"/></svg>';}
+function logoSvg(){return '<img class="logo" src="logo.png" width="34" height="34" alt="" aria-hidden="true">';}
 function av(p,sz){var h=0;for(var i=0;i<p.length;i++)h=(h*31+p.charCodeAt(i))%3;return '<span class="av '+['g','y','r'][h]+'"'+(sz?' style="--s:'+sz+'px"':'')+'>'+esc(p.charAt(0).toUpperCase())+'</span>';}
 function chip(txt,cls){return '<span class="chip '+(cls||'')+'">'+txt+'</span>';}
 function projStatus(p){return p.status==='recruit'?chip(T('st_recruit'),'yellow'):p.status==='done'?chip(T('st_done')):chip(T('st_progress'),'green');}

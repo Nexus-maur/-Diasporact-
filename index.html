@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-title" content="Diasporact">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-192.png">
-<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <script src="config.js"></script>
 <script src="vendor/supabase.js"></script>
 <style>:root{color-scheme:light;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}</style>
@@ -65,7 +65,7 @@ a{color:inherit}
 .app{height:100%;max-width:480px;margin:0 auto;display:flex;flex-direction:column;gap:10px;padding-block:12px}
 .topbar{display:flex;align-items:center;gap:8px;min-height:44px}
 .topbar h1{font:700 17px/1.2 var(--f-display);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.logo{width:34px;height:34px;flex:none}
+.logo{width:34px;height:34px;flex:none;border-radius:50%;object-fit:cover}
 .icon-btn{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex:none}
 .icon-btn:hover{background:var(--surface2)}
 .flip{display:inline-flex}
@@ -141,7 +141,7 @@ button.li:hover,button.card:hover{background:var(--surface2)}
 .hero h1{font:700 27px/1.12 var(--f-display);text-wrap:balance}
 .hero .eyebrow{color:var(--hero-soft)}
 .hero p{color:var(--hero-soft)}
-.hero .logo{width:44px;height:44px}
+.hero .logo{width:72px;height:72px}
 
 /* Formulaires */
 .field{display:flex;flex-direction:column;gap:6px}
