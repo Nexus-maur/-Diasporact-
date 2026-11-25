@@ -317,4 +317,27 @@ ok "R168 fin de phase test : plus de droits de modérateur" "$(q $T1 "select cou
 ok "R169 fin de phase test : les testeurs restent membres" "$(q $T1 "select count(*) from canal_members where status='member' and user_id=me()")" "2"
 ok "R170 fin de phase test : statut testeur retiré" "$(q $A "select count(*) from profiles where is_tester")" "0"
 
+# gestion des membres (retirer / nommer modérateur)
+G1=11111111-aaaa-0000-0000-0000000000a1; G2=11111111-aaaa-0000-0000-0000000000a2; G3=11111111-aaaa-0000-0000-0000000000a3
+LG=$(q $A "select rotate_canal_invite('edu')")
+q $G1 "select redeem_invite('$LG','gest.un','FR')" >/dev/null
+q $G2 "select redeem_invite('$LG','gest.deux','FR')" >/dev/null
+q $G3 "select redeem_invite('$LG','gest.trois','FR')" >/dev/null
+has "R171 un simple membre ne peut pas nommer de modérateur" "$(q $G1 "select member_set_mod('edu','gest.deux',true)")" "forbidden"
+has "R172 un simple membre ne peut pas retirer un membre" "$(q $G1 "select member_remove('edu','gest.deux')")" "forbidden"
+q $A "select set_role('gest.un','edu',true,false)" >/dev/null
+q $G1 "select member_set_mod('edu','gest.deux',true)" >/dev/null
+ok "R173 un modérateur nomme un autre modérateur" "$($DB -c "select is_moderator from canal_members where canal_id='edu' and user_id=(select id from profiles where pseudo='gest.deux')")" "t"
+has "R174 un modérateur ne peut pas rétrograder un modérateur" "$(q $G1 "select member_set_mod('edu','gest.deux',false)")" "forbidden"
+has "R175 un modérateur ne peut pas retirer un modérateur" "$(q $G1 "select member_remove('edu','gest.deux')")" "forbidden"
+has "R176 on ne peut pas agir sur soi-même" "$(q $G1 "select member_remove('edu','gest.un')")" "forbidden"
+has "R177 on ne peut pas agir sur un administrateur" "$(q $G1 "select member_remove('edu','admin.nkc')")" "forbidden"
+q $G1 "select member_remove('edu','gest.trois')" >/dev/null
+ok "R178 un modérateur retire un membre" "$(q $A "select count(*) from canal_members where canal_id='edu' and user_id=(select id from profiles where pseudo='gest.trois')")" "0"
+ok "R179 le membre retiré ne voit plus les projets du canal" "$(q $G3 "select count(*) from projects where canal_id='edu'")" "0"
+has "R180 un modérateur d'un canal n'agit pas sur un autre canal" "$(q $G1 "select member_remove('inv','sidi.paris')")" "forbidden"
+q $A "select member_set_mod('edu','gest.deux',false)" >/dev/null
+ok "R181 l'admin rétrograde un modérateur" "$($DB -c "select is_moderator from canal_members where canal_id='edu' and user_id=(select id from profiles where pseudo='gest.deux')")" "f"
+has "R182 cible non membre refusée" "$(q $A "select member_remove('inv','gest.deux')")" "not_member"
+
 echo "----"; echo "$pass réussis, $fail échoués"; [ $fail -eq 0 ]

@@ -99,8 +99,8 @@ async function open(mock,hash,opt){
   ok(a.errs.length===0,'B24 aucune erreur JS ('+a.errs.join('|')+')');
   /* C. Modérateur */
   m=makeMock({session:'u-2'});
-  m.DB.profiles.push(P('mariem.paris',{auth_uid:'u-2'}),P('ahmed.lille'));
-  m.DB.canal_members.push({canal_id:'edu',user_id:'p-mariem.paris',status:'member',is_moderator:true,is_relay:false},{canal_id:'edu',user_id:'p-ahmed.lille',status:'pending',is_moderator:false,is_relay:false});
+  m.DB.profiles.push(P('mariem.paris',{auth_uid:'u-2'}),P('ahmed.lille'),P('zaid.nice'));
+  m.DB.canal_members.push({canal_id:'edu',user_id:'p-mariem.paris',status:'member',is_moderator:true,is_relay:false},{canal_id:'edu',user_id:'p-ahmed.lille',status:'pending',is_moderator:false,is_relay:false},{canal_id:'edu',user_id:'p-zaid.nice',status:'member',is_moderator:false,is_relay:false});
   m.DB.badge_requests.push({id:'br1',user_id:'p-ahmed.lille',type:'expert:fin',note:'Expert-comptable',status:'pending'});
   a=await open(m);await sleep(100);
   ok(a.txt().includes('Demandes d’adhésion à valider'),'C1 demandes à valider sur l\'accueil');
@@ -108,6 +108,12 @@ async function open(mock,hash,opt){
   ok(a.txt().includes('@ahmed.lille')&&a.txt().includes('Générer le lien d’invitation'),'C2 onglet modération');
   await a.click('[data-act=accept]');ok(m.DB.canal_members.find(x=>x.user_id==='p-ahmed.lille').status==='member','C3 adhésion acceptée');
   await a.click('[data-act=canal-tab][data-tab=members]');ok(a.txt().includes('@ahmed.lille')&&a.txt().includes('@mariem.paris')&&a.txt().includes('Membres'),'C3b onglet Membres : le modérateur voit la liste des membres du canal');
+  await a.click('[data-act=mem-mod]');await a.click('[data-act=mem-mod-ok]');await sleep(150);
+  ok(m.DB.canal_members.find(x=>x.user_id==='p-ahmed.lille').is_moderator===true,'C3c nommer un modérateur depuis la liste');
+  ok(!a.q('[data-act=mem-rm][data-id$="|ahmed.lille"]'),'C3d un modérateur ne peut pas retirer un autre modérateur');
+  ok(!!a.q('[data-act=mem-rm][data-id$="|zaid.nice"]')&&!a.q('[data-act=mem-rm][data-id$="|mariem.paris"]'),'C3e boutons présents pour un membre, absents pour soi-même');
+  await a.click('[data-act=mem-rm][data-id$="|zaid.nice"]');await a.click('[data-act=mem-rm-ok]');await sleep(150);
+  ok(!m.DB.canal_members.some(x=>x.user_id==='p-zaid.nice'),'C3f retirer un membre du canal');
   await a.click('[data-act=canal-tab][data-tab=mod]');
   await a.click('[data-act=gen-link]');ok(a.txt().includes('#/i/edu-'),'C4 lien d\'invitation généré');
   a.set('#wa-in','https://chat.whatsapp.com/AbC123');await a.submit('[data-form=wa]');ok(m.DB.canals[0].wa_link==='https://chat.whatsapp.com/AbC123','C5 groupe WhatsApp enregistré');
