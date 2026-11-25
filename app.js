@@ -1278,7 +1278,7 @@ var ACT={
  'mark-all':function(){mut(function(){return q(tbl('notifications').update({read:true}).eq('user_id',S.me.id));});},
  'alert-open':function(d){var n=S.notifs.filter(function(x){return x.id===d.id;})[0];if(!n)return;n.read=true;
    tbl('notifications').update({read:true}).eq('id',d.id).then(function(){});
-   if(n.route&&n.route!=='home'&&(n.route!=='project'||projOf(n.params.id)))go(n.route,n.params);else render();},
+   if(n.route&&n.route!=='home'&&(n.route!=='project'||projOf(n.params.id)))go(n.route,n.params);else go('home',{});},
  lang:function(d){S.lang=d.v;saveLang(d.v);if(hasAccount())tbl('profiles').update({lang:d.v}).eq('id',S.me.id).then(function(){});render();},
  'toggle-lang':function(){ACT.lang({v:S.lang==='fr'?'en':S.lang==='en'?'ar':'fr'});},
  theme:function(d){S.theme=d.v==='dark'?'dark':'light';saveTheme(S.theme);render();},
