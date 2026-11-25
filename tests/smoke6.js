@@ -58,7 +58,14 @@ async function open(mock,hash,opt){
   await a.click('[data-act=open-project]');
   ok(a.txt().includes('Cahier des charges'),'B5 fiche projet');
   ok(!a.txt().includes('Gérer le projet'),'B6 pas d\'outils de gestion pour un simple membre');
+  ok(a.d.querySelectorAll('.kb-col').length===3&&a.q('.kb-col [data-act=take]')!==null,'B6b vue Kanban par défaut : 3 colonnes (À faire, En cours, Fait)');
+  ok(a.txt().includes('Personnaliser les colonnes')&&a.txt().includes('Bientôt'),'B6c personnalisation des colonnes annoncée « Bientôt »');
+  await a.click('[data-act=kb-cols]');ok(a.txt().includes('colonnes sont fixes')&&a.q('.sheet button[disabled]')!==null,'B6d personnalisation inactive pendant la phase test');
+  await a.click('[data-act=close-sheet]');
+  await a.click('[data-act=task-view][data-v=list]');ok(a.d.querySelectorAll('.kb-col').length===0&&a.q('.tk')!==null,'B6e bascule vers la vue liste');
+  await a.click('[data-act=task-view][data-v=board]');
   await a.click('[data-act=take]');ok(m.DB.tasks[0].assignee_id==='p-sidi.paris','B7 tâche prise');
+  ok(a.d.querySelectorAll('.kb-col')[1].textContent.includes('Cahier des charges'),'B7b la tâche prise passe dans la colonne En cours');
   await a.click('[data-act=finish]');ok(m.DB.tasks[0].status==='done','B8 tâche terminée');
   a.set('#cmt-text','Je m\'en occupe');await a.submit('[data-form=comment]');
   ok(m.DB.comments.length===1&&a.txt().includes('Je m\'en occupe'),'B9 commentaire publié');

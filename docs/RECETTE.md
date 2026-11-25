@@ -243,3 +243,13 @@ SEC-04, CAN-03 — le reste suit la légende Statut ci-dessous).
 | TUTO-04 | « Revoir la visite guidée » (accueil et « Moi ») | La visite repart de l'étape 1 |
 | TUTO-05 | Langue arabe | Textes en arabe, sens de lecture inversé, pas de débordement |
 | TUTO-06 | Compte testeur IA | Étape supplémentaire « Fonctions IA » |
+
+## Anglais et Kanban
+| N° | À vérifier | Résultat attendu |
+|---|---|---|
+| LANG-01 | Bouton de langue en haut (FR → EN → ع → FR) et choix dans « Moi » | Toute l'interface change ; l'arabe inverse le sens de lecture ; le choix est mémorisé |
+| LANG-02 | Première ouverture sur un téléphone en anglais / arabe / français | La langue du téléphone est choisie par défaut (anglais pour toute autre langue) |
+| LANG-03 | Contenus écrits par les membres (annonces, projets) | Affichés dans leur langue d'origine ; le testeur IA peut les traduire vers la langue choisie |
+| LANG-04 | Politique de confidentialité (lien en bas de l'inscription) | Disponible en français, anglais (#en) et arabe |
+| KAN-01 | Fiche projet : vue Kanban (À faire / En cours / Fait) et vue Liste | Bascule mémorisée ; « Je prends » déplace la tâche en « En cours », « Marquer fait » en « Fait » |
+| KAN-02 | « Personnaliser les colonnes » | Bouton marqué « Bientôt » ; la fenêtre explique que les colonnes sont fixes pendant la phase test et son bouton est inactif |
