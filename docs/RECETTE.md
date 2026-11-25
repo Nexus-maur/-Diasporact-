@@ -6,6 +6,12 @@ Objectif : décider de la mise en production sur la base de preuves. Chaque cas 
 - **Manuel** : à exécuter par une personne.
 - **Priorité** : Bloquant (pas de mise en production s’il échoue) · Majeur · Mineur.
 
+Une première passe de recette en direct sur l'environnement réel a été
+réalisée le 25/11/2026 ; voir
+[docs/RECETTE_RESULTATS_2026-11-25.md](RECETTE_RESULTATS_2026-11-25.md)
+pour le détail et le périmètre (couvre notamment ACC-02 à ACC-07, SEC-03,
+SEC-04, CAN-03 — le reste suit la légende Statut ci-dessous).
+
 ## Critères de décision (Go / No-Go)
 
 1. 100 % des cas **Bloquants** réussis.
@@ -44,12 +50,12 @@ Objectif : décider de la mise en production sur la base de preuves. Chaque cas 
 | ID | Scénario | Rôle | Étapes | Résultat attendu | Mode | Priorité | Statut |
 |---|---|---|---|---|---|---|---|
 | ACC-01 | Ouverture sans lien | Visiteur | Ouvrir le site sans lien d’invitation. | Écran « fonctionne sur invitation » ; champ pour coller un lien. | Auto | Bloquant | À faire |
-| ACC-02 | Lien invalide | Visiteur | Ouvrir #/i/nimporte-quoi. | Message « lien plus valable », aucune création de compte. | Auto | Bloquant | À faire |
-| ACC-03 | Lien de canal valide | Visiteur | Ouvrir un lien d’invitation de canal. | Aperçu du canal et formulaire de pseudo. | Auto | Bloquant | À faire |
-| ACC-04 | Pseudo invalide | Visiteur | Saisir « Ab », puis des espaces ou accents. | Bouton désactivé ; message sur le format (3 à 24 caractères). | Auto | Majeur | À faire |
-| ACC-05 | Pseudo déjà pris | Visiteur | Saisir un pseudo existant. | Message + suggestions ; création impossible (aussi côté serveur). | Auto | Majeur | À faire |
-| ACC-06 | Création du compte | Visiteur | Choisir un pseudo libre et valider. | Accueil affiché, adhésion au canal du lien, notification de bienvenue. | Auto | Bloquant | À faire |
-| ACC-07 | Second canal par lien | Membre | Ouvrir le lien d’un autre canal. | Ajout au canal sans nouveau compte ; message de confirmation. | Auto | Majeur | À faire |
+| ACC-02 | Lien invalide | Visiteur | Ouvrir #/i/nimporte-quoi. | Message « lien plus valable », aucune création de compte. | Auto | Bloquant | OK (25/11, REST direct) |
+| ACC-03 | Lien de canal valide | Visiteur | Ouvrir un lien d’invitation de canal. | Aperçu du canal et formulaire de pseudo. | Auto | Bloquant | OK (25/11, REST direct) |
+| ACC-04 | Pseudo invalide | Visiteur | Saisir « Ab », puis des espaces ou accents. | Bouton désactivé ; message sur le format (3 à 24 caractères). | Auto | Majeur | OK côté serveur (25/11) ; validation visuelle du bouton désactivé non revérifiée |
+| ACC-05 | Pseudo déjà pris | Visiteur | Saisir un pseudo existant. | Message + suggestions ; création impossible (aussi côté serveur). | Auto | Majeur | OK côté serveur (25/11) ; message+suggestions UI non revérifiés |
+| ACC-06 | Création du compte | Visiteur | Choisir un pseudo libre et valider. | Accueil affiché, adhésion au canal du lien, notification de bienvenue. | Auto | Bloquant | OK (25/11) — compte créé + adhésion confirmée ; écran d'accueil/notification UI non revérifiés |
+| ACC-07 | Second canal par lien | Membre | Ouvrir le lien d’un autre canal. | Ajout au canal sans nouveau compte ; message de confirmation. | Auto | Majeur | OK (25/11, REST direct) |
 | ACC-08 | Session conservée | Membre | Fermer puis rouvrir l’application (plusieurs fois, sur 3 jours). | Reste connecté sans ressaisie. | Manuel | Bloquant | À faire |
 | ACC-09 | Rotation du lien | Modérateur | Révoquer et recréer le lien ; tester l’ancien. | Ancien lien refusé ; nouveau lien fonctionnel. | Auto | Bloquant | À faire |
 | ACC-10 | Reconnexion (nouvel appareil) | Modérateur + membre | Le modérateur génère un lien de reconnexion ; ouverture sur un autre appareil. | Compte, projets et badges retrouvés ; l’ancien appareil ne voit plus le compte. | Auto | Bloquant | À faire |
@@ -94,7 +100,7 @@ Objectif : décider de la mise en production sur la base de preuves. Chaque cas 
 |---|---|---|---|---|---|---|---|
 | CAN-01 | Liste et compteurs | Membre | Onglet Canaux. | 6 canaux ; nombre de membres correct. | Auto | Majeur | À faire |
 | CAN-02 | Demande d’adhésion | Membre + modérateur | Demander à rejoindre un canal ; le modérateur accepte ou refuse. | Statut « en attente » puis membre (notification) ou refus. | Auto | Bloquant | À faire |
-| CAN-03 | Contenu verrouillé | Membre | Ouvrir un canal non rejoint. | Projets et entraide du canal inaccessibles. | Auto | Bloquant | À faire |
+| CAN-03 | Contenu verrouillé | Membre | Ouvrir un canal non rejoint. | Projets et entraide du canal inaccessibles. | Auto | Bloquant | OK partiel (25/11) — aucune fuite observée via REST ; base de projets vide au moment du test, à reconfirmer en positif dès qu'un projet existera |
 | CAN-04 | Groupe WhatsApp du canal | Modérateur | Enregistrer le lien du groupe ; tester un lien invalide ; cliquer « Ouvrir le groupe WhatsApp ». | Lien invalide refusé ; le groupe s’ouvre. | Auto | Majeur | À faire |
 | CAN-05 | Partage du lien d’invitation | Modérateur | Copier / Partager le lien. | Message WhatsApp prérempli avec le bon lien. | Manuel | Bloquant | À faire |
 | CAN-06 | Annonce de canal | Modérateur | Publier une annonce dans son canal. | Visible des membres du canal uniquement. | Auto | Bloquant | À faire |
@@ -176,8 +182,8 @@ Objectif : décider de la mise en production sur la base de preuves. Chaque cas 
 |---|---|---|---|---|---|---|---|
 | SEC-01 | Tests des règles de la base | Technique | Exécuter supabase/tests/rls_test.sh. | 74 réussis, 0 échec. | Auto | Bloquant | À faire |
 | SEC-02 | Clés exposées | Technique | Inspecter le code envoyé au navigateur. | Seule la clé anon est présente. | Manuel | Bloquant | À faire |
-| SEC-03 | Accès direct à l’API | Technique | Appeler l’API REST avec la clé anon sans session. | Aucune donnée renvoyée (hors canaux et ping). | Manuel | Bloquant | À faire |
-| SEC-04 | Cloisonnement des comptes | Deux membres | Chacun tente de lire/modifier les données de l’autre via la console. | Refus systématique. | Auto | Bloquant | À faire |
+| SEC-03 | Accès direct à l’API | Technique | Appeler l’API REST avec la clé anon sans session. | Aucune donnée renvoyée (hors canaux et ping). | Manuel | Bloquant | OK (25/11) — voir note dans RECETTE_RESULTATS_2026-11-25.md : comportement actuel plus strict que le texte original (canaux aussi protégé) |
+| SEC-04 | Cloisonnement des comptes | Deux membres | Chacun tente de lire/modifier les données de l’autre via la console. | Refus systématique. | Auto | Bloquant | OK (25/11, REST direct sur profiles) |
 | SEC-05 | Injection de code | Membre | Créer un projet dont le titre est <img src=x onerror=alert(1)>. | Affiché comme texte, aucun script exécuté. | Manuel | Bloquant | À faire |
 | SEC-06 | Création massive de comptes | Technique | Vérifier les limites Supabase sur les connexions anonymes (par IP) ; activer le CAPTCHA si nécessaire. | Limites actives ; décision documentée. | Manuel | Majeur | À faire |
 | SEC-07 | En-têtes HTTP | Technique | Contrôler les en-têtes du site (nosniff, X-Frame-Options, Referrer-Policy). | Présents. | Manuel | Mineur | À faire |
