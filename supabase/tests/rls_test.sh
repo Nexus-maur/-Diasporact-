@@ -208,4 +208,42 @@ has "R99 export : contient son propre pseudo" "$(q $A "select export_my_data()")
 has "R100 export : non inscrit refusé" "$(q $ANO "select export_my_data()")" "not_registered"
 ok "R101 export : ne contient pas le pseudo d'un autre membre" "$(q $A "select export_my_data()::text !~ 'mariem.paris'")" "t"
 
+# Porte-paroles (diffusion à la diaspora d'un pays) et nom/prénom
+# Les tests précédents ont supprimé ou déplacé certains comptes : on inscrit un nouveau membre « awa.dakar » (France) pour la suite.
+E=eeeeeeee-0000-0000-0000-000000000005
+q $E "select redeem_invite('$(q $A "select rotate_canal_invite('edu')")','awa.dakar','France')" >/dev/null
+has "R107 un membre ne peut pas désigner un porte-parole" "$(q $E "select set_spokesperson('mariem.paris','France',true)")" "forbidden"
+q $A "select set_spokesperson('mariem.paris','France',true)" >/dev/null
+ok "R108 l'admin désigne un porte-parole, visible des membres" "$(q $E "select count(*) from spokesperson_list where pseudo='mariem.paris' and country='France'")" "1"
+ok "R109 le porte-parole publie pour son pays" "$(q $C "insert into announcements(country,author_id,title,body) values ('France',me(),'Annonce pays','Corps pays') returning 1")" "1"
+has "R110 le porte-parole ne publie pas pour un autre pays" "$(q $C "insert into announcements(country,author_id,title,body) values ('Maroc',me(),'Autre pays','Corps')")" "row-level security"
+has "R111 le porte-parole ne diffuse pas à tous" "$(q $C "insert into announcements(author_id,title,body) values (me(),'Global','Corps')")" "row-level security"
+has "R112 un simple membre ne publie pas pour un pays" "$(q $E "insert into announcements(country,author_id,title,body) values ('France',me(),'Faux','Corps')")" "row-level security"
+ok "R113 un membre du même pays reçoit l'annonce (casse et espaces ignorés)" "$(q $E "select count(*) from announcements where title='Annonce pays'")" "1"
+ok "R114 un membre d'un autre pays ne la reçoit pas" "$(q $D "select count(*) from announcements where title='Annonce pays'")" "0"
+ok "R115 une session anonyme sans profil ne la reçoit pas" "$(q $ANO "select count(*) from announcements where title='Annonce pays'")" "0"
+ok "R116 l'admin diffuse à tous" "$(q $A "insert into announcements(author_id,title,body) values (me(),'Global admin','Corps') returning 1")" "1"
+ok "R117 tout inscrit reçoit l'annonce de l'admin" "$(q $D "select count(*) from announcements where title='Global admin'")" "1"
+has "R118 annonce visant à la fois un canal et un pays refusée" "$(q $A "insert into announcements(canal_id,country,author_id,title,body) values ('edu','France',me(),'Mixte','Corps')")" "violates"
+q $E "update profiles set first_name='Awa', last_name='Diop' where id=me()" >/dev/null
+ok "R119 le nom saisi est visible des autres membres" "$(q $C "select first_name||' '||last_name from public_profiles where pseudo='awa.dakar'")" "Awa Diop"
+has "R120 le nom a une longueur limitée" "$(q $E "update profiles set first_name=repeat('x',61) where id=me()")" "violates"
+has "R121 un membre ne s'attribue pas le rôle admin" "$(q $E "update profiles set is_admin=true where id=me()")" "permission denied"
+ok "R122 un membre sans profil ne voit pas les porte-paroles" "$(q $ANO "select count(*) from spokesperson_list")" "0"
+
+# Fonctions IA réservées aux testeurs, avec quota quotidien
+has "R123 non-testeur refusé" "$(q $E "select ai_consume()")" "not_tester"
+has "R124 session anonyme sans profil refusée" "$(q $ANO "select ai_consume()")" "not_tester"
+has "R125 un membre ne désigne pas de testeur" "$(q $E "select set_ai_tester('awa.dakar',true)")" "forbidden"
+q $A "select set_ai_tester('awa.dakar',true)" >/dev/null
+ok "R126 le testeur voit son statut, pas celui des autres" "$(q $E "select count(*) from ai_testers")" "1"
+ok "R127 première utilisation : 19 restantes" "$(q $E "select ai_consume()")" "19"
+for i in $(seq 1 19); do q $E "select ai_consume()" >/dev/null; done
+has "R128 21e utilisation du jour refusée (quota)" "$(q $E "select ai_consume()")" "quota"
+has "R129 le compteur d'usage n'est pas lisible par un membre" "$(q $E "select count(*) from ai_usage")" "permission denied"
+has "R130 un testeur ne se réinitialise pas son quota" "$(q $E "update ai_usage set n=0")" "permission denied"
+has "R131 un membre ne s'ajoute pas comme testeur" "$(q $C "insert into ai_testers(user_id) values (me())")" "row-level security"
+q $A "select set_ai_tester('awa.dakar',false)" >/dev/null
+has "R132 testeur retiré : refusé" "$(q $E "select ai_consume()")" "not_tester"
+
 echo "----"; echo "$pass réussis, $fail échoués"; [ $fail -eq 0 ]

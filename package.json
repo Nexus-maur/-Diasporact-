@@ -2,6 +2,12 @@
   "name": "diasporact",
   "private": true,
   "version": "1.0.0",
-  "scripts": { "test:ui": "node tests/smoke6.js" },
-  "devDependencies": { "jsdom": "25.0.1" }
+  "scripts": {
+    "test:ui": "node tests/smoke6.js",
+    "test:api": "node tests/api_ai.js",
+    "test": "node tests/api_ai.js && node tests/smoke6.js"
+  },
+  "devDependencies": {
+    "jsdom": "25.0.1"
+  }
 }

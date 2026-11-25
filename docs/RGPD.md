@@ -18,6 +18,10 @@ traitement** au sens du RGPD. L'hébergement technique est sous-traité à :
 - **GitHub** (code source du projet, et sauvegardes quotidiennes de la base
   de données sur une branche privée `backup-data`) — société américaine.
 
+- **Anthropic** (API Claude, société américaine) — **uniquement pour les
+  fonctions d'IA de la phase test** (voir section 10). Le texte envoyé n'est
+  pas conservé par Diasporact.
+
 Le RGPD impose une vigilance particulière sur les transferts hors UE : voir
 section 7.
 
@@ -242,7 +246,34 @@ perte) :
 Le signalement initial d'une faille (par un tiers ou un membre) se fait à
 **board.kalidia@gmail.com**.
 
-## 10. Ce qui reste à faire (suivi)
+## 10. Fonctions d'IA (phase test, 25/11/2026)
+
+- **Fonctions** : traduction français/arabe d'une annonce, d'un projet ou
+  d'une demande d'entraide ; proposition de fiche projet (titre, objectif,
+  besoins) à partir d'une discussion collée par le membre.
+- **Accès** : réservé aux « testeurs IA » désignés par l'administrateur
+  (table `ai_testers`, RPC `set_ai_tester`), limité à 20 utilisations par jour
+  et par testeur (table `ai_usage`, RPC `ai_consume`). Le contrôle se fait côté
+  serveur : la fonction `api/ai.js` appelle `ai_consume()` avec la session du
+  membre avant de contacter le service d'IA.
+- **Données** : le seul texte envoyé est celui que le testeur choisit de
+  traduire ou de coller. Il est transmis à Anthropic (États-Unis) pour obtenir
+  le résultat ; Diasporact ne conserve ni le texte ni la réponse. Une
+  information est affichée avant le premier usage (message de consentement,
+  une fois par appareil) et un rappel invite à ne coller que des discussions
+  dont les participants acceptent le partage.
+- **Base légale** : le consentement du testeur, qui déclenche lui-même chaque
+  envoi après information.
+- **Sécurité** : la clé du service d'IA n'existe que dans les variables
+  d'environnement Vercel (`ANTHROPIC_API_KEY`) ; le texte du membre est donné
+  à l'IA comme donnée à traiter, avec consigne de ne suivre aucune instruction
+  qu'il contient ; le résultat s'affiche comme du texte (jamais comme du HTML)
+  et rien n'est publié sans validation du membre.
+- **À valider par Élie avant d'ouvrir à plus de testeurs** : les conditions
+  d'utilisation de l'API d'Anthropic (conservation, usage des données), une
+  clause de sous-traitance si nécessaire, et un plafond de dépense sur la clé.
+
+## 11. Ce qui reste à faire (suivi)
 
 - [x] Rotation des sauvegardes sur 30 jours (workflow `backup.yml`,
       25/11/2026) — à confirmer au prochain passage du workflow.
@@ -250,6 +281,7 @@ Le signalement initial d'une faille (par un tiers ou un membre) se fait à
       (FR/AR, 25/11/2026), liée depuis l'écran « Moi » et l'inscription.
       À faire relire par Élie ; à tenir à jour en cas de changement de
       sous-traitant ou de donnée collectée.
+- [ ] Valider les conditions de l'API d'Anthropic (section 10) et poser un plafond de dépense sur la clé avant d'ouvrir l'IA à plus de testeurs.
 - [ ] Envisager d'héberger soi-même les polices (Google Fonts reçoit l'adresse
       IP des visiteurs ; mentionné dans la politique en attendant).
 - [ ] Ajouter à la politique les mentions légales de Nexus Mauritanie

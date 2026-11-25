@@ -7,7 +7,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 async function open(mock,hash){
   const errs=[];
   const dom=new JSDOM(HTML,{url:'https://diasporact.test/'+(hash||''),runScripts:'dangerously',pretendToBeVisual:true,
-    beforeParse(w){w.supabase={createClient:()=>mock.client};w.DIASPORACT_CONFIG={url:'https://x.supabase.co',anonKey:'anon'};
+    beforeParse(w){w.supabase={createClient:()=>mock.client};w.fetch=mock.fetch;w.DIASPORACT_CONFIG={url:'https://x.supabase.co',anonKey:'anon'};
       w.addEventListener('error',e=>errs.push(String(e.error&&e.error.stack||e.message)));w.HTMLElement.prototype.scrollIntoView=function(){};
       w.matchMedia=w.matchMedia||(()=>({matches:false,addListener(){},removeListener(){}}));}});
   const w=dom.window,d=w.document;
@@ -160,6 +160,38 @@ async function open(mock,hash){
   ok(an&&an.country==='Sénégal'&&an.canal_id===null,'H6 annonce enregistrée pour le pays, sans canal');
   await a.click('[data-act=go-me]');ok(a.txt().includes('Porte-parole (Sénégal)'),'H7 rôle affiché dans « Moi »');
   ok(a.errs.length===0,'H8 aucune erreur JS ('+a.errs.join('|')+')');
+  /* I. Fonctions IA réservées aux testeurs désignés */
+  m=makeMock({session:'u-8'});m.DB.profiles.push(P('admin.nkc',{auth_uid:'u-8',is_admin:true}),P('awa.dakar',{auth_uid:'u-9'}));
+  ['edu'].forEach(c=>m.DB.canal_members.push({canal_id:c,user_id:'p-awa.dakar',status:'member',is_moderator:false,is_relay:false}));
+  m.DB.announcements.push({id:'an9',canal_id:null,author_id:'p-admin.nkc',title:'Assemblée',body:'Le 12 décembre à Paris',orig_lang:'fr',valid_until:null,created_at:new Date().toISOString()});
+  m.DB.projects.push({id:'pj9',canal_id:'edu',owner_id:'p-admin.nkc',title:'École',objective:'Équiper une salle informatique',orig_lang:'fr',status:'progress',needs:[],created_at:new Date().toISOString()});
+  m.setSession('u-9');a=await open(m);await sleep(150);
+  ok(!a.q('[data-act=ai-tr]'),'I1 sans statut de testeur : aucun bouton IA');
+  await a.clickText('.tab','Projets');await a.click('[data-act=new-project]');ok(!a.q('#ai-chat'),'I2 sans statut de testeur : pas de bloc « discussion → projet »');
+  m.setSession('u-8');a=await open(m);await sleep(120);await a.click('[data-act=go-me]');
+  a.set('#ai-p','awa.dakar');a.q('#ai-o').checked=true;await a.submit('[data-form=setai]');
+  ok(m.DB.ai_testers.length===1&&m.DB.ai_testers[0].user_id==='p-awa.dakar','I3 l\'admin désigne un testeur IA');
+  m.setSession('u-9');a=await open(m);await sleep(150);
+  ok(!!a.q('[data-act=ai-tr]'),'I4 le testeur voit « Traduire (IA) » sur une annonce');
+  await a.click('[data-act=ai-tr]');
+  ok(a.txt().includes('Utiliser l’IA')&&m.aiCalls.length===0,'I5 premier usage : information avant tout envoi');
+  await a.click('[data-act=ai-agree]');await sleep(150);
+  ok(m.aiCalls.length===1&&m.aiCalls[0].body.task==='translate'&&m.aiCalls[0].body.target==='fr'&&m.aiCalls[0].body.text.includes('Assemblée'),'I6 texte envoyé au serveur avec la langue cible');
+  ok(m.aiCalls[0].opt.headers.Authorization==='Bearer tok-u-9','I7 appel authentifié avec la session du membre');
+  ok(a.txt().includes('TRADUIT:')&&a.txt().includes('Généré par IA'),'I8 traduction affichée avec la mention « Généré par IA »');
+  await a.click('[data-act=ai-tr-hide]');ok(!a.txt().includes('TRADUIT:')&&!!a.q('[data-act=ai-tr]'),'I9 traduction masquable');
+  m.aiMode.status=429;m.aiMode.error='quota';await a.click('[data-act=ai-tr]');await sleep(150);
+  ok(a.txt().includes('Limite quotidienne'),'I10 quota atteint : message clair');
+  m.aiMode.status=200;
+  await a.clickText('.tab','Projets');await a.click('[data-act=new-project]');
+  ok(!!a.q('#ai-chat'),'I11 bloc « discussion → projet » pour le testeur');
+  await a.click('[data-act=ai-chat]');ok(m.aiCalls.length===2,'I12 discussion vide : aucun envoi');
+  a.set('#ai-chat','Fatou : on pourrait équiper l\'école de Kaédi\nMoussa : oui il faut du transport');await a.click('[data-act=ai-chat]');await sleep(200);
+  ok(m.aiCalls.length===3&&m.aiCalls[2].body.task==='project','I13 discussion envoyée');
+  ok(a.q('#np-title').value==='Projet IA'&&a.q('#np-obj').value==='Objectif IA'&&a.q('#np-needs').value==='Transport, Dons','I14 formulaire prérempli, à relire avant publication');
+  ok(m.DB.projects.length===1,'I15 rien n\'est publié automatiquement');
+  await a.click('[data-act=go-me]');ok(a.txt().includes('Testeur IA'),'I16 statut affiché dans « Moi »');
+  ok(a.errs.length===0,'I17 aucune erreur JS ('+a.errs.join('|')+')');
   /* F. Configuration absente */
   const dom=new JSDOM(HTML,{runScripts:'dangerously',url:'https://diasporact.test/'});await sleep(200);
   ok((()=>{const c=dom.window.document.body.cloneNode(true);c.querySelectorAll('script').forEach(x=>x.remove());return c.textContent.includes('pas encore configurée');})(),'F1 message si clés absentes');

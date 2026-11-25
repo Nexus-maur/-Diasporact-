@@ -50,6 +50,7 @@ body:has(#ar:target) #fr{display:none}
 <tr><td>Pays de résidence</td><td>Non</td><td>Affiché aux autres membres. Il sert aussi à déterminer qui reçoit les annonces diffusées par un porte-parole à toute la diaspora de ce pays.</td></tr>
 <tr><td>Compétences</td><td>Non</td><td>Mise en relation entre membres, uniquement si vous activez l’option « Apparaître dans la recherche ».</td></tr>
 <tr><td>Contenus que vous créez</td><td>—</td><td>Projets, tâches, commentaires, demandes d’entraide, annonces : nécessaires au fonctionnement du service.</td></tr>
+<tr><td>Statut de testeur IA et nombre d’utilisations par jour</td><td>—</td><td>Uniquement pour les testeurs désignés : réserver les fonctions d’IA à la phase test et en limiter l’usage.</td></tr>
 </table></div>
 <p>Diasporact ne demande <strong>ni adresse e-mail, ni numéro de téléphone, ni pièce d’identité, ni localisation précise, ni donnée bancaire</strong>. L’inscription se fait uniquement sur invitation.</p>
 
@@ -79,7 +80,9 @@ body:has(#ar:target) #fr{display:none}
 <li><strong>Vercel</strong> : sert les fichiers du site. Comme tout hébergeur, il enregistre des informations techniques de connexion (par exemple l’adresse IP) ; il ne reçoit pas le contenu de votre compte, qui circule directement entre votre appareil et Supabase.</li>
 <li><strong>GitHub</strong> (société américaine) : héberge, dans un espace privé, la sauvegarde quotidienne mentionnée plus haut. Ce transfert hors de l’Union européenne s’appuie sur le cadre « EU-U.S. Data Privacy Framework » auquel GitHub adhère.</li>
 <li><strong>Google Fonts</strong> : les polices d’écriture de l’application sont chargées depuis les serveurs de Google, qui reçoivent à cette occasion votre adresse IP.</li>
+<li><strong>Anthropic</strong> (société américaine) : uniquement pour les fonctions d’IA de la phase test (traduction français/arabe, proposition de fiche projet à partir d’une discussion). Voir ci-dessous.</li>
 </ul>
+<p><strong>Fonctions d’IA (phase test).</strong> Elles ne sont accessibles qu’aux testeurs désignés par l’administrateur, avec une limite quotidienne. Quand un testeur clique sur « Traduire » ou « Proposer une fiche », seul le texte concerné est envoyé à Anthropic pour obtenir le résultat, après une information préalable. Diasporact ne conserve ni ce texte ni la réponse ; leur traitement par Anthropic est soumis aux conditions de son service d’API. Le résultat est une suggestion générée par IA, à relire : rien n’est publié automatiquement. Ne collez que des contenus que vous pouvez partager, en particulier des discussions dont les participants acceptent le partage.</p>
 
 <h2>7. Cookies et stockage sur votre appareil</h2>
 <p>Diasporact n’utilise ni cookie publicitaire, ni outil de mesure d’audience, ni traceur. L’application enregistre seulement sur votre appareil ce qui est nécessaire à son fonctionnement : votre session de connexion, votre choix de langue et de thème (clair ou sombre), et une copie de l’application pour l’ouvrir plus vite.</p>
@@ -120,6 +123,7 @@ body:has(#ar:target) #fr{display:none}
 <tr><td>بلد الإقامة</td><td>لا</td><td>يظهر للأعضاء الآخرين، ويحدّد أيضاً من يتلقى الإعلانات التي يوجّهها الناطق باسم بلدٍ ما إلى جاليته.</td></tr>
 <tr><td>المهارات</td><td>لا</td><td>للتعارف بين الأعضاء، فقط إذا فعّلت خيار «الظهور في البحث».</td></tr>
 <tr><td>المحتوى الذي تنشئه</td><td>—</td><td>مشاريع ومهام وتعليقات وطلبات تضامن وإعلانات: ضرورية لعمل الخدمة.</td></tr>
+<tr><td>صفة مختبِر الذكاء الاصطناعي وعدد الاستخدامات اليومية</td><td>—</td><td>للمختبرين المعيّنين فقط: حصر ميزات الذكاء الاصطناعي في مرحلة التجربة وتحديد استخدامها.</td></tr>
 </table></div>
 <p>لا يطلب Diasporact <strong>بريداً إلكترونياً ولا رقم هاتف ولا وثيقة هوية ولا موقعاً دقيقاً ولا بيانات مصرفية</strong>. التسجيل يتم عبر الدعوة فقط.</p>
 
@@ -149,7 +153,9 @@ body:has(#ar:target) #fr{display:none}
 <li><strong>Vercel</strong>: يقدّم ملفات الموقع. وكأي مستضيف يسجّل معلومات تقنية عن الاتصال (مثل عنوان IP)، لكنه لا يتلقى محتوى حسابك الذي يمر مباشرة بين جهازك وSupabase.</li>
 <li><strong>GitHub</strong> (شركة أمريكية): يستضيف في مساحة خاصة النسخة الاحتياطية اليومية المذكورة أعلاه. يستند هذا النقل خارج الاتحاد الأوروبي إلى إطار «EU-U.S. Data Privacy Framework» الذي تنضم إليه GitHub.</li>
 <li><strong>Google Fonts</strong>: تُحمَّل خطوط التطبيق من خوادم Google، التي تتلقى عنوان IP الخاص بك بهذه المناسبة.</li>
+<li><strong>Anthropic</strong> (شركة أمريكية): فقط لميزات الذكاء الاصطناعي في مرحلة التجربة (الترجمة بين الفرنسية والعربية، واقتراح بطاقة مشروع انطلاقاً من نقاش). انظر أدناه.</li>
 </ul>
+<p><strong>ميزات الذكاء الاصطناعي (مرحلة التجربة).</strong> لا تتاح إلا للمختبرين الذين يعيّنهم المسؤول، مع حد يومي. عندما ينقر المختبِر على «ترجمة» أو «اقتراح بطاقة» يُرسل النص المعني فقط إلى Anthropic للحصول على النتيجة، بعد إعلامه مسبقاً. لا يحتفظ Diasporact بهذا النص ولا بالرد؛ ومعالجتهما لدى Anthropic تخضع لشروط خدمة واجهتها البرمجية. النتيجة اقتراح مولَّد بالذكاء الاصطناعي ينبغي مراجعته: لا يُنشر شيء تلقائياً. لا تلصق إلا ما يمكنك مشاركته، خصوصاً النقاشات التي يوافق مشاركوها على مشاركتها.</p>
 
 <h2>7. ملفات الارتباط والتخزين على جهازك</h2>
 <p>لا يستخدم Diasporact أي ملفات ارتباط إعلانية ولا أدوات قياس الجمهور ولا متتبّعات. يحفظ التطبيق على جهازك فقط ما يلزم لعمله: جلسة الدخول واختيارك للغة والمظهر (فاتح أو داكن) ونسخة من التطبيق لفتحه أسرع.</p>

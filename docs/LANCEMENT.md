@@ -12,7 +12,8 @@ Dernière mise à jour : 25/11/2026.
 - [x] Nom et prénom facultatifs ; porte-paroles par pays ; sélecteur de pays par drapeaux (25/11).
 - [x] Politique de confidentialité publique FR/AR (`confidentialite.html`), liée depuis « Moi » et l'inscription.
 - [x] Rotation des sauvegardes sur 30 jours et table `spokespersons` incluse dans l'export (code poussé, à confirmer au prochain passage du workflow).
-- [x] Tests automatiques de l'interface à jour (68/68, `npm run test:ui`).
+- [x] Tests automatiques à jour (`npm test` : API IA 14/14, interface 85/85) et règles de sécurité de la base rejouées en local (132/132, `supabase/tests/mock.sql` + `rls_test.sh`).
+- [x] Fonctions IA de test (traduction FR/AR, discussion → projet) réservées aux testeurs désignés, avec quota ; migration appliquée en production (25/11).
 
 ## 2. Décisions et actions d'Élie (avant toute ouverture)
 
@@ -21,6 +22,13 @@ Dernière mise à jour : 25/11/2026.
 - [ ] Activer la **double authentification** sur les comptes Supabase, Vercel et GitHub de l'organisation.
 - [ ] Définir un mot de passe fort pour le compte administrateur `nexus`.
 - [ ] Relire `confidentialite.html` ; ajouter, si souhaité, les mentions légales de Nexus Mauritanie (adresse, immatriculation).
+
+## 2 bis. Activer les fonctions IA pour la phase test
+
+- [ ] **Élie** — Créer une clé API Anthropic dédiée, avec un plafond de dépense mensuel, et l'ajouter dans Vercel (Settings > Environment Variables) sous le nom `ANTHROPIC_API_KEY`, puis redéployer. Sans cette clé, l'IA reste « indisponible » et l'application fonctionne normalement.
+- [ ] **Élie** — Lire les conditions d'utilisation de l'API d'Anthropic (conservation et usage des données) et les valider ([RGPD.md](RGPD.md) §10).
+- [ ] Moi > Administration > Testeur IA : désigner les testeurs (20 utilisations par jour chacun).
+- [ ] Rejouer IA-04, IA-05, IA-07 et IA-08 avec la vraie clé.
 
 ## 3. Vérifications techniques
 

@@ -386,7 +386,7 @@ function vProjects(){
 function vProject(p){
   var pj=projOf(p.id);if(!pj)return '';
   var k=canalOf(pj.canal),member=hasAccount()&&isMember(pj.canal),pr=progress(pj);
-  var h='<section class="stack s8"><div class="row wrap">'+chip(C(k.n))+projStatus(pj)+'</div><h1 class="page">'+C(pj.t)+'</h1><div class="bar" aria-hidden="true"><i style="--w:'+pr.pct+'%"></i></div><p class="muted small">'+T('tasks_count',{a:pr.d,b:pr.n})+' · '+T('owner')+' '+idInline(pj.owner)+'</p>'+trBlock('p:'+pj.id,pj.obj)+'</section>';
+  var h='<section class="stack s8"><div class="row wrap">'+chip(C(k.n))+projStatus(pj)+'</div><h1 class="page">'+C(pj.t)+'</h1><div class="bar" aria-hidden="true"><i style="--w:'+pr.pct+'%"></i></div><p class="muted small">'+T('tasks_count',{a:pr.d,b:pr.n})+' · '+T('owner')+' '+idInline(pj.owner)+'</p>'+trBlock('p:'+pj.id,pj.obj,pj.t.fr)+'</section>';
   if(!member){
     h+='<div class="banner info">'+ic('lock',18)+'<span>'+(hasAccount()?T('proj_locked',{x:c(k.n)}):T('proj_locked_visitor'))+'</span></div>';
     h+=hasAccount()?(mem(pj.canal)==='pending'?'':'<button class="btn primary block" data-act="join" data-id="'+k.id+'">'+T('canal_join')+'</button>'):'<button class="btn primary block" data-act="wa-invite">'+T('canal_join')+'</button>';
@@ -421,7 +421,7 @@ function fieldCanalOptions(sel){return Object.keys(S.mem).filter(isMember).map(f
 function vNewProject(p){
   var sel=p.canal||Object.keys(S.mem).filter(isMember)[0];
   if(!sel)return '<h1 class="page">'+T('new_project')+'</h1><div class="banner">'+ic('lock',18)+'<span>'+T('canal_locked')+'</span></div>';
-  return '<h1 class="page">'+T('new_project')+'</h1><form data-form="project" class="stack" novalidate>'+
+  return '<h1 class="page">'+T('new_project')+'</h1>'+(S.me.ai?'<section class="card stack s8 ai-box"><h2 class="h3">'+T('ai_chat_t')+' '+chip(T('ai_tag'))+'</h2><p class="muted small">'+T('ai_chat_intro')+'</p><p class="muted small">'+T('chat_consent')+'</p><textarea id="ai-chat" maxlength="6000" placeholder="'+esc(t('ai_chat_ph'))+'"></textarea><button type="button" class="btn sm" data-act="ai-chat">'+T('ai_chat_go')+'</button></section>':'')+'<form data-form="project" class="stack" novalidate>'+
   '<div class="field"><label for="np-canal">'+T('f_canal')+'</label><select id="np-canal">'+fieldCanalOptions(sel)+'</select></div>'+
   '<div class="field"><label for="np-title">'+T('f_title')+'</label><input type="text" id="np-title" maxlength="80" autocomplete="off"></div>'+
   '<div class="field"><label for="np-obj">'+T('objective')+'</label><textarea id="np-obj" maxlength="300"></textarea></div>'+
@@ -557,7 +557,7 @@ e_net:'Connexion impossible. Vérifiez votre réseau et réessayez.',cfg_missing
 inv0_title:'Diasporact fonctionne sur invitation',inv0_sub:'Demandez le lien d’invitation au modérateur de votre canal dans le groupe WhatsApp, puis ouvrez-le, ou collez-le ci-dessous.',
 inv0_ph:'Collez le lien reçu',inv0_go:'Ouvrir le lien',inv0_bad:'Lien non reconnu.',
 pseudo_help:'Unique. 3 à 24 caractères : lettres, chiffres, point, tiret ou souligné.',pseudo_bad:'Utilisez 3 à 24 caractères : lettres, chiffres, point, tiret ou souligné.',pseudo_check:'Vérification…',
-country_label:'Pays de résidence (facultatif)',cp_pick:'Choisir un pays par son drapeau',privacy_link:'En créant un compte, vous acceptez que ces informations soient utilisées comme décrit dans la <a href="confidentialite.html" target="_blank" rel="noopener">politique de confidentialité</a>.',cp_search:'Rechercher un pays',cp_none:'Aucun pays trouvé. Vous pouvez aussi saisir le nom librement.',create_account:'Créer mon compte',pw_label:'Mot de passe',sc_title:'Code de secours',sc_note:'Si vous perdez votre mot de passe, ce code vous permet d’en choisir un nouveau vous-même. Il ne s’affiche qu’une fois.',sc_gen:'Générer un nouveau code',sc_gen_warn:'Le précédent code ne fonctionnera plus.',sc_show:'Notez votre code de secours',sc_keep:'Conservez-le hors de l’application (papier, gestionnaire de mots de passe). Chaque utilisation en génère un nouveau.',sc_copy:'Copier le code',sc_done:'C’est noté',forgot:'Mot de passe oublié ?',fg_sub:'Entrez votre pseudo, votre code de secours et un nouveau mot de passe.',fg_code:'Code de secours',fg_go:'Changer mon mot de passe',e_code:'Pseudo ou code de secours incorrect.',e_locked:'Trop d’essais. Réessayez dans 15 minutes.',fg_nocode:'Pas de code ? Demandez un lien de reconnexion à un modérateur.',pw_help:'8 caractères minimum. Il vous permet de retrouver votre compte sur n’importe quel appareil.',pw_short:'Le mot de passe doit contenir au moins 8 caractères.',e_login:'Pseudo ou mot de passe incorrect.',pw_later:'Compte créé, mais le mot de passe n’a pas pu être enregistré. Ajoutez-le depuis l’onglet Moi.',have_acct:'J’ai déjà un compte',login_go:'Me connecter',login_sub:'Retrouvez votre compte sur cet appareil avec votre pseudo et votre mot de passe.',secure_t:'Sécuriser mon compte',secure_note:'Ajoutez un mot de passe pour retrouver votre compte sur n’importe quel appareil, sans lien de reconnexion.',secure_go:'Enregistrer le mot de passe',pw_ok:'Mot de passe enregistré.',pw_new:'Nouveau mot de passe',acct_ok_t:'Compte protégé',acct_ok_note:'Connectez-vous avec @{p} et votre mot de passe sur n’importe quel appareil. Mot de passe perdu : demandez un lien de reconnexion à un modérateur.',change_pw:'Changer le mot de passe',logout_t:'Se déconnecter de cet appareil',t_logged_in:'Connecté.',
+country_label:'Pays de résidence (facultatif)',cp_pick:'Choisir un pays par son drapeau',ai_tr_btn:'Traduire (IA)',ai_tr_hide:'Masquer',ai_tr_wait:'Traduction en cours…',ai_consent_t:'Utiliser l’IA',ai_consent_b:'Pour cette fonction, le texte concerné est envoyé à un service d’IA (Anthropic, États-Unis) qui renvoie un résultat. Rien n’est conservé par Diasporact. Le résultat peut contenir des erreurs : relisez-le. Ne collez que des contenus que vous pouvez partager.',ai_agree:'J’ai compris, continuer',ai_err:'L’IA n’a pas pu répondre. Réessayez.',ai_err_quota:'Limite quotidienne d’utilisations de l’IA atteinte. Revenez demain.',ai_err_off:'L’IA est momentanément indisponible.',ai_err_tester:'L’IA est réservée aux testeurs désignés.',ai_chat_t:'Depuis une discussion (IA)',ai_chat_intro:'Collez une discussion : l’IA propose un titre, un objectif et des besoins. Vous relisez et corrigez avant de publier.',ai_chat_go:'Proposer une fiche',ai_chat_ph:'Collez ici la discussion (6000 caractères maximum)',ai_chat_wait:'Analyse en cours…',ai_chat_none:'L’IA n’a pas trouvé de projet dans ce texte.',ai_filled:'Proposition ajoutée au formulaire : relisez avant de publier.',r_ai:'Testeur IA',adm_ai:'Testeur IA',adm_ai_on:'Peut utiliser les fonctions IA (20 utilisations par jour)',privacy_link:'En créant un compte, vous acceptez que ces informations soient utilisées comme décrit dans la <a href="confidentialite.html" target="_blank" rel="noopener">politique de confidentialité</a>.',cp_search:'Rechercher un pays',cp_none:'Aucun pays trouvé. Vous pouvez aussi saisir le nom librement.',create_account:'Créer mon compte',pw_label:'Mot de passe',sc_title:'Code de secours',sc_note:'Si vous perdez votre mot de passe, ce code vous permet d’en choisir un nouveau vous-même. Il ne s’affiche qu’une fois.',sc_gen:'Générer un nouveau code',sc_gen_warn:'Le précédent code ne fonctionnera plus.',sc_show:'Notez votre code de secours',sc_keep:'Conservez-le hors de l’application (papier, gestionnaire de mots de passe). Chaque utilisation en génère un nouveau.',sc_copy:'Copier le code',sc_done:'C’est noté',forgot:'Mot de passe oublié ?',fg_sub:'Entrez votre pseudo, votre code de secours et un nouveau mot de passe.',fg_code:'Code de secours',fg_go:'Changer mon mot de passe',e_code:'Pseudo ou code de secours incorrect.',e_locked:'Trop d’essais. Réessayez dans 15 minutes.',fg_nocode:'Pas de code ? Demandez un lien de reconnexion à un modérateur.',pw_help:'8 caractères minimum. Il vous permet de retrouver votre compte sur n’importe quel appareil.',pw_short:'Le mot de passe doit contenir au moins 8 caractères.',e_login:'Pseudo ou mot de passe incorrect.',pw_later:'Compte créé, mais le mot de passe n’a pas pu être enregistré. Ajoutez-le depuis l’onglet Moi.',have_acct:'J’ai déjà un compte',login_go:'Me connecter',login_sub:'Retrouvez votre compte sur cet appareil avec votre pseudo et votre mot de passe.',secure_t:'Sécuriser mon compte',secure_note:'Ajoutez un mot de passe pour retrouver votre compte sur n’importe quel appareil, sans lien de reconnexion.',secure_go:'Enregistrer le mot de passe',pw_ok:'Mot de passe enregistré.',pw_new:'Nouveau mot de passe',acct_ok_t:'Compte protégé',acct_ok_note:'Connectez-vous avec @{p} et votre mot de passe sur n’importe quel appareil. Mot de passe perdu : demandez un lien de reconnexion à un modérateur.',change_pw:'Changer le mot de passe',logout_t:'Se déconnecter de cet appareil',t_logged_in:'Connecté.',
 rec_title:'Retrouver votre compte',rec_sub:'Ce lien de reconnexion vous rattache à votre compte sur cet appareil. Il ne fonctionne qu’une fois.',rec_go:'Retrouver mon compte',
 adm_first:'Premier administrateur',adm_first_sub:'Ce compte aura tous les droits d’administration.',
 joined:'Vous avez rejoint {x}.',welcome_in:'Bienvenue sur Diasporact.',
@@ -585,7 +585,7 @@ e_net:'تعذر الاتصال. تحقق من الشبكة وأعد المحاو
 inv0_title:'يعمل Diasporact بالدعوة',inv0_sub:'اطلب رابط الدعوة من مشرف قناتك في مجموعة واتساب، ثم افتحه أو الصقه أدناه.',
 inv0_ph:'الصق الرابط المستلم',inv0_go:'فتح الرابط',inv0_bad:'رابط غير معروف.',
 pseudo_help:'فريد. من 3 إلى 24 حرفاً: حروف وأرقام ونقطة وشرطة أو شرطة سفلية.',pseudo_bad:'استعمل من 3 إلى 24 حرفاً: حروف وأرقام ونقطة وشرطة أو شرطة سفلية.',pseudo_check:'جارٍ التحقق…',
-country_label:'بلد الإقامة (اختياري)',cp_pick:'اختيار بلد من خلال علمه',privacy_link:'بإنشاء حساب فإنك توافق على استخدام هذه المعلومات كما هو موضح في <a href="confidentialite.html#ar" target="_blank" rel="noopener">سياسة الخصوصية</a>.',cp_search:'ابحث عن بلد',cp_none:'لا يوجد بلد مطابق. يمكنك أيضًا كتابة الاسم يدويًا.',create_account:'إنشاء حسابي',pw_label:'كلمة المرور',sc_title:'رمز الطوارئ',sc_note:'إذا فقدت كلمة المرور فهذا الرمز يتيح لك اختيار كلمة جديدة بنفسك. يظهر مرة واحدة فقط.',sc_gen:'إنشاء رمز جديد',sc_gen_warn:'لن يعمل الرمز السابق بعد الآن.',sc_show:'دوّن رمز الطوارئ',sc_keep:'احتفظ به خارج التطبيق (ورقة أو مدير كلمات المرور). كل استخدام يولّد رمزاً جديداً.',sc_copy:'نسخ الرمز',sc_done:'تم التدوين',forgot:'نسيت كلمة المرور؟',fg_sub:'أدخل اسم المستخدم ورمز الطوارئ وكلمة مرور جديدة.',fg_code:'رمز الطوارئ',fg_go:'تغيير كلمة المرور',e_code:'اسم المستخدم أو رمز الطوارئ غير صحيح.',e_locked:'محاولات كثيرة. أعد المحاولة بعد 15 دقيقة.',fg_nocode:'ليس لديك رمز؟ اطلب من مشرف رابط إعادة اتصال.',pw_help:'8 أحرف على الأقل. تتيح لك استعادة حسابك على أي جهاز.',pw_short:'يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل.',e_login:'اسم المستخدم أو كلمة المرور غير صحيحة.',pw_later:'تم إنشاء الحساب لكن تعذّر حفظ كلمة المرور. أضفها من تبويب «أنا».',have_acct:'لدي حساب بالفعل',login_go:'تسجيل الدخول',login_sub:'استعد حسابك على هذا الجهاز باسم المستخدم وكلمة المرور.',secure_t:'تأمين حسابي',secure_note:'أضف كلمة مرور لاستعادة حسابك على أي جهاز دون رابط إعادة اتصال.',secure_go:'حفظ كلمة المرور',pw_ok:'تم حفظ كلمة المرور.',pw_new:'كلمة مرور جديدة',acct_ok_t:'الحساب محمي',acct_ok_note:'سجّل الدخول باسم @{p} وكلمة المرور على أي جهاز. إذا نسيت كلمة المرور فاطلب من مشرف رابط إعادة اتصال.',change_pw:'تغيير كلمة المرور',logout_t:'تسجيل الخروج من هذا الجهاز',t_logged_in:'تم تسجيل الدخول.',
+country_label:'بلد الإقامة (اختياري)',cp_pick:'اختيار بلد من خلال علمه',ai_tr_btn:'ترجمة (ذكاء اصطناعي)',ai_tr_hide:'إخفاء',ai_tr_wait:'جارٍ الترجمة…',ai_consent_t:'استخدام الذكاء الاصطناعي',ai_consent_b:'في هذه الميزة يُرسل النص المعني إلى خدمة ذكاء اصطناعي (Anthropic، الولايات المتحدة) التي تُرجع نتيجة. لا يحتفظ Diasporact بأي شيء. قد تحتوي النتيجة على أخطاء: راجعها. لا تلصق إلا ما يمكنك مشاركته.',ai_agree:'فهمت، متابعة',ai_err:'تعذّر على الذكاء الاصطناعي الرد. أعد المحاولة.',ai_err_quota:'بلغت الحد اليومي لاستخدام الذكاء الاصطناعي. عد غداً.',ai_err_off:'الذكاء الاصطناعي غير متاح مؤقتاً.',ai_err_tester:'الذكاء الاصطناعي مخصص للمختبرين المعيّنين.',ai_chat_t:'انطلاقاً من نقاش (ذكاء اصطناعي)',ai_chat_intro:'الصق نقاشاً: يقترح الذكاء الاصطناعي عنواناً وهدفاً واحتياجات. تراجعها وتصححها قبل النشر.',ai_chat_go:'اقتراح بطاقة',ai_chat_ph:'الصق النقاش هنا (6000 حرف كحد أقصى)',ai_chat_wait:'جارٍ التحليل…',ai_chat_none:'لم يجد الذكاء الاصطناعي مشروعاً في هذا النص.',ai_filled:'أُضيف الاقتراح إلى النموذج: راجعه قبل النشر.',r_ai:'مختبِر الذكاء الاصطناعي',adm_ai:'مختبِر الذكاء الاصطناعي',adm_ai_on:'يمكنه استخدام ميزات الذكاء الاصطناعي (20 استخداماً في اليوم)',privacy_link:'بإنشاء حساب فإنك توافق على استخدام هذه المعلومات كما هو موضح في <a href="confidentialite.html#ar" target="_blank" rel="noopener">سياسة الخصوصية</a>.',cp_search:'ابحث عن بلد',cp_none:'لا يوجد بلد مطابق. يمكنك أيضًا كتابة الاسم يدويًا.',create_account:'إنشاء حسابي',pw_label:'كلمة المرور',sc_title:'رمز الطوارئ',sc_note:'إذا فقدت كلمة المرور فهذا الرمز يتيح لك اختيار كلمة جديدة بنفسك. يظهر مرة واحدة فقط.',sc_gen:'إنشاء رمز جديد',sc_gen_warn:'لن يعمل الرمز السابق بعد الآن.',sc_show:'دوّن رمز الطوارئ',sc_keep:'احتفظ به خارج التطبيق (ورقة أو مدير كلمات المرور). كل استخدام يولّد رمزاً جديداً.',sc_copy:'نسخ الرمز',sc_done:'تم التدوين',forgot:'نسيت كلمة المرور؟',fg_sub:'أدخل اسم المستخدم ورمز الطوارئ وكلمة مرور جديدة.',fg_code:'رمز الطوارئ',fg_go:'تغيير كلمة المرور',e_code:'اسم المستخدم أو رمز الطوارئ غير صحيح.',e_locked:'محاولات كثيرة. أعد المحاولة بعد 15 دقيقة.',fg_nocode:'ليس لديك رمز؟ اطلب من مشرف رابط إعادة اتصال.',pw_help:'8 أحرف على الأقل. تتيح لك استعادة حسابك على أي جهاز.',pw_short:'يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل.',e_login:'اسم المستخدم أو كلمة المرور غير صحيحة.',pw_later:'تم إنشاء الحساب لكن تعذّر حفظ كلمة المرور. أضفها من تبويب «أنا».',have_acct:'لدي حساب بالفعل',login_go:'تسجيل الدخول',login_sub:'استعد حسابك على هذا الجهاز باسم المستخدم وكلمة المرور.',secure_t:'تأمين حسابي',secure_note:'أضف كلمة مرور لاستعادة حسابك على أي جهاز دون رابط إعادة اتصال.',secure_go:'حفظ كلمة المرور',pw_ok:'تم حفظ كلمة المرور.',pw_new:'كلمة مرور جديدة',acct_ok_t:'الحساب محمي',acct_ok_note:'سجّل الدخول باسم @{p} وكلمة المرور على أي جهاز. إذا نسيت كلمة المرور فاطلب من مشرف رابط إعادة اتصال.',change_pw:'تغيير كلمة المرور',logout_t:'تسجيل الخروج من هذا الجهاز',t_logged_in:'تم تسجيل الدخول.',
 rec_title:'استعادة حسابك',rec_sub:'يربط هذا الرابط حسابك بهذا الجهاز. يعمل مرة واحدة فقط.',rec_go:'استعادة حسابي',
 adm_first:'المشرف الأول',adm_first_sub:'سيملك هذا الحساب كل صلاحيات الإدارة.',
 joined:'انضممت إلى {x}.',welcome_in:'مرحباً بك في Diasporact.',
@@ -640,7 +640,7 @@ function saveLang(v){try{localStorage.setItem('dp-lang',v);}catch(e){}}
 function appUrl(path){return location.origin+location.pathname.replace(/index\.html$/,'')+'#/'+path;}
 
 /* ============ État ============ */
-var S={
+var S={aiTr:{},aiSrc:{},
   lang:loadLang(),theme:loadTheme(),
   me:{id:null,pseudo:null,mod:[],ref:[],admin:false,skills:[],matching:false,showHonor:true,country:''},
   mem:{},route:{name:'load',params:{}},stack:[],busy:false,
@@ -688,13 +688,14 @@ function doRefresh(){
         q(cl.from('engagement').select('*')),q(cl.from('skills_directory').select('*')),
         q(cl.from('follows').select('*').eq('user_id',id)),q(cl.from('proposals').select('*').eq('from_user',id)),
         q(cl.from('invites').select('*').eq('active',true).eq('kind','join').order('created_at')),
-        q(cl.from('spokesperson_list').select('*'))
+        q(cl.from('spokesperson_list').select('*')),
+        q(cl.from('ai_testers').select('user_id'))
       ]).then(function(d){applyData(meRow,d);return true;});
     });
   });
 }
 function applyData(me,d){
-  var canals=d[0],stats=d[1],mods=d[2],pubs=d[3],cms=d[4],projs=d[5],mss=d[6],tks=d[7],team=d[8],cmts=d[9],helps=d[10],anns=d[11],myReads=d[12],rcount=d[13],notifs=d[14],breqs=d[15],grants=d[16],eng=d[17],dir=d[18],fol=d[19],props=d[20],invs=d[21],spks=d[22]||[];
+  var canals=d[0],stats=d[1],mods=d[2],pubs=d[3],cms=d[4],projs=d[5],mss=d[6],tks=d[7],team=d[8],cmts=d[9],helps=d[10],anns=d[11],myReads=d[12],rcount=d[13],notifs=d[14],breqs=d[15],grants=d[16],eng=d[17],dir=d[18],fol=d[19],props=d[20],invs=d[21],spks=d[22]||[],aits=d[23]||[];
   var pp={};S.pubId={};S.honorOk={};S.names={};pubs.forEach(function(p){pp[p.id]=p.pseudo;S.pubId[p.pseudo]=p.id;S.honorOk[p.pseudo]=p.show_honor!==false;var nm=((p.first_name||'')+' '+(p.last_name||'')).trim();if(nm)S.names[p.pseudo]=nm;});S.pub=pp;S.flags={};pubs.forEach(function(p){var f=flagFor(p.country);if(f)S.flags[p.pseudo]=f;});
   S.spkCountries=[];spks.forEach(function(s){if(s.pseudo===me.pseudo)S.spkCountries.push(s.country);});
   /* canaux */
@@ -703,7 +704,7 @@ function applyData(me,d){
     var st=stats.filter(function(x){return x.canal_id===row.id;})[0],md=mods.filter(function(x){return x.canal_id===row.id&&x.is_moderator;})[0];
     k.count=st?+st.members:0;k.mod=md?md.pseudo:'';k.wa=row.wa_link||'';});
   /* moi */
-  S.me={id:me.id,pseudo:me.pseudo,firstName:me.first_name||'',lastName:me.last_name||'',country:me.country||'',skills:me.skills||[],matching:!!me.matching,showHonor:me.show_honor!==false,admin:!!me.is_admin,mod:[],ref:(me.is_ref||me.is_admin)?DOMAINS.slice():[],spk:S.spkCountries||[]};
+  S.me={id:me.id,pseudo:me.pseudo,firstName:me.first_name||'',lastName:me.last_name||'',country:me.country||'',skills:me.skills||[],matching:!!me.matching,showHonor:me.show_honor!==false,admin:!!me.is_admin,mod:[],ref:(me.is_ref||me.is_admin)?DOMAINS.slice():[],spk:S.spkCountries||[],ai:aits.some(function(r){return r.user_id===me.id;})};
   S.mem={};S.reqs={};S.cmem={};
   cms.forEach(function(m){
     if(m.user_id===me.id){if(m.status==='member'||m.status==='pending')S.mem[m.canal_id]=m.status;if(m.status==='member'&&m.is_moderator)S.me.mod.push(m.canal_id);}
@@ -765,10 +766,40 @@ function mut(fn,ok,after){
 }
 
 /* ============ Vues et fonctions de la version réelle ============ */
-function trBlock(key,o){
+function trBlock(key,o,title){
   var s=typeof o==='string'?o:(o[S.lang]||o.fr||'');
-  return '<p dir="'+(/[؀-ۿ]/.test(s)?'rtl':'ltr')+'" style="white-space:pre-line">'+esc(s)+'</p>';
+  var raw=typeof o==='string'?o:(o.fr||'');
+  return '<p dir="'+(/[؀-ۿ]/.test(s)?'rtl':'ltr')+'" style="white-space:pre-line">'+esc(s)+'</p>'+aiTrUi(key,(title?title+'\n\n':'')+raw);
 }
+
+/* ============ IA (phase test, testeurs désignés) ============ */
+/* Traduction à la demande dans la langue de l'interface ; le résultat n'est ni enregistré ni partagé. */
+function aiTrUi(key,src){
+  if(!S.me||!S.me.ai||!src||src.trim().length<3)return '';
+  S.aiSrc[key]=src;var st=S.aiTr[key];
+  if(st&&st.loading)return '<p class="muted small">'+T('ai_tr_wait')+'</p>';
+  if(st&&st.text)return '<div class="ai-box"><div class="row between"><span>'+chip(T('ai_tag'))+'</span><button class="btn sm" data-act="ai-tr-hide" data-id="'+esc(key)+'">'+T('ai_tr_hide')+'</button></div><p dir="'+(/[؀-ۿ]/.test(st.text)?'rtl':'ltr')+'" style="white-space:pre-line">'+esc(st.text)+'</p></div>';
+  return '<div><button class="btn sm" data-act="ai-tr" data-id="'+esc(key)+'">'+T('ai_tr_btn')+'</button></div>';
+}
+function aiGate(fn){
+  var ok=false;try{ok=localStorage.getItem('dp-ai-ok')==='1';}catch(e){}
+  if(ok)return fn();
+  S._aiNext=fn;
+  openSheet(t('ai_consent_t'),'<p>'+T('ai_consent_b')+'</p><div class="row"><button class="btn grow" data-act="close-sheet">'+T('cancel')+'</button><button class="btn primary grow" data-act="ai-agree">'+T('ai_agree')+'</button></div>');
+}
+function aiCall(body){
+  var cl=client();if(!cl)return Promise.reject({code:'ai_unavailable'});
+  return cl.auth.getSession().then(function(r){
+    var tk=r.data&&r.data.session&&r.data.session.access_token;if(!tk){var e=new Error('no_session');e.code='no_session';throw e;}
+    return fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+tk},body:JSON.stringify(body)});
+  }).then(function(res){
+    return res.json().catch(function(){return {};}).then(function(j){
+      if(!res.ok||!j.ok){var e=new Error(j.error||('http_'+res.status));e.code=j.error||('http_'+res.status);throw e;}
+      return j;
+    });
+  });
+}
+function aiErr(e){var k=e&&e.code;return t(k==='quota'?'ai_err_quota':k==='ai_unavailable'?'ai_err_off':k==='not_tester'?'ai_err_tester':'ai_err');}
 function canEdit(p){return hasAccount()&&(p.owner===S.me.pseudo||isMod(p.canal));}
 function matchNeed(pj){
   var out=[],used={};
@@ -823,7 +854,7 @@ function startCard(){
 function annCard(a,ro){
   var isCountry=a.canal.indexOf('country:')===0;
   var h='<article class="card ann"><div class="row between"><span class="row">'+chip(T('official'),'red')+(isCountry?chip(esc(a.country)):(a.canal!=='all'?chip(C(canalOf(a.canal).n)):''))+'</span><span class="muted small">'+esc(fmt(a.date))+'</span></div>';
-  h+='<h3>'+C(a.t)+'</h3>'+trBlock('a:'+a.id,a.body);
+  h+='<h3>'+C(a.t)+'</h3>'+trBlock('a:'+a.id,a.body,a.t.fr);
   if(a.until)h+='<p class="muted small">'+T('until',{d:fmt(a.until)})+'</p>';
   h+='<div class="row between wrap"><span class="muted small">'+a.reads+' '+T('reads')+'</span>';
   if(!ro){h+='<span class="row">';
@@ -848,7 +879,7 @@ function manageSection(pj){
 function helpCard(hq,mode){
   var stc=hq.status==='open'?chip(T('hs_open'),'red'):hq.status==='doing'?chip(T('hs_doing'),'yellow'):chip(T('hs_solved'),'green');
   var h='<article class="card stack s8"><div class="row between wrap"><span class="row">'+chip(T('dm_'+hq.dom))+(hq.urgent?chip(T('u_urgent'),'urgent'):'')+'</span>'+stc+'</div>';
-  h+='<p style="white-space:pre-line">'+esc(hq.txt)+'</p><p class="muted small">'+(mode==='ref'?idInline(hq.who)+' · ':'')+esc(hq.country)+(hq.by?' · '+T('by',{x:hq.by}):'')+'</p>';
+  h+='<p style="white-space:pre-line">'+esc(hq.txt)+'</p>'+aiTrUi('h:'+hq.id,hq.txt)+'<p class="muted small">'+(mode==='ref'?idInline(hq.who)+' · ':'')+esc(hq.country)+(hq.by?' · '+T('by',{x:hq.by}):'')+'</p>';
   if(hq.reply)h+=replyHtml(hq);
   if(mode==='ref'&&hq.status==='open')h+='<button class="btn sm primary" data-act="claim" data-id="'+hq.id+'">'+T('claim')+'</button>';
   if(hq.status==='doing'&&hq.by===S.me.pseudo)h+='<button class="btn sm primary" data-act="reply" data-id="'+hq.id+'">'+T('reply_btn')+'</button>';
@@ -876,12 +907,15 @@ function adminSection(){
   '<form data-form="setref" class="stack s8"><div class="lbl">'+T('adm_ref')+'</div><div class="pfx" dir="ltr">@<input type="text" id="ar-p" maxlength="24" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="'+esc(t('adm_pseudo'))+'"></div><label class="pick" for="ar-o"><span class="grow t">'+T('adm_ref_on')+'</span><input type="checkbox" id="ar-o" checked></label><button class="btn sm primary" type="submit">'+T('adm_save')+'</button></form>'+
   '<form data-form="setspk" class="stack s8"><div class="lbl">'+T('adm_spk')+'</div><div class="pfx" dir="ltr">@<input type="text" id="as-p" maxlength="24" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="'+esc(t('adm_pseudo'))+'"></div>'+
   '<div class="field"><label for="as-c">'+T('adm_spk_country')+'</label>'+countryInput('as-c','','maxlength="60" autocomplete="off"')+'</div>'+
-  '<label class="pick" for="as-o"><span class="grow t">'+T('adm_spk_on')+'</span><input type="checkbox" id="as-o" checked></label><button class="btn sm primary" type="submit">'+T('adm_save')+'</button></form></section>';
+  '<label class="pick" for="as-o"><span class="grow t">'+T('adm_spk_on')+'</span><input type="checkbox" id="as-o" checked></label><button class="btn sm primary" type="submit">'+T('adm_save')+'</button></form>'+
+  '<form data-form="setai" class="stack s8"><div class="lbl">'+T('adm_ai')+'</div><div class="pfx" dir="ltr">@<input type="text" id="ai-p" maxlength="24" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="'+esc(t('adm_pseudo'))+'"></div>'+
+  '<label class="pick" for="ai-o"><span class="grow t">'+T('adm_ai_on')+'</span><input type="checkbox" id="ai-o" checked></label><button class="btn sm primary" type="submit">'+T('adm_save')+'</button></form></section>';
 }
 function vMe(){
   var roles=[chip(T('r_member'))];if(S.me.admin)roles.push(chip(T('r_speaker'),'red'));S.me.mod.forEach(function(id){roles.push(chip(T('r_mod',{x:c(canalOf(id).n)}),'green'));});
   if(S.me.ref.length)roles.push(chip(T('adm_ref'),'yellow'));
   (S.me.spk||[]).forEach(function(ctry){roles.push(chip(T('r_spk',{x:ctry}),'green'));});
+  if(S.me.ai)roles.push(chip(T('r_ai'),'yellow'));
   var mine=Object.keys(S.mem).map(function(id){return '<div class="li"><span class="grow t">'+C(canalOf(id).n)+'</span>'+statusChip(id)+'</div>';}).join('');
   return '<section class="row">'+av(S.me.pseudo,52)+'<div class="grow"><h1 class="page" style="font-size:22px">'+idInline(S.me.pseudo)+'</h1></div></section>'+
   '<section><h2 class="h2">'+T('roles')+'</h2><div class="chips">'+roles.join('')+'</div></section>'+
@@ -973,6 +1007,16 @@ var ACT={
  back:function(){back();},
  'go-me':function(){go('me');},
  'close-sheet':function(){closeSheet();},
+ 'ai-agree':function(){try{localStorage.setItem('dp-ai-ok','1');}catch(e){}var f=S._aiNext;S._aiNext=null;closeSheet();if(f)f();},
+ 'ai-tr':function(d){var k=d.id;aiGate(function(){var src=S.aiSrc[k];if(!src)return;S.aiTr[k]={loading:true};render();
+   aiCall({task:'translate',text:src,target:S.lang}).then(function(r){S.aiTr[k]={text:r.text};render();}).catch(function(e){delete S.aiTr[k];render();toast(aiErr(e));});});},
+ 'ai-tr-hide':function(d){delete S.aiTr[d.id];render();},
+ 'ai-chat':function(){var el=$('#ai-chat'),txt=el?el.value.trim():'';if(!txt){toast(t('chat_empty'));return;}
+   aiGate(function(){var btn=document.querySelector('[data-act="ai-chat"]'),old=btn?btn.textContent:'';if(btn){btn.disabled=true;btn.textContent=t('ai_chat_wait');}
+     aiCall({task:'project',text:txt,target:S.lang}).then(function(r){var p=r.project||{};
+       if(!p.title&&!p.objective){toast(t('ai_chat_none'));return;}
+       var a=$('#np-title'),b=$('#np-obj'),n=$('#np-needs');if(a)a.value=p.title||'';if(b)b.value=p.objective||'';if(n)n.value=(p.needs||[]).join(', ');toast(t('ai_filled'));
+     }).catch(function(e){toast(aiErr(e));}).then(function(){if(btn){btn.disabled=false;btn.textContent=old;}});});},
  'cp-toggle':function(d,el){var pn=$('#cpp-'+d.id);if(!pn)return;var open=pn.hidden;
    document.querySelectorAll('.cp-panel').forEach(function(x){x.hidden=true;});document.querySelectorAll('.cp-btn').forEach(function(x){x.setAttribute('aria-expanded','false');});
    if(open){pn.innerHTML='<input type="text" class="cp-q" data-for="'+d.id+'" autocomplete="off" placeholder="'+esc(t('cp_search'))+'" aria-label="'+esc(t('cp_search'))+'"><div class="cp-grid" id="cpg-'+d.id+'">'+cpGrid(d.id,'')+'</div>';pn.hidden=false;el.setAttribute('aria-expanded','true');var q=pn.querySelector('.cp-q');if(q&&matchMedia('(hover:hover)').matches)q.focus();}},
@@ -1125,6 +1169,8 @@ var FORMS={
    mut(function(){return rpc('set_role',{p_pseudo:p,p_canal:$('#ad-c').value,p_moderator:$('#ad-m').checked,p_relay:$('#ad-r').checked});},'t_saved');},
  setref:function(){var p=$('#ar-p').value.trim().toLowerCase().replace(/^@/,'');if(!p)return;
    mut(function(){return rpc('set_referent',{p_pseudo:p,p_on:$('#ar-o').checked});},'t_saved');},
+ setai:function(){var p=$('#ai-p').value.trim().toLowerCase().replace(/^@/,'');if(!p)return;
+   mut(function(){return rpc('set_ai_tester',{p_pseudo:p,p_on:$('#ai-o').checked});},'t_saved');},
  setspk:function(){var p=$('#as-p').value.trim().toLowerCase().replace(/^@/,''),ctry=($('#as-c').value||'').trim();if(!p||!ctry)return;
    mut(function(){return rpc('set_spokesperson',{p_pseudo:p,p_country:ctry,p_on:$('#as-o').checked});},'t_saved');}
 };

@@ -23,7 +23,7 @@ SEC-04, CAN-03 — le reste suit la légende Statut ci-dessous).
 
 ## Limites connues de la V1
 
-- Pas d’IA : résumé de discussion, traduction, assistant d’entraide arrivent en V1.1.
+- IA : traduction FR/AR et « discussion → projet » en phase test, réservées aux testeurs désignés (20 utilisations par jour). Résumé de discussion et assistant d’entraide arrivent en V1.1.
 - Notifications dans l’application uniquement (pas de notification push du téléphone).
 - L’application charge toutes les données visibles à chaque ouverture : à surveiller au-delà de quelques centaines de projets (PERF-03).
 - Les référents d’entraide ne sont pas spécialisés par domaine : un référent voit toutes les demandes.
@@ -207,7 +207,7 @@ SEC-04, CAN-03 — le reste suit la légende Statut ci-dessous).
 | PERF-02 | Volume de données | Technique | Mesurer la taille de la base après le jeu d’essai. | < 50 Mo (limite gratuite : 500 Mo). | Manuel | Mineur | À faire |
 | PERF-03 | Volume de contenus | Technique | Générer 100 projets et 1 000 commentaires ; mesurer le chargement. | Chargement < 5 s ; sinon pagination à prévoir (V1.1). | Manuel | Majeur | À faire |
 
-## Nouveautés du 25/11/2026 (nom/prénom, porte-paroles, pays par drapeaux, confidentialité)
+## Nouveautés du 25/11/2026 (nom/prénom, porte-paroles, pays par drapeaux, confidentialité, fonctions IA)
 
 | ID | Scénario | Rôle | Étapes | Résultat attendu | Mode | Priorité | Statut |
 |---|---|---|---|---|---|---|---|
@@ -223,5 +223,13 @@ SEC-04, CAN-03 — le reste suit la légende Statut ci-dessous).
 | PAY-01 | Choisir son pays par drapeau | Membre | Moi > Pays > bouton drapeau > rechercher > choisir. | Le champ est rempli, le drapeau mis à jour, la grille se referme. | Auto | Majeur | OK (tests UI G2-G6, vérifié en ligne) |
 | CONF-01 | Politique de confidentialité | Visiteur / membre | Ouvrir confidentialite.html ; basculer en arabe ; ouvrir le lien depuis Moi et depuis l’inscription. | Page lisible en FR et AR, liens fonctionnels, application toujours installée et utilisable ensuite. | Manuel | Bloquant | À faire (page vérifiée en ligne le 25/11) |
 | SAU-05 | Rotation des sauvegardes | Admin | Lancer le workflow « Sauvegarde des données » ; compter les commits de la branche backup-data. | 30 commits au plus ; la table spokespersons figure dans l’export. | Manuel | Majeur | À faire |
+| IA-01 | Accès réservé | Membre non désigné | Parcourir annonces, projets, entraide, nouveau projet. | Aucun bouton « Traduire (IA) » ni bloc « discussion → projet ». | Auto | Bloquant | OK (tests UI I1-I2) |
+| IA-02 | Désigner un testeur | Admin | Moi > Administration > Testeur IA : pseudo, case cochée. | Le membre voit les fonctions IA et le chip « Testeur IA » dans Moi. | Auto | Bloquant | OK (tests UI I3-I4, I16 ; base : tests R123-R132) |
+| IA-03 | Information avant usage | Testeur | Cliquer « Traduire (IA) » pour la première fois. | Message d’information ; rien n’est envoyé avant « J’ai compris ». | Auto | Bloquant | OK (test UI I5) |
+| IA-04 | Traduction | Testeur | Traduire une annonce, un projet, une demande d’entraide, en FR puis en AR. | Traduction affichée avec « Généré par IA · à vérifier », masquable, non enregistrée. | Manuel | Majeur | À faire avec la vraie clé IA |
+| IA-05 | Discussion → projet | Testeur | Nouveau projet > coller une discussion > « Proposer une fiche ». | Formulaire prérempli (titre, objectif, besoins) ; rien publié sans validation. | Manuel | Majeur | À faire avec la vraie clé IA |
+| IA-06 | Quota quotidien | Testeur | Dépasser 20 utilisations dans la journée. | Message « Limite quotidienne atteinte » ; aucun appel au service d’IA. | Auto | Majeur | OK (base R127-R128, API) ; à rejouer en réel |
+| IA-07 | IA indisponible | Testeur | Sans clé ANTHROPIC_API_KEY dans Vercel. | Message « L’IA est momentanément indisponible », application intacte. | Manuel | Majeur | À faire |
+| IA-08 | Contenu hostile | Testeur | Traduire/analyser un texte contenant « ignore tes consignes… » ou du HTML. | Texte traité comme donnée, résultat affiché comme texte. | Manuel | Majeur | À faire avec la vraie clé IA |
 
-**Total : 102 cas** (56 bloquants, 36 majeurs, 10 mineurs), plus les 12 cas de la section « Nouveautés du 25/11/2026 ».
+**Total : 102 cas** (56 bloquants, 36 majeurs, 10 mineurs), plus les 20 cas de la section « Nouveautés du 25/11/2026 ».

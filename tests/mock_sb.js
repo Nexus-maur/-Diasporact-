@@ -1,7 +1,7 @@
 /* Faux client Supabase en mémoire, pour tester le câblage de l'interface (les règles de sécurité sont testées en SQL). */
 module.exports=function makeMock(opts){
   var uid=0;function id(){return 'id-'+(++uid);}
-  var DB={spokespersons:[],profiles:[],canals:[],canal_members:[],invites:[],projects:[],milestones:[],tasks:[],project_team:[],comments:[],follows:[],proposals:[],helps:[],announcements:[],ann_reads:[],badge_requests:[],badge_grants:[],notifications:[]};
+  var DB={ai_testers:[],spokespersons:[],profiles:[],canals:[],canal_members:[],invites:[],projects:[],milestones:[],tasks:[],project_team:[],comments:[],follows:[],proposals:[],helps:[],announcements:[],ann_reads:[],badge_requests:[],badge_grants:[],notifications:[]};
   ['edu','inv','san','adm','num','cul'].forEach(function(k,i){DB.canals.push({id:k,ico:'hash',name_fr:k,name_ar:k,desc_fr:'',desc_ar:'',wa_link:null,sort:i});});
   var session=opts.session?{user:{id:opts.session}}:null;
   var calls=[];
@@ -76,6 +76,8 @@ module.exports=function makeMock(opts){
     set_canal_wa:function(a){DB.canals.filter(function(c){return c.id===a.p_canal;})[0].wa_link=a.p_link||null;},
     join_team:function(a){DB.project_team.push({project_id:a.p_project,user_id:me().id});},
     decide_badge:function(a){var r=DB.badge_requests.filter(function(x){return x.id===a.p_req;})[0];r.status=a.p_grant?'granted':'denied';if(a.p_grant)DB.badge_grants.push({user_id:r.user_id,type:r.type});},
+    set_ai_tester:function(a){var p=DB.profiles.filter(function(x){return x.pseudo===a.p_pseudo;})[0];if(!p)throw new Error('unknown_pseudo');
+      DB.ai_testers=DB.ai_testers.filter(function(x){return x.user_id!==p.id;});if(a.p_on)DB.ai_testers.push({user_id:p.id});},
     make_recovery_code:function(){return 'ABCD1234EFGH5678IJKL';},
     reset_password:function(){return {code:'ABCD1234EFGH5678IJKL'};},
     set_spokesperson:function(a){var p=DB.profiles.filter(function(x){return x.pseudo===a.p_pseudo;})[0];if(!p)throw new Error('unknown_pseudo');var c=String(a.p_country||'').trim();if(!c)throw new Error('bad_country');
@@ -84,7 +86,7 @@ module.exports=function makeMock(opts){
     delete_my_account:function(){DB.profiles=DB.profiles.filter(function(p){return p!==me();});}
   };
   var client={
-    auth:{getSession:function(){return Promise.resolve({data:{session:session}});},
+    auth:{getSession:function(){return Promise.resolve({data:{session:session?Object.assign({access_token:'tok-'+session.user.id},session):null}});},
       signInAnonymously:function(){session={user:{id:'anon-'+id()}};return Promise.resolve({data:{session:session},error:null});},
       updateUser:function(){return Promise.resolve({data:{},error:null});},
       signInWithPassword:function(){return Promise.resolve({data:{session:session},error:null});},
@@ -92,5 +94,11 @@ module.exports=function makeMock(opts){
     from:Q,
     rpc:function(n,a){calls.push('rpc:'+n);try{var r=RPC[n](a||{});return Promise.resolve({data:r===undefined?null:r,error:null});}catch(e){return Promise.resolve(err(e.message));}}
   };
-  return {DB:DB,client:client,calls:calls,id:id,setSession:function(u){session=u?{user:{id:u}}:null;},seed:opts.seed};
+  var aiCalls=[],aiMode={status:200};
+  function fetchMock(url,opt){aiCalls.push({url:url,opt:opt,body:JSON.parse(opt.body)});
+    var b=JSON.parse(opt.body),r=aiMode;
+    if(r.status!==200)return Promise.resolve({ok:false,status:r.status,json:function(){return Promise.resolve({ok:false,error:r.error});}});
+    var j=b.task==='translate'?{ok:true,text:'TRADUIT:'+b.text.slice(0,12),remaining:19}:{ok:true,project:{title:'Projet IA',objective:'Objectif IA',needs:['Transport','Dons']},remaining:19};
+    return Promise.resolve({ok:true,status:200,json:function(){return Promise.resolve(j);}});}
+  return {DB:DB,fetch:fetchMock,aiCalls:aiCalls,aiMode:aiMode,client:client,calls:calls,id:id,setSession:function(u){session=u?{user:{id:u}}:null;},seed:opts.seed};
 };
