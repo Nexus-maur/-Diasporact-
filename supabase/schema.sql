@@ -27,6 +27,7 @@ create table profiles (
   show_honor boolean not null default true,   -- apparaît dans « À l'honneur »
   is_admin boolean not null default false,
   is_ref boolean not null default false,      -- référent entraide
+  is_tester boolean not null default false,   -- testeur : modérateur de tout canal qu'il rejoint (phase test)
   created_at timestamptz not null default now()
 );
 
@@ -42,7 +43,7 @@ create table canal_members (
 
 create table invites (
   code text primary key,
-  kind text not null default 'join' check (kind in ('join','recovery','admin')),
+  kind text not null default 'join' check (kind in ('join','recovery','admin','tester')),
   canal_id text references canals(id) on delete cascade,
   target_user uuid references profiles(id) on delete cascade,   -- pour 'recovery'
   created_by uuid references profiles(id),
@@ -277,6 +278,11 @@ begin
   end if;
 
   select id into pid from profiles where auth_uid = uid;
+  if pid is not null and inv.kind = 'tester' then     -- déjà inscrit : devient testeur
+    update profiles set is_tester = true where id = pid;
+    update invites set uses = uses + 1 where code = p_code;
+    return json_build_object('ok', true, 'kind', 'tester');
+  end if;
   if pid is not null then      -- déjà inscrit : un lien de canal ajoute simplement l'adhésion
     if inv.kind <> 'join' or inv.canal_id is null then raise exception 'already_registered'; end if;
     insert into canal_members(canal_id, user_id, status) values (inv.canal_id, pid, 'member')
@@ -287,12 +293,12 @@ begin
   if ps !~ '^[a-z0-9][a-z0-9._-]{2,23}$' then raise exception 'bad_pseudo'; end if;
   if exists (select 1 from profiles where pseudo = ps) then raise exception 'pseudo_taken'; end if;
 
-  insert into profiles(auth_uid, pseudo, country, is_admin)
-    values (uid, ps, left(coalesce(p_country,''), 60), inv.kind = 'admin') returning id into pid;
+  insert into profiles(auth_uid, pseudo, country, is_admin, is_tester)
+    values (uid, ps, left(coalesce(p_country,''), 60), inv.kind = 'admin', inv.kind = 'tester') returning id into pid;
   if inv.canal_id is not null then
     insert into canal_members(canal_id, user_id, status) values (inv.canal_id, pid, 'member');
   end if;
-  update invites set uses = uses + 1, active = (inv.kind = 'join') where code = p_code;
+  update invites set uses = uses + 1, active = (inv.kind in ('join','tester')) where code = p_code;
   insert into notifications(user_id, kind, body) values (pid, 'welcome', '');
   return json_build_object('ok', true, 'kind', inv.kind, 'canal', inv.canal_id);
 end $$;
@@ -316,6 +322,31 @@ begin
   return c;
 end $$;
 grant execute on function rotate_canal_invite(text) to authenticated;
+
+-- Lien testeurs (administrateur) : le testeur rejoint les canaux de son choix, sans validation, avec les droits de modérateur.
+create or replace function rotate_tester_invite() returns text language plpgsql security definer set search_path = public as $$
+declare c text := 'testeur-' || substr(replace(gen_random_uuid()::text,'-',''),1,16);
+begin
+  if not is_admin() then raise exception 'forbidden'; end if;
+  update invites set active = false where kind = 'tester';
+  insert into invites(code, kind, created_by) values (c, 'tester', me());
+  return c;
+end $$;
+grant execute on function rotate_tester_invite() to authenticated;
+
+-- Fin de la phase test : retire les droits de modérateur des testeurs (sauf administrateurs) et ferme le lien.
+create or replace function end_test_phase() returns int language plpgsql security definer set search_path = public as $$
+declare n int;
+begin
+  if not is_admin() then raise exception 'forbidden'; end if;
+  update canal_members set is_moderator = false
+    where is_moderator and user_id in (select id from profiles where is_tester and not is_admin);
+  get diagnostics n = row_count;
+  update profiles set is_tester = false where is_tester;
+  update invites set active = false where kind = 'tester';
+  return n;
+end $$;
+grant execute on function end_test_phase() to authenticated;
 
 -- Lien de reconnexion pour un membre qui a perdu son téléphone (valable 7 jours, usage unique).
 create or replace function create_recovery_invite(p_pseudo text) returns text language plpgsql security definer set search_path = public as $$
@@ -418,6 +449,11 @@ grant execute on function set_ai_tester(text, boolean) to authenticated;
 create or replace function request_join(p_canal text) returns void language plpgsql security definer set search_path = public as $$
 begin
   if me() is null then raise exception 'not_registered'; end if;
+  if (select is_tester from profiles where id = me()) then      -- testeur : accès immédiat, avec les droits de modérateur
+    insert into canal_members(canal_id, user_id, status, is_moderator) values (p_canal, me(), 'member', true)
+      on conflict (canal_id, user_id) do update set status = 'member', is_moderator = true;
+    return;
+  end if;
   insert into canal_members(canal_id, user_id, status) values (p_canal, me(), 'pending') on conflict do nothing;
 end $$;
 grant execute on function request_join(text) to authenticated;
@@ -798,7 +834,7 @@ create policy cm_read on canal_members for select to authenticated
 -- écritures uniquement via RPC (aucune policy d'écriture)
 
 -- Invitations : lecture/écriture uniquement via RPC, sauf pour les modérateurs (lecture du lien de leur canal)
-create policy inv_read on invites for select to authenticated using (kind = 'join' and canal_id is not null and is_mod(canal_id));
+create policy inv_read on invites for select to authenticated using ((kind = 'join' and canal_id is not null and is_mod(canal_id)) or (kind = 'tester' and is_admin()));
 
 -- Projets
 create policy proj_read on projects for select to authenticated using (is_member(canal_id) and (archived_at is null or owner_id = me() or is_mod(canal_id)));

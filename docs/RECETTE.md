@@ -275,3 +275,9 @@ SEC-04, CAN-03 — le reste suit la légende Statut ci-dessous).
 - [ ] E-mail ou WhatsApp invalide refusé ; case de consentement obligatoire ; remerciement après envoi ; un doublon donne le même message.
 - [ ] Administrateur (Moi) : nombre, lien public à copier, liste et export CSV.
 - [ ] Au lancement : envoyer les liens d'invitation aux préinscrits, puis supprimer la liste.
+
+## Lien testeurs
+- [ ] Moi > Administration > Lien testeurs : générer, copier, régénérer (l'ancien lien cesse de fonctionner).
+- [ ] Un nouveau testeur crée son compte avec le lien, rejoint un canal : accès immédiat, droits de modérateur sur ce canal uniquement.
+- [ ] Un membre ordinaire reste soumis à la validation du modérateur.
+- [ ] « Terminer la phase test » : droits de modérateur retirés, testeurs toujours membres, lien fermé.

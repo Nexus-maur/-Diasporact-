@@ -283,4 +283,38 @@ ok "R148 l'administrateur lit la liste" "$(q $A "select count(*) from preregistr
 ok "R149 un membre ne supprime pas" "$(q $B "delete from preregistrations returning 1" | wc -l | tr -d ' ')" "0"
 ok "R150 l'administrateur supprime" "$(q $A "delete from preregistrations returning 1" | wc -l | tr -d ' ')" "2"
 
+E=eeeeeeee-0000-0000-0000-000000000005; F=ffffffff-0000-0000-0000-000000000006; G=99999999-0000-0000-0000-000000000007
+# Lien testeurs
+T1=11111111-0000-0000-0000-0000000000a1; T2=22222222-0000-0000-0000-0000000000a2; T3=33333333-0000-0000-0000-0000000000a3
+TL=$(q $A "select rotate_tester_invite()")
+has "R151 l'admin génère le lien testeurs" "$TL" "testeur-"
+has "R152 un membre ne génère pas de lien testeurs" "$(q $B "select rotate_tester_invite()")" "forbidden"
+q $T1 "select redeem_invite('$TL','test.un','France')" >/dev/null
+ok "R153 le testeur est inscrit avec le statut testeur" "$(q $T1 "select is_tester from profiles where pseudo='test.un'")" "t"
+ok "R154 le testeur n'est membre d'aucun canal à l'inscription" "$(q $T1 "select count(*) from canal_members")" "0"
+q $T1 "select request_join('edu')" >/dev/null
+ok "R155 le testeur rejoint le canal sans validation" "$(q $T1 "select status from canal_members where canal_id='edu' and user_id=me()")" "member"
+ok "R156 le testeur est modérateur du canal rejoint" "$(q $T1 "select is_mod('edu')")" "t"
+ok "R157 le testeur n'est pas modérateur d'un canal non rejoint" "$(q $T1 "select is_mod('inv')")" "f"
+q $T1 "select request_join('inv')" >/dev/null
+ok "R158 il choisit librement ses canaux" "$(q $T1 "select count(*) from canal_members where status='member' and is_moderator")" "2"
+ok "R159 le testeur n'est pas administrateur" "$(q $T1 "select is_admin()")" "f"
+has "R160 le testeur ne peut pas se donner d'autres droits" "$(q $T1 "update profiles set is_admin = true where pseudo='test.un'")" "permission denied"
+has "R161 le testeur ne génère pas de lien testeurs" "$(q $T1 "select rotate_tester_invite()")" "forbidden"
+q $T2 "select redeem_invite('$TL','test.deux','FR')" >/dev/null
+ok "R162 le lien testeurs est réutilisable" "$(q $A "select count(*) from profiles where is_tester")" "2"
+L2=$(q $A "select rotate_canal_invite('edu')")
+q $T3 "select redeem_invite('$L2','ordinaire','FR')" >/dev/null
+q $T3 "select request_join('inv')" >/dev/null
+ok "R163 un membre ordinaire reste en attente" "$(q $T3 "select status from canal_members where canal_id='inv' and user_id=me()")" "pending"
+ok "R164 seul l'admin voit le lien testeurs" "$(q $T3 "select count(*) from invites where kind='tester'")" "0"
+ok "R165 l'admin voit le lien testeurs" "$(q $A "select count(*) from invites where kind='tester' and active")" "1"
+q $A "select rotate_tester_invite()" >/dev/null
+has "R166 régénérer coupe l'ancien lien" "$(q $A "select redeem_invite('$TL','test.trois','FR')")" "invalid_invite"
+has "R167 fin de phase test refusée à un testeur" "$(q $T1 "select end_test_phase()")" "forbidden"
+q $A "select end_test_phase()" >/dev/null
+ok "R168 fin de phase test : plus de droits de modérateur" "$(q $T1 "select count(*) from canal_members where is_moderator")" "0"
+ok "R169 fin de phase test : les testeurs restent membres" "$(q $T1 "select count(*) from canal_members where status='member' and user_id=me()")" "2"
+ok "R170 fin de phase test : statut testeur retiré" "$(q $A "select count(*) from profiles where is_tester")" "0"
+
 echo "----"; echo "$pass réussis, $fail échoués"; [ $fail -eq 0 ]

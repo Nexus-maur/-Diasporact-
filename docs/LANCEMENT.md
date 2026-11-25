@@ -51,6 +51,7 @@ Dernière mise à jour : 25/11/2026.
 
 ## 5. Pilote puis ouverture
 
+- [ ] Envoyer aux testeurs le lien testeurs (Moi > Administration > Lien testeurs) : ils rejoignent les canaux de leur choix sans validation, avec les droits de modérateur ; à la fin du pilote, « Terminer la phase test » retire ces droits.
 - [ ] Diffuser le lien public de préinscription (Moi > Administration > Préinscriptions > Copier le lien) ; au lancement, inviter les préinscrits puis supprimer la liste.
 - [ ] Envoyer aux testeurs le lien direct du questionnaire (Moi > Administration > Retours des testeurs > Copier le lien) ; lire la synthèse en fin de pilote.
 - [ ] Pilote de 7 jours avec 20 testeurs actifs, sans incident bloquant (critère Go/No-Go n°5) ; suivre PERF-01.

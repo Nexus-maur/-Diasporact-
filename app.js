@@ -744,7 +744,7 @@ function doRefresh(){
         q(cl.from('badge_requests').select('*').eq('status','pending')),q(cl.from('badge_grants').select('*')),
         q(cl.from('engagement').select('*')),q(cl.from('skills_directory').select('*')),
         q(cl.from('follows').select('*').eq('user_id',id)),q(cl.from('proposals').select('*').eq('from_user',id)),
-        q(cl.from('invites').select('*').eq('active',true).eq('kind','join').order('created_at')),
+        q(cl.from('invites').select('*').eq('active',true).in('kind',['join','tester']).order('created_at')),
         q(cl.from('spokesperson_list').select('*')),
         q(cl.from('ai_testers').select('user_id')),
         q(cl.from('feedback').select('*').order('created_at',{ascending:false})),
@@ -765,7 +765,7 @@ function applyData(me,d){
     var st=stats.filter(function(x){return x.canal_id===row.id;})[0],md=mods.filter(function(x){return x.canal_id===row.id&&x.is_moderator;})[0];
     k.count=st?+st.members:0;k.mod=md?md.pseudo:'';k.wa=row.wa_link||'';});
   /* moi */
-  S.me={id:me.id,pseudo:me.pseudo,firstName:me.first_name||'',lastName:me.last_name||'',country:me.country||'',skills:me.skills||[],matching:!!me.matching,showHonor:me.show_honor!==false,admin:!!me.is_admin,mod:[],ref:(me.is_ref||me.is_admin)?DOMAINS.slice():[],spk:S.spkCountries||[],ai:aits.some(function(r){return r.user_id===me.id;})};
+  S.me={id:me.id,pseudo:me.pseudo,firstName:me.first_name||'',lastName:me.last_name||'',country:me.country||'',skills:me.skills||[],matching:!!me.matching,showHonor:me.show_honor!==false,admin:!!me.is_admin,mod:[],ref:(me.is_ref||me.is_admin)?DOMAINS.slice():[],spk:S.spkCountries||[],ai:aits.some(function(r){return r.user_id===me.id;}),tester:!!me.is_tester};
   S.mem={};S.reqs={};S.cmem={};
   cms.forEach(function(m){
     if(m.user_id===me.id){if(m.status==='member'||m.status==='pending')S.mem[m.canal_id]=m.status;if(m.status==='member'&&m.is_moderator)S.me.mod.push(m.canal_id);}
@@ -814,7 +814,7 @@ function applyData(me,d){
     else{o.fr=n.body;o.ar=n.body;o.en=n.body;}
     return o;});
   /* invitations actives (visibles seulement des modérateurs) */
-  S.invites={};invs.forEach(function(i){S.invites[i.canal_id]=i.code;});
+  S.invites={};S.testerCode='';invs.forEach(function(i){if(i.kind==='tester')S.testerCode=i.code;else S.invites[i.canal_id]=i.code;});
   /* suivi, propositions */
   S.follow={};fol.forEach(function(f){S.follow[f.project_id]=f.level==='mine'?'milestones':f.level;});
   S.proposed={};props.forEach(function(x){S.proposed[x.project_id+'|'+pp[x.to_user]]=true;});
@@ -1070,6 +1070,13 @@ function preCsv(){
   return '﻿'+out.join('\r\n');
 }
 function downloadText(name,txt,type){var blob=new Blob([txt],{type:type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(url);},1000);}
+function testerAdmin(){
+  if(!S.me.admin)return '';
+  var u=S.testerCode?appUrl('i/'+S.testerCode):'';
+  return '<section class="card stack s8"><h2 class="h3">'+esc(L3('Lien testeurs','رابط المختبِرين','Testers link'))+'</h2><p class="muted small">'+esc(L3('Un seul lien pour tous les testeurs : ils rejoignent les canaux de leur choix, sans validation, avec les droits de modérateur.','رابط واحد لجميع المختبِرين: ينضمون إلى القنوات التي يختارونها دون موافقة، مع صلاحيات المشرف.','One link for all testers: they join the channels of their choice without approval, with moderator rights.'))+'</p>'+
+  (u?'<p class="linkbox" dir="ltr" style="overflow-wrap:anywhere">'+esc(u)+'</p><div class="row wrap"><button class="btn sm grow" data-act="tester-copy">'+ic('copy',16)+esc(L3('Copier le lien','نسخ الرابط','Copy link'))+'</button><button class="btn sm grow" data-act="tester-new">'+esc(L3('Régénérer','تجديد','Regenerate'))+'</button></div>':'<button class="btn sm primary" data-act="tester-new">'+esc(L3('Générer le lien testeurs','إنشاء رابط المختبِرين','Generate the testers link'))+'</button>')+
+  '<button class="btn sm" data-act="end-test">'+esc(L3('Terminer la phase test','إنهاء مرحلة التجربة','End the test phase'))+'</button></section>';
+}
 function adminSection(){
   if(!S.me.admin)return '';
   return '<section class="card stack s8"><h2 class="h3">'+T('adm_title')+'</h2>'+
@@ -1088,6 +1095,7 @@ function vMe(){
   if(S.me.ref.length)roles.push(chip(T('adm_ref'),'yellow'));
   (S.me.spk||[]).forEach(function(ctry){roles.push(chip(T('r_spk',{x:ctry}),'green'));});
   if(S.me.ai)roles.push(chip(T('r_ai'),'yellow'));
+  if(S.me.tester)roles.push(chip(L3('Testeur','مختبِر','Tester'),'yellow'));
   var mine=Object.keys(S.mem).map(function(id){return '<div class="li"><span class="grow t">'+C(canalOf(id).n)+'</span>'+statusChip(id)+'</div>';}).join('');
   return '<section class="row">'+av(S.me.pseudo,52)+'<div class="grow"><h1 class="page" style="font-size:22px">'+idInline(S.me.pseudo)+'</h1></div></section>'+
   '<section><h2 class="h2">'+T('roles')+'</h2><div class="chips">'+roles.join('')+'</div></section>'+
@@ -1098,7 +1106,7 @@ function vMe(){
     '<button class="btn sm" type="submit">'+T('sk_save')+'</button></form></section>'+
   '<section class="card stack s8"><h2 class="h3">'+T('country')+'</h2><form data-form="mycountry" class="row" novalidate><div class="grow">'+countryInput('my-country',S.me.country,'maxlength="60" autocomplete="country-name" aria-label="'+esc(t('country'))+'"')+'</div><button class="btn sm" type="submit">'+T('sk_save')+'</button></form></section>'+
   '<section class="card stack s8"><h2 class="h3">'+T('tour_title')+'</h2><p class="muted small">'+T('tour_again_sub')+'</p><button class="btn sm" data-act="tour-open">'+T('tour_again')+'</button></section>'+
-  fbCard()+badgesSection()+skillsSection()+adminSection()+fbAdmin()+preAdmin()+
+  fbCard()+badgesSection()+skillsSection()+adminSection()+testerAdmin()+fbAdmin()+preAdmin()+
   (S.anon?'<section class="card stack s8"><h2 class="h3">'+T('secure_t')+'</h2><p class="muted small">'+T('secure_note')+'</p>'+'<form data-form="setpw" class="stack s8" novalidate><input type="text" name="username" autocomplete="username" value="'+esc(S.me.pseudo)+'" tabindex="-1" aria-hidden="true" readonly style="position:absolute;opacity:0;height:0;width:0;pointer-events:none"><input type="password" id="sp-w" name="password" autocomplete="new-password" minlength="8" maxlength="72" dir="ltr" placeholder="'+esc(t('pw_new'))+'" aria-label="'+esc(t('pw_new'))+'"><button class="btn sm" type="submit">'+T(S.anon?'secure_go':'change_pw')+'</button></form>'+'</section>':'<section class="card stack s8"><h2 class="h3">'+ic('lock',16)+' '+T('acct_ok_t')+'</h2><p class="muted small">'+T('acct_ok_note',{p:esc(S.me.pseudo)})+'</p>'+'<div class="stack s8"><h3 class="h3">'+T('sc_title')+'</h3><p class="muted small">'+T('sc_note')+' '+T('sc_gen_warn')+'</p><button class="btn sm" data-act="gen-code">'+T('sc_gen')+'</button></div>'+'<form data-form="setpw" class="stack s8" novalidate><input type="text" name="username" autocomplete="username" value="'+esc(S.me.pseudo)+'" tabindex="-1" aria-hidden="true" readonly style="position:absolute;opacity:0;height:0;width:0;pointer-events:none"><input type="password" id="sp-w" name="password" autocomplete="new-password" minlength="8" maxlength="72" dir="ltr" placeholder="'+esc(t('pw_new'))+'" aria-label="'+esc(t('pw_new'))+'"><button class="btn sm" type="submit">'+T(S.anon?'secure_go':'change_pw')+'</button></form>'+'<button class="btn sm" data-act="logout">'+T('logout_t')+'</button></section>')+
   '<section class="card stack s8"><h2 class="h3">'+T('recov')+'</h2><p class="muted small">'+T('recov_note')+'</p></section>'+
   '<section class="stack s8"><div class="lbl">'+T('lang')+'</div><div class="seg"><button aria-pressed="'+(S.lang==='fr')+'" data-act="lang" data-v="fr">Français</button><button aria-pressed="'+(S.lang==='en')+'" data-act="lang" data-v="en">English</button><button aria-pressed="'+(S.lang==='ar')+'" data-act="lang" data-v="ar">العربية</button></div>'+
@@ -1123,8 +1131,8 @@ function vInv0(){
   '<section class="card stack s8"><h2 class="h3">'+T('have_acct')+'</h2><p class="muted small">'+T('login_sub')+'</p><form data-form="login" class="stack s8" novalidate><div class="pfx" dir="ltr">@<input type="text" id="lg-p" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="24" aria-label="'+esc(t('pseudo_label'))+'"></div><input type="password" id="lg-w" name="password" autocomplete="current-password" maxlength="72" dir="ltr" aria-label="'+esc(t('pw_label'))+'"><button class="btn block" type="submit">'+T('login_go')+'</button></form><button class="btn sm" type="button" data-act="forgot">'+T('forgot')+'</button></section>'+preCard();
 }
 function vInv1(){
-  var pk=S.auth.peek||{},adm=pk.kind==='admin',k=pk.canal?canalOf(pk.canal):null;
-  var hero=adm?heroBlock(T('inv_from'),T('adm_first'),T('adm_first_sub')):heroBlock(T('inv_from'),T('inv_title'),T('inv_sub',{canal:k?c(k.n):''}));
+  var pk=S.auth.peek||{},adm=pk.kind==='admin',tst=pk.kind==='tester',k=pk.canal?canalOf(pk.canal):null;
+  var hero=tst?heroBlock(L3('Invitation testeur','دعوة مختبِر','Tester invitation'),L3('Testez Diasporact avant son ouverture','جرّب Diasporact قبل افتتاحه','Test Diasporact before it opens'),L3('Vous rejoignez les canaux de votre choix, immédiatement, avec les droits de modérateur pour tout essayer. Votre avis nous aide à améliorer l’application.','انضم إلى القنوات التي تختارها فورًا، مع صلاحيات المشرف لتجربة كل شيء. رأيك يساعدنا على تحسين التطبيق.','You join the channels of your choice right away, with moderator rights so you can try everything. Your feedback helps us improve the app.')):adm?heroBlock(T('inv_from'),T('adm_first'),T('adm_first_sub')):heroBlock(T('inv_from'),T('inv_title'),T('inv_sub',{canal:k?c(k.n):''}));
   return hero+(k&&!adm?'<section class="card stack s8"><div class="row"><span class="ico-lg">'+ic(k.ico,20)+'</span><div class="grow"><h2 class="h3">'+C(k.n)+'</h2></div></div><p>'+C(k.d)+'</p></section>':'')+
   '<form data-form="pseudo" class="stack" novalidate><div class="field"><label for="pseudo">'+T('pseudo_label')+'</label><div class="pfx" dir="ltr">@<input type="text" id="pseudo" name="username" maxlength="24" autocomplete="username" autocapitalize="none" spellcheck="false" value="'+esc(S.draft.pseudo)+'"></div><p class="muted small">'+T('pseudo_help')+'</p><p class="fb" id="pseudo-fb" aria-live="polite"></p></div>'+
   '<div class="field"><label for="country">'+T('country_label')+'</label>'+countryInput('country',S.draft.country,'maxlength="60" autocomplete="country-name"')+'</div>'+
@@ -1206,6 +1214,10 @@ Object.assign(I18N.fr,{tour10_b:'Donner mon avis (3 min)'});Object.assign(I18N.a
 var ACT={
  'tour-open':function(){openTour(0);},
  'fb-open':function(){go('feedback');},
+ 'tester-copy':function(){doCopy(appUrl('i/'+S.testerCode));},
+ 'tester-new':function(){mut(function(){return rpc('rotate_tester_invite');},function(){return L3('Nouveau lien testeurs créé. L’ancien ne fonctionne plus.','تم إنشاء رابط جديد. الرابط القديم لم يعد يعمل.','New testers link created. The old one no longer works.');});},
+ 'end-test':function(){confirmSheet(L3('Terminer la phase test','إنهاء مرحلة التجربة','End the test phase'),L3('Les testeurs perdent leurs droits de modérateur (ils restent membres de leurs canaux) et le lien testeurs est fermé.','يفقد المختبِرون صلاحيات المشرف (ويبقون أعضاء في قنواتهم) ويُغلق رابط المختبِرين.','Testers lose their moderator rights (they stay members of their channels) and the testers link is closed.'),'end-test-ok','');},
+ 'end-test-ok':function(){closeSheet(true);mut(function(){return rpc('end_test_phase');},function(n){return L3('Phase test terminée : '+n+' droit(s) de modérateur retiré(s).','انتهت مرحلة التجربة.','Test phase ended: '+n+' moderator right(s) removed.');});},
  'pre-open':function(){S.preDone=false;S.route={name:'prereg',params:{}};render(true);},
  'pre-back':function(){S.preDone=false;clearHash();S.route={name:'inv0',params:{}};render(true);},
  'pre-copy':function(){S._msg=appUrl('preinscription');ACT['copy-msg']();},
@@ -1241,7 +1253,7 @@ var ACT={
  'cp-pick':function(d){var inp=$('#'+d.id);if(inp){inp.value=d.v;cpFlag(d.id);}var pn=$('#cpp-'+d.id);if(pn)pn.hidden=true;var b=document.querySelector('.cp-btn[data-id="'+d.id+'"]');if(b){b.setAttribute('aria-expanded','false');b.focus();}},
  'open-canal':function(d){go('canal',{id:d.id,tab:d.tab});},
  'open-project':function(d){go('project',{id:d.id});},
- join:function(d){mut(function(){return rpc('request_join',{p_canal:d.id});},function(){return t('t_pending',{m:canalOf(d.id).mod||'—'});});},
+ join:function(d){mut(function(){return rpc('request_join',{p_canal:d.id});},function(){return S.me.tester?t('joined',{x:c(canalOf(d.id).n)}):t('t_pending',{m:canalOf(d.id).mod||'—'});});},
  'canal-tab':function(d){S.canalTab[d.id]=d.tab;S.route.params.tab=d.tab;render();},
  'proj-tab':function(d){S.projTab=d.tab;render();},
  read:function(d){mut(function(){return rpc('mark_read',{p_ann:d.id});});},

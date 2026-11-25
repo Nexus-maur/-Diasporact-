@@ -295,6 +295,23 @@ async function open(mock,hash,opt){
   ok(a.txt().includes('Préinscriptions (1)')&&a.txt().includes('#/preinscription'),'N8 l\'admin voit le lien public et le nombre');
   await a.click('[data-act=pre-list]');ok(a.txt().includes('aicha@example.com'),'N9 liste des préinscrits');
   ok(a.errs.length===0,'N10 aucune erreur JS ('+a.errs.join('|')+')');
+  /* O. Lien testeurs */
+  m=makeMock({session:'u-3'});m.DB.profiles.push({id:'p-adm',auth_uid:'u-3',pseudo:'admin.nkc',country:'Mauritanie',lang:'fr',skills:[],matching:false,show_honor:true,is_admin:true,is_ref:false});
+  a=await open(m);await sleep(150);await a.click('[data-act=go-me]');
+  ok(a.txt().includes('Lien testeurs')&&!!a.q('[data-act=tester-new]'),'O1 l\'admin voit « Lien testeurs »');
+  await a.click('[data-act=tester-new]');await sleep(150);
+  ok(m.DB.invites.some(x=>x.kind==='tester'&&x.active)&&a.txt().includes('#/i/testeur-')&&!!a.q('[data-act=tester-copy]'),'O2 le lien testeurs est généré et affiché');
+  const tcode=m.DB.invites.find(x=>x.kind==='tester').code;
+  m=makeMock({});m.DB.invites.push({code:tcode,kind:'tester',canal_id:null,active:true,uses:0});
+  a=await open(m,'#/i/'+tcode);await sleep(250);
+  ok(a.txt().includes('Testez Diasporact')&&!!a.q('#pseudo'),'O3 le lien testeurs affiche l\'accueil testeur et le choix du pseudo');
+  a.set('#pseudo','test.un');await sleep(450);a.set('#pw','motdepasse1');await a.submit('[data-form=pseudo]');await sleep(300);
+  ok(m.DB.profiles.some(x=>x.pseudo==='test.un'&&x.is_tester)&&a.txt().includes('@test.un'),'O4 le testeur est inscrit et arrive sur l\'accueil');
+  await a.clickText('.tab','Canaux');await sleep(80);
+  const jb=a.q('[data-act=join]');ok(!!jb,'O5 le testeur peut rejoindre un canal de son choix');
+  await a.click(jb);await sleep(200);
+  ok(m.DB.canal_members.some(x=>x.status==='member'&&x.is_moderator),'O6 rejoint sans validation, avec les droits de modérateur');
+  ok(a.errs.length===0,'O7 aucune erreur JS ('+a.errs.join('|')+')');
   /* F. Configuration absente */
   const dom=new JSDOM(HTML,{runScripts:'dangerously',url:'https://diasporact.test/'});await sleep(200);
   ok((()=>{const c=dom.window.document.body.cloneNode(true);c.querySelectorAll('script').forEach(x=>x.remove());return /pas encore configurée|not configured yet/.test(c.textContent);})(),'F1 message si clés absentes');

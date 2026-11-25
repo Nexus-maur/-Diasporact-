@@ -21,6 +21,7 @@ module.exports=function makeMock(opts){
     var q={
       select:function(){if(st.op!=='select')st.retSel=true;return q;},
       eq:function(k,v){st.filters.push([k,v]);return q;},
+      in:function(k,vs){st.filters.push([k,vs,'in']);return q;},
       order:function(k,o){st.order=[k,!(o&&o.ascending===false)];return q;},
       limit:function(n){st.lim=n;return q;},
       maybeSingle:function(){st.maybe=true;return q;},single:function(){st.single=true;return q;},
@@ -30,7 +31,7 @@ module.exports=function makeMock(opts){
     function run(){
       calls.push(name+':'+st.op);
       var rows=views(name);
-      function match(r){return st.filters.every(function(f){return r[f[0]]===f[1];});}
+      function match(r){return st.filters.every(function(f){return f[2]==='in'?f[1].indexOf(r[f[0]])>-1:r[f[0]]===f[1];});}
       if(st.op==='insert'){var arr=Array.isArray(st.payload)?st.payload:[st.payload],out=[];arr.forEach(function(p){var r=Object.assign({id:id(),created_at:new Date().toISOString()},defaults(name),p);DB[name].push(r);out.push(r);if(name==='comments')notifyComment(r);});return {data:st.single?out[0]:(st.retSel?out:null),error:null};}
       if(st.op==='update'){rows.filter(match).forEach(function(r){Object.assign(r,st.payload);});return {data:null,error:null};}
       if(st.op==='upsert'){var ex=DB[name].filter(function(r){return r.project_id===st.payload.project_id&&r.user_id===st.payload.user_id;})[0];if(ex)Object.assign(ex,st.payload);else DB[name].push(Object.assign({},st.payload));return {data:null,error:null};}
@@ -59,10 +60,12 @@ module.exports=function makeMock(opts){
       if(i.kind==='recovery'){DB.profiles.forEach(function(p){if(p.auth_uid===session.user.id)p.auth_uid=null;});DB.profiles.filter(function(p){return p.id===i.target_user;})[0].auth_uid=session.user.id;i.active=false;return {ok:true};}
       var ex=me();if(ex){DB.canal_members.push({canal_id:i.canal_id,user_id:ex.id,status:'member',is_moderator:false,is_relay:false});return {ok:true};}
       if(DB.profiles.some(function(p){return p.pseudo===a.p_pseudo;}))throw new Error('pseudo_taken');
-      var p={id:id(),auth_uid:session.user.id,pseudo:a.p_pseudo,country:a.p_country||'',lang:'fr',skills:[],matching:false,show_honor:true,is_admin:i.kind==='admin',is_ref:false};DB.profiles.push(p);
+      var p={id:id(),auth_uid:session.user.id,pseudo:a.p_pseudo,country:a.p_country||'',lang:'fr',skills:[],matching:false,show_honor:true,is_admin:i.kind==='admin',is_tester:i.kind==='tester',is_ref:false};DB.profiles.push(p);
       if(i.canal_id)DB.canal_members.push({canal_id:i.canal_id,user_id:p.id,status:'member',is_moderator:false,is_relay:false});
       if(i.kind!=='join')i.active=false;DB.notifications.push({id:id(),user_id:p.id,kind:'welcome',ref:null,body:'',read:false,created_at:new Date().toISOString()});return {ok:true};},
-    request_join:function(a){DB.canal_members.push({canal_id:a.p_canal,user_id:me().id,status:'pending',is_moderator:false,is_relay:false});},
+    request_join:function(a){var t=me().is_tester;DB.canal_members.push({canal_id:a.p_canal,user_id:me().id,status:t?'member':'pending',is_moderator:!!t,is_relay:false});},
+    rotate_tester_invite:function(){DB.invites.forEach(function(x){if(x.kind==='tester')x.active=false;});var c='testeur-'+DB.invites.length;DB.invites.push({code:c,kind:'tester',canal_id:null,active:true,uses:0});return c;},
+    end_test_phase:function(){var n=0;DB.profiles.filter(function(p){return p.is_tester;}).forEach(function(p){DB.canal_members.forEach(function(c){if(c.user_id===p.id&&c.is_moderator){c.is_moderator=false;n++;}});p.is_tester=false;});return n;},
     decide_join:function(a){var m=DB.canal_members.filter(function(x){return x.canal_id===a.p_canal&&x.user_id===a.p_user;})[0];m.status=a.p_accept?'member':'refused';},
     mark_read:function(a){if(!DB.ann_reads.some(function(r){return r.ann_id===a.p_ann&&r.user_id===me().id;}))DB.ann_reads.push({ann_id:a.p_ann,user_id:me().id});},
     take_task:function(a){var t=DB.tasks.filter(function(x){return x.id===a.p_task;})[0];t.assignee_id=me().id;t.status='doing';},
