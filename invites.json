@@ -24,18 +24,6 @@
   "created_at": "2026-11-23T12:44:23.857896+00:00"
  },
  {
-  "code": "cul-917622e8000940ac",
-  "kind": "join",
-  "canal_id": "cul",
-  "target_user": null,
-  "created_by": "50146a43-159d-4f19-a6e0-af0da7e4d369",
-  "active": true,
-  "uses": 1,
-  "max_uses": null,
-  "expires_at": null,
-  "created_at": "2026-11-23T12:45:04.893966+00:00"
- },
- {
   "code": "edu-70a3ee704aae48ff",
   "kind": "join",
   "canal_id": "edu",
@@ -114,9 +102,21 @@
   "target_user": null,
   "created_by": "50146a43-159d-4f19-a6e0-af0da7e4d369",
   "active": true,
-  "uses": 1,
+  "uses": 6,
   "max_uses": null,
   "expires_at": null,
   "created_at": "2026-11-23T13:24:15.092759+00:00"
+ },
+ {
+  "code": "cul-917622e8000940ac",
+  "kind": "join",
+  "canal_id": "cul",
+  "target_user": null,
+  "created_by": "50146a43-159d-4f19-a6e0-af0da7e4d369",
+  "active": true,
+  "uses": 3,
+  "max_uses": null,
+  "expires_at": null,
+  "created_at": "2026-11-23T12:45:04.893966+00:00"
  }
 ]
