@@ -21,6 +21,7 @@ drop policy if exists ait_admin on ai_testers;
 drop policy if exists ait_self on ai_testers;
 create policy ait_admin on ai_testers for all to authenticated using (is_admin()) with check (is_admin());
 create policy ait_self on ai_testers for select to authenticated using (user_id = me());
+grant select on ai_testers to authenticated;      -- l'écriture passe uniquement par set_ai_tester()
 
 -- Consomme une utilisation IA (20 par jour et par testeur). Erreurs : not_tester, quota.
 create or replace function ai_consume() returns int language plpgsql security definer set search_path = public as $$
