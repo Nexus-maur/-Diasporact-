@@ -205,6 +205,7 @@ function fmt(d){try{return new Date(d+'T12:00:00').toLocaleDateString(S.lang==='
 function rel(at){var m=Math.floor((Date.now()-at)/60000);if(m<1)return t('now');if(m<60)return t('min',{n:m});if(m<1440)return t('hour',{n:Math.floor(m/60)});return t('day',{n:Math.floor(m/1440)});}
 function dataAttrs(o){return Object.keys(o||{}).map(function(k){return 'data-'+k+'="'+esc(o[k])+'"';}).join(' ');}
 var ICONS={
+ more:'<circle cx="5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="19" cy="12" r="1.4"/>',
  home:'<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/>',
  hash:'<path d="M5 9h14M4 15h14M10 4L8 20M16 4l-2 16"/>',
  folder:'<path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>',
@@ -398,15 +399,25 @@ function vCanal(p){
   if(cur==='proj'){var ps=S.projects.filter(function(x){return x.canal===k.id;});h+='<button class="btn block" data-act="new-project" data-id="'+k.id+'">'+ic('plus',18)+T('new_project')+'</button><div class="stack">'+(ps.length?ps.map(projCard).join(''):'<p class="empty">'+T('no_proj')+'</p>')+'</div>';}
   if(cur==='help'){h+='<button class="btn primary block" data-act="new-help">'+ic('plus',18)+T('new_help')+'</button><p class="muted small">'+ic('lock',14)+' '+T('help_priv')+'</p>';}
   if(cur==='honor')h+=honorHtml(k.id);
-  if(cur==='members'){var ml=(S.cmem[k.id]||[]).filter(Boolean).slice().sort(function(x,y){return x.localeCompare(y);});
-    h+='<section><h2 class="h2">'+L3('Membres','الأعضاء','Members')+'<span class="count">'+ml.length+'</span></h2>'+(ml.length?'<div class="card list">'+ml.map(function(m){var r=S.roles[m]||{},nm=nameOf(m),fl=S.flags[m]||'',ism=!!(r.mod&&r.mod.indexOf(k.id)>-1);
-      var rc=(r.mod&&r.mod.indexOf(k.id)>-1?chip(T('canal_mod'),'green'):'')+(r.speaker?chip(T('r_speaker'),'red'):'')+(r.ref?chip(L3('Référent','مرجعي','Referent')):'');
-      return '<div class="li">'+av(m)+'<span class="grow" style="min-width:0"><span class="t">'+(nm?esc(nm)+'<br><span class="muted small">@'+esc(m)+'</span>':'@'+esc(m))+'</span></span>'+(fl?'<span aria-hidden="true">'+fl+'</span>':'')+rc+(m!==S.me.pseudo&&!r.speaker&&(!ism||S.me.admin)?'<button class="btn sm" data-act="mem-mod" data-id="'+esc(k.id+'|'+m)+'">'+(ism?L3('Retirer modérateur','إزالة الإشراف','Remove moderator'):L3('Nommer modérateur','تعيين مشرف','Make moderator'))+'</button><button class="btn sm" data-act="mem-rm" data-id="'+esc(k.id+'|'+m)+'">'+L3('Retirer','إزالة','Remove')+'</button>':'')+'</div>';}).join('')+'</div>':'<p class="empty">'+L3('Aucun membre pour le moment.','لا يوجد أعضاء بعد.','No members yet.')+'</p>')+'</section>';}
+  if(cur==='members'){var tot=(S.cmem[k.id]||[]).filter(Boolean).length;
+    h+='<section><h2 class="h2">'+L3('Membres','الأعضاء','Members')+'<span class="count">'+tot+'</span></h2><input type="text" id="mem-q" inputmode="search" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="'+esc(L3('Rechercher un membre','ابحث عن عضو','Search a member'))+'" placeholder="'+esc(L3('Rechercher un membre…','ابحث عن عضو…','Search a member…'))+'" value="'+esc(S.memQ||'')+'" data-canal="'+esc(k.id)+'"><div id="mem-list" style="margin-top:10px">'+memListHtml(k.id)+'</div></section>';}
   if(cur==='mod'){var rq=S.reqs[k.id]||[];
     h+='<section><h2 class="h2">'+T('mod_reqs')+(rq.length?'<span class="count">'+rq.length+'</span>':'')+'</h2>'+(rq.length?'<div class="card list">'+rq.map(function(r){return '<div class="li">'+av(r.p)+'<span class="grow t">@'+esc(r.p)+'</span><button class="btn sm primary" data-act="accept" data-id="'+k.id+'" data-p="'+esc(r.p)+'" data-uid="'+esc(r.id)+'">'+T('accept')+'</button><button class="btn sm" data-act="refuse" data-id="'+k.id+'" data-p="'+esc(r.p)+'" data-uid="'+esc(r.id)+'">'+T('refuse')+'</button></div>';}).join('')+'</div>':'<p class="empty">'+T('mod_none')+'</p>')+'</section>';
     h+=modTools(k);}
   if(cur==='mod')h+=badgeReqHtml();
   return h;
+}
+function memListHtml(cid){
+  var q=(S.memQ||'').trim().toLowerCase().replace(/^@/,'');
+  var ml=(S.cmem[cid]||[]).filter(Boolean).slice().sort(function(x,y){return x.localeCompare(y);}).filter(function(m){return !q||(m+' '+nameOf(m)).toLowerCase().indexOf(q)>-1;});
+  if(!ml.length)return '<p class="empty">'+(q?L3('Aucun résultat.','لا توجد نتائج.','No results.'):L3('Aucun membre pour le moment.','لا يوجد أعضاء بعد.','No members yet.'))+'</p>';
+  return '<div class="card list">'+ml.map(function(m){var r=S.roles[m]||{},nm=nameOf(m),fl=S.flags[m]||'',ism=!!(r.mod&&r.mod.indexOf(cid)>-1);
+    var rc=(ism?chip(T('canal_mod'),'green'):'')+(r.speaker?chip(T('r_speaker'),'red'):'')+(r.ref?chip(L3('Référent','مرجعي','Referent')):'');
+    var id=esc(cid+'|'+m),can=m!==S.me.pseudo&&!r.speaker;
+    var menu=can?'<details class="menu"><summary class="btn sm" aria-label="'+esc(L3('Actions','إجراءات','Actions'))+'">'+ic('more',18)+'</summary><div class="menu-pop">'+
+      (!ism||S.me.admin?'<button class="mi" data-act="mem-mod" data-id="'+id+'">'+(ism?L3('Retirer modérateur','إزالة الإشراف','Remove moderator'):L3('Nommer modérateur','تعيين مشرف','Make moderator'))+'</button>':'')+
+      (!ism||S.me.admin?'<button class="mi danger" data-act="mem-rm" data-id="'+id+'">'+L3('Retirer du canal','إزالة من القناة','Remove from channel')+'</button>':'')+'</div></details>':'';
+    return '<div class="li">'+av(m)+'<span class="grow" style="min-width:0"><span class="t">'+(nm?esc(nm)+'<br><span class="muted small">@'+esc(m)+'</span>':'@'+esc(m))+'</span></span>'+(fl?'<span aria-hidden="true">'+fl+'</span>':'')+rc+menu+'</div>';}).join('')+'</div>';
 }
 function myProject(p){return p.owner===S.me.pseudo||p.team.indexOf(S.me.pseudo)>-1||p.tasks.some(function(k){return k.who===S.me.pseudo;});}
 function vProjects(){
@@ -760,6 +771,7 @@ function doRefresh(){
 function applyData(me,d){
   var canals=d[0],stats=d[1],mods=d[2],pubs=d[3],cms=d[4],projs=d[5],mss=d[6],tks=d[7],team=d[8],cmts=d[9],helps=d[10],anns=d[11],myReads=d[12],rcount=d[13],notifs=d[14],breqs=d[15],grants=d[16],eng=d[17],dir=d[18],fol=d[19],props=d[20],invs=d[21],spks=d[22]||[],aits=d[23]||[],fbs=d[24]||[],pres=d[25]||[];
   var pp={};S.pubId={};S.honorOk={};S.names={};pubs.forEach(function(p){pp[p.id]=p.pseudo;S.pubId[p.pseudo]=p.id;S.honorOk[p.pseudo]=p.show_honor!==false;var nm=((p.first_name||'')+' '+(p.last_name||'')).trim();if(nm)S.names[p.pseudo]=nm;});S.pub=pp;S.flags={};pubs.forEach(function(p){var f=flagFor(p.country);if(f)S.flags[p.pseudo]=f;});
+  (function(){var d=document.getElementById('dl-pseudos');if(!d){d=document.createElement('datalist');d.id='dl-pseudos';document.body.appendChild(d);}d.innerHTML=Object.keys(S.pubId).sort().map(function(x){return '<option value="'+esc(x)+'">';}).join('');})();
   S.spkCountries=[];spks.forEach(function(s){if(s.pseudo===me.pseudo)S.spkCountries.push(s.country);});
   S.fb=fbs.map(function(r){return {uid:r.user_id,who:pp[r.user_id]||'',a:r.answers||{},lang:r.lang||'',at:(r.created_at||'').slice(0,16).replace('T',' ')};});
   S.pre=pres.map(function(r){return {fn:r.first_name||'',ct:r.contact,co:r.country||'',cn:r.canals||[],lang:r.lang||'',at:(r.created_at||'').slice(0,16).replace('T',' ')};});
@@ -934,7 +946,7 @@ function modTools(k){
    (link?'<p class="linkbox" dir="ltr" style="overflow-wrap:anywhere">'+esc(link)+'</p><p class="muted small">'+T('invite_exp')+'</p><div class="row wrap"><button class="btn sm" data-act="copy-link" data-id="'+k.id+'">'+ic('copy',16)+T('copy')+'</button><button class="btn sm" data-act="share" data-kind="invite" data-id="'+k.id+'">'+ic('share',16)+T('share')+'</button><button class="btn sm danger" data-act="rotate-link" data-id="'+k.id+'">'+T('invite_rotate')+'</button></div>'
         :'<p class="muted small">'+T('inv_none')+'</p><button class="btn sm primary" data-act="gen-link" data-id="'+k.id+'">'+T('inv_gen')+'</button>')+'</section>'+
   '<section class="card stack s8"><h2 class="h3">'+T('wa_set')+'</h2><form data-form="wa" data-id="'+k.id+'" class="stack s8"><input type="url" id="wa-in" dir="ltr" autocomplete="off" placeholder="'+T('wa_set_ph')+'" value="'+esc(k.wa||'')+'"><button class="btn sm" type="submit">'+T('adm_save')+'</button></form></section>'+
-  '<section class="card stack s8"><h2 class="h3">'+T('rc_title')+'</h2><p class="muted small">'+T('rc_help')+'</p><form data-form="recovery" class="stack s8"><div class="pfx" dir="ltr">@<input type="text" id="rc-p" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="24" aria-label="'+esc(t('adm_pseudo'))+'"></div><button class="btn sm" type="submit">'+T('rc_make')+'</button></form></section>';
+  '<section class="card stack s8"><h2 class="h3">'+T('rc_title')+'</h2><p class="muted small">'+T('rc_help')+'</p><form data-form="recovery" class="stack s8"><div class="pfx" dir="ltr">@<input type="text" id="rc-p" list="dl-pseudos" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="24" aria-label="'+esc(t('adm_pseudo'))+'"></div><button class="btn sm" type="submit">'+T('rc_make')+'</button></form></section>';
 }
 function manageSection(pj){
   if(!canEdit(pj))return '';
@@ -1084,14 +1096,14 @@ function testerAdmin(){
 function adminSection(){
   if(!S.me.admin)return '';
   return '<section class="card stack s8"><h2 class="h3">'+T('adm_title')+'</h2>'+
-  '<form data-form="setrole" class="stack s8"><div class="lbl">'+T('adm_role')+'</div><div class="pfx" dir="ltr">@<input type="text" id="ad-p" maxlength="24" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="'+esc(t('adm_pseudo'))+'"></div>'+
+  '<form data-form="setrole" class="stack s8"><div class="lbl">'+T('adm_role')+'</div><div class="pfx" dir="ltr">@<input type="text" id="ad-p" list="dl-pseudos" maxlength="24" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="'+esc(t('adm_pseudo'))+'"></div>'+
   '<div class="field"><label for="ad-c">'+T('adm_canal')+'</label><select id="ad-c">'+CANALS.map(function(k){return '<option value="'+k.id+'">'+C(k.n)+'</option>';}).join('')+'</select></div>'+
   '<label class="pick" for="ad-m"><span class="grow t">'+T('adm_mod')+'</span><input type="checkbox" id="ad-m" checked></label><label class="pick" for="ad-r"><span class="grow t">'+T('adm_relay')+'</span><input type="checkbox" id="ad-r"></label><button class="btn sm primary" type="submit">'+T('adm_save')+'</button></form>'+
-  '<form data-form="setref" class="stack s8"><div class="lbl">'+T('adm_ref')+'</div><div class="pfx" dir="ltr">@<input type="text" id="ar-p" maxlength="24" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="'+esc(t('adm_pseudo'))+'"></div><label class="pick" for="ar-o"><span class="grow t">'+T('adm_ref_on')+'</span><input type="checkbox" id="ar-o" checked></label><button class="btn sm primary" type="submit">'+T('adm_save')+'</button></form>'+
-  '<form data-form="setspk" class="stack s8"><div class="lbl">'+T('adm_spk')+'</div><div class="pfx" dir="ltr">@<input type="text" id="as-p" maxlength="24" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="'+esc(t('adm_pseudo'))+'"></div>'+
+  '<form data-form="setref" class="stack s8"><div class="lbl">'+T('adm_ref')+'</div><div class="pfx" dir="ltr">@<input type="text" id="ar-p" list="dl-pseudos" maxlength="24" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="'+esc(t('adm_pseudo'))+'"></div><label class="pick" for="ar-o"><span class="grow t">'+T('adm_ref_on')+'</span><input type="checkbox" id="ar-o" checked></label><button class="btn sm primary" type="submit">'+T('adm_save')+'</button></form>'+
+  '<form data-form="setspk" class="stack s8"><div class="lbl">'+T('adm_spk')+'</div><div class="pfx" dir="ltr">@<input type="text" id="as-p" list="dl-pseudos" maxlength="24" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="'+esc(t('adm_pseudo'))+'"></div>'+
   '<div class="field"><label for="as-c">'+T('adm_spk_country')+'</label>'+countryInput('as-c','','maxlength="60" autocomplete="off"')+'</div>'+
   '<label class="pick" for="as-o"><span class="grow t">'+T('adm_spk_on')+'</span><input type="checkbox" id="as-o" checked></label><button class="btn sm primary" type="submit">'+T('adm_save')+'</button></form>'+
-  '<form data-form="setai" class="stack s8"><div class="lbl">'+T('adm_ai')+'</div><div class="pfx" dir="ltr">@<input type="text" id="ai-p" maxlength="24" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="'+esc(t('adm_pseudo'))+'"></div>'+
+  '<form data-form="setai" class="stack s8"><div class="lbl">'+T('adm_ai')+'</div><div class="pfx" dir="ltr">@<input type="text" id="ai-p" list="dl-pseudos" maxlength="24" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="'+esc(t('adm_pseudo'))+'"></div>'+
   '<label class="pick" for="ai-o"><span class="grow t">'+T('adm_ai_on')+'</span><input type="checkbox" id="ai-o" checked></label><button class="btn sm primary" type="submit">'+T('adm_save')+'</button></form></section>';
 }
 function vMe(){
@@ -1325,6 +1337,7 @@ var ACT={
  'rec-go':function(){var code=S.auth.code;mut(function(){return rpc('redeem_invite',{p_code:code});},'welcome_in',function(){clearHash();S.deep=null;S.stack=[];S.route={name:'home',params:{}};});}
 };
 document.addEventListener('click',function(e){
+  var om=document.querySelectorAll('details.menu[open]');for(var oi=0;oi<om.length;oi++)if(!om[oi].contains(e.target))om[oi].removeAttribute('open');
   var el=e.target.closest('[data-act]');if(!el)return;
   var fn=ACT[el.dataset.act];if(!fn)return;
   fn(el.dataset,el,e);
@@ -1335,6 +1348,7 @@ document.addEventListener('input',function(e){
   if(id==='pseudo')updatePseudo();
   if(e.target.classList&&e.target.classList.contains('cp-q')){var g=$('#cpg-'+e.target.dataset['for']);if(g)g.innerHTML=cpGrid(e.target.dataset['for'],e.target.value);}
   if(id&&$('#cpf-'+id))cpFlag(id);
+  if(id==='mem-q'){S.memQ=e.target.value;var ml=$('#mem-list');if(ml)ml.innerHTML=memListHtml(e.target.dataset.canal);}
   if(id==='proj-q'){S.projQ=e.target.value;var pl=$('#proj-list');if(pl)pl.innerHTML=projListHtml();}
   if(id==='cmt-text'){var n=$('#cmt-n');if(n)n.textContent=e.target.value.length+'/280';}
 });

@@ -95,6 +95,9 @@ h1.page{font:700 24px/1.15 var(--f-display);text-wrap:balance}
 .btn.primary{background:var(--green);border-color:var(--green-ink);color:var(--on-green)}
 .btn.primary:hover{filter:brightness(1.07)}
 .btn.danger{color:var(--red-ink)}
+.menu{position:relative}.menu>summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;min-width:40px;padding:0 8px}.menu>summary::-webkit-details-marker{display:none}
+.menu-pop{position:absolute;inset-inline-end:0;top:calc(100% + 4px);z-index:20;min-width:200px;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.18);padding:6px;display:flex;flex-direction:column}
+.menu-pop .mi{background:none;border:0;text-align:start;padding:12px;min-height:44px;border-radius:8px;font:500 14px var(--f-body);color:var(--ink);cursor:pointer}.menu-pop .mi:hover{background:var(--surface2)}.menu-pop .mi.danger{color:var(--red,#c0392b)}
 .btn.sm{min-height:40px;padding:0 12px;font-size:13px;border-radius:11px}
 .btn.block{width:100%}
 .btn[disabled]{opacity:.5;cursor:not-allowed}
