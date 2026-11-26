@@ -694,6 +694,7 @@ function errMsg(e){
   if(/invalid_invite/.test(m))return t('e_invite');
   if(/pseudo_taken|profiles_pseudo_key/.test(m))return t('e_taken');
   if(/bad_pseudo/.test(m))return t('pseudo_bad');
+  if(/Could not find the function|schema cache/.test(m)&&/create_canal/.test(m))return L3('Création de canal bientôt disponible.','إنشاء القنوات متاح قريباً.','Channel creation coming soon.');
   if(/canal_limit/.test(m))return L3('Limite atteinte : 3 canaux créés par modérateur.','تم بلوغ الحد: 3 قنوات لكل مشرف.','Limit reached: 3 channels per moderator.');
   if(/bad_name/.test(m))return L3('Nom invalide (3 à 40 caractères).','اسم غير صالح (من 3 إلى 40 حرفاً).','Invalid name (3 to 40 characters).');
   if(/already_registered/.test(m))return t('e_already');
