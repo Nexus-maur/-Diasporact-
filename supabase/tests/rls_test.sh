@@ -340,4 +340,17 @@ q $A "select member_set_mod('edu','gest.deux',false)" >/dev/null
 ok "R181 l'admin rétrograde un modérateur" "$($DB -c "select is_moderator from canal_members where canal_id='edu' and user_id=(select id from profiles where pseudo='gest.deux')")" "f"
 has "R182 cible non membre refusée" "$(q $A "select member_remove('inv','gest.deux')")" "not_member"
 
+# création de canaux
+has "R183 un simple membre ne peut pas créer de canal" "$(q $G3 "select create_canal('Pirate','x')")" "forbidden"
+NC=$(q $G1 "select create_canal('Santé Europe','Échanges santé')")
+has "R184 un modérateur crée un canal (id généré)" "$NC" "sante-europe-"
+ok "R185 le créateur en est modérateur" "$(q $G1 "select is_mod('$NC')")" "t"
+ok "R186 le canal est visible de tous les membres" "$(q $G2 "select count(*) from canals where id='$NC'")" "1"
+has "R187 nom trop court refusé" "$(q $G1 "select create_canal('ab','')")" "bad_name"
+q $G1 "select create_canal('Deux','')" >/dev/null; q $G1 "select create_canal('Trois','')" >/dev/null
+has "R188 limite de 3 canaux par modérateur" "$(q $G1 "select create_canal('Quatre','')")" "canal_limit"
+has "R189 écriture directe dans canals refusée" "$(q $G1 "insert into canals(id,name_fr,name_ar) values ('x','x','x')")" "row-level security"
+q $A "select create_canal('Admin un','')" >/dev/null; q $A "select create_canal('Admin deux','')" >/dev/null; q $A "select create_canal('Admin trois','')" >/dev/null
+ok "R190 l'admin n'a pas de limite" "$(q $A "select create_canal('Admin quatre','')" | wc -l)" "1"
+
 echo "----"; echo "$pass réussis, $fail échoués"; [ $fail -eq 0 ]

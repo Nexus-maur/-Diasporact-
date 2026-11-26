@@ -116,6 +116,11 @@ async function open(mock,hash,opt){
   ok(!!a.q('[data-act=mem-rm][data-id$="|zaid.nice"]')&&!a.q('[data-act=mem-rm][data-id$="|mariem.paris"]'),'C3e boutons présents pour un membre, absents pour soi-même');
   await a.click('[data-act=mem-rm][data-id$="|zaid.nice"]');await a.click('[data-act=mem-rm-ok]');await sleep(150);
   ok(!m.DB.canal_members.some(x=>x.user_id==='p-zaid.nice'),'C3f retirer un membre du canal');
+  await a.clickText('.tab','Canaux');await sleep(80);
+  ok(!!a.q('[data-act=new-canal]'),'C3g le modérateur voit « Créer un canal »');
+  await a.click('[data-act=new-canal]');a.set('#nc-n','Santé Europe');a.set('#nc-d','Échanges santé');await a.submit('[data-form=newcanal]');await sleep(250);
+  ok(m.DB.canals.some(x=>x.name_fr==='Santé Europe')&&a.txt().includes('Santé Europe'),'C3h canal créé par le modérateur');
+  await a.clickText('.tab','Canaux');await sleep(80);await a.click('[data-act=open-canal][data-id=edu]');await a.click('[data-act=canal-tab][data-tab=mod]');
   await a.click('[data-act=canal-tab][data-tab=mod]');
   await a.click('[data-act=gen-link]');ok(a.txt().includes('#/i/edu-'),'C4 lien d\'invitation généré');
   a.set('#wa-in','https://chat.whatsapp.com/AbC123');await a.submit('[data-form=wa]');ok(m.DB.canals[0].wa_link==='https://chat.whatsapp.com/AbC123','C5 groupe WhatsApp enregistré');

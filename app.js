@@ -382,7 +382,7 @@ function vHome(){
 }
 function statusChip(id){var s=mem(id);return s==='member'?chip(T('canal_member'),'green'):s==='pending'?chip(T('canal_pending'),'yellow'):'';}
 function vCanals(){
-  return '<div class="card list">'+CANALS.map(function(k){var s=mem(k.id);
+  return ((S.me&&(S.me.admin||S.me.mod.length))?'<button class="btn block" data-act="new-canal">'+ic('plus',18)+L3('Créer un canal','إنشاء قناة','Create a channel')+'</button>':'')+'<div class="card list">'+CANALS.map(function(k){var s=mem(k.id);
     return '<div class="li"><button class="row grow" style="text-align:start;min-width:0" data-act="open-canal" data-id="'+k.id+'"><span class="ico">'+ic(k.ico,18)+'</span><span class="grow"><span class="t">'+C(k.n)+'</span><br><span class="muted small">'+k.count+' '+T('canal_members')+'</span></span></button>'+
     (s?statusChip(k.id):'<button class="btn sm" data-act="join" data-id="'+k.id+'">'+T('canal_join')+'</button>')+'</div>';}).join('')+'</div>';
 }
@@ -694,6 +694,8 @@ function errMsg(e){
   if(/invalid_invite/.test(m))return t('e_invite');
   if(/pseudo_taken|profiles_pseudo_key/.test(m))return t('e_taken');
   if(/bad_pseudo/.test(m))return t('pseudo_bad');
+  if(/canal_limit/.test(m))return L3('Limite atteinte : 3 canaux créés par modérateur.','تم بلوغ الحد: 3 قنوات لكل مشرف.','Limit reached: 3 channels per moderator.');
+  if(/bad_name/.test(m))return L3('Nom invalide (3 à 40 caractères).','اسم غير صالح (من 3 إلى 40 حرفاً).','Invalid name (3 to 40 characters).');
   if(/already_registered/.test(m))return t('e_already');
   if(/unknown_pseudo/.test(m))return t('e_unknown');
   if(/wa_link/.test(m))return t('wa_bad');
@@ -1280,6 +1282,7 @@ var ACT={
  'mem-mod-ok':function(d){var x=d.id.split('|'),on=!((S.roles[x[1]]||{}).mod&&S.roles[x[1]].mod.indexOf(x[0])>-1);closeSheet(true);mut(function(){return rpc('member_set_mod',{p_canal:x[0],p_pseudo:x[1],p_on:on});},function(){return on?L3('@'+x[1]+' est maintenant modérateur.','أصبح @'+x[1]+' مشرفاً.','@'+x[1]+' is now a moderator.'):L3('Rôle de modérateur retiré.','أُزيلت صلاحية الإشراف.','Moderator role removed.');});},
  'mem-rm':function(d){var x=d.id.split('|');confirmSheet(L3('Retirer du canal','إزالة من القناة','Remove from channel'),L3('@'+x[1]+' perdra l’accès aux projets et à l’entraide de ce canal. Il pourra redemander à le rejoindre avec un lien d’invitation.','@'+x[1]+' سيفقد الوصول إلى مشاريع القناة والمساعدة فيها.','@'+x[1]+' will lose access to this channel’s projects and help requests. They can ask to join again with an invitation link.'),'mem-rm-ok',d.id);},
  'mem-rm-ok':function(d){var x=d.id.split('|');closeSheet(true);mut(function(){return rpc('member_remove',{p_canal:x[0],p_pseudo:x[1]});},function(){return L3('@'+x[1]+' a été retiré du canal.','أُزيل @'+x[1]+' من القناة.','@'+x[1]+' was removed from the channel.');});},
+ 'new-canal':function(){openSheet(L3('Créer un canal','إنشاء قناة','Create a channel'),'<p class="muted small">'+esc(L3('Un canal réunit des membres autour d’un thème ou d’un pays. Vous en serez le modérateur et pourrez ensuite générer son lien d’invitation.','القناة تجمع الأعضاء حول موضوع أو بلد. ستكون مشرفها ويمكنك بعدها إنشاء رابط الدعوة.','A channel brings members together around a theme or a country. You will be its moderator and can then generate its invitation link.'))+'</p><form data-form="newcanal" class="stack s8" novalidate><label class="muted small" for="nc-n">'+esc(L3('Nom du canal','اسم القناة','Channel name'))+'</label><input type="text" id="nc-n" maxlength="40" autocomplete="off"><label class="muted small" for="nc-d">'+esc(L3('Description (facultatif)','الوصف (اختياري)','Description (optional)'))+'</label><textarea id="nc-d" rows="3" maxlength="200"></textarea><p class="err" id="nc-err" role="alert"></p><button class="btn primary block" type="submit">'+esc(L3('Créer le canal','إنشاء القناة','Create the channel'))+'</button></form>');},
  'rotate-link':function(d){confirmSheet(t('cf_rotate'),t('cf_rotate_t'),'rotate-link-ok',d.id);},
  'rotate-link-ok':function(d){closeSheet(true);mut(function(){return rpc('rotate_canal_invite',{p_canal:d.id});},'t_new_link');},
  'gen-link':function(d){mut(function(){return rpc('rotate_canal_invite',{p_canal:d.id});},'t_new_link');},
@@ -1428,6 +1431,8 @@ var FORMS={
    closeSheet(true);
    mut(function(){return q(tbl('announcements').insert({canal_id:canalId,country:country,author_id:S.me.id,title:title,body:body,orig_lang:S.lang,valid_until:until||null}).select('id').single()).then(function(r){aid=r.id;});},'t_ann_pub',function(){setTimeout(function(){if(aid&&annOf(aid))openShare('ann',aid);},50);});
  },
+ newcanal:function(){var nm=$('#nc-n').value.trim(),ds=$('#nc-d').value.trim();if(nm.length<3){$('#nc-err').textContent=L3('Le nom doit contenir au moins 3 caractères.','يجب أن يحتوي الاسم على 3 أحرف على الأقل.','The name must contain at least 3 characters.');return;}
+   closeSheet(true);mut(function(){return rpc('create_canal',{p_name:nm,p_desc:ds});},function(){return L3('Canal créé. Vous en êtes le modérateur.','أُنشئت القناة. أنت مشرفها.','Channel created. You are its moderator.');},function(id){if(id){S.stack=[];S.route={name:'canal',params:{id:id,tab:'mod'}};}});},
  wa:function(f){var v=$('#wa-in').value.trim();mut(function(){return rpc('set_canal_wa',{p_canal:f.dataset.id,p_link:v});},'t_saved');},
  recovery:function(){var p=$('#rc-p').value.trim().toLowerCase().replace(/^@/,'');if(!p)return;
    mut(function(){return rpc('create_recovery_invite',{p_pseudo:p});},null,function(code){openRecoveryLink(code,p);});},
