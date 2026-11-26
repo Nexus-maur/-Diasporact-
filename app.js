@@ -1060,10 +1060,10 @@ function fbAdmin(){
 }
 /* ============ Préinscription (avant le lancement) ============ */
 function vPrereg(){
-  if(S.preDone)return heroBlock(L3('Préinscription','التسجيل المسبق','Pre-registration'),L3('Merci, vous êtes préinscrit(e) !','شكرًا، تم تسجيلك مسبقًا!','Thank you, you are pre-registered!'),L3('Nous vous contacterons dès l’ouverture de Diasporact, avec votre lien d’invitation.','سنتواصل معك فور افتتاح Diasporact مع رابط الدعوة الخاص بك.','We will contact you as soon as Diasporact opens, with your invitation link.'))+
+  if(S.preDone)return heroBlock(L3('Préinscription','التسجيل المسبق','Pre-registration'),L3('Merci, vous êtes préinscrit(e) !','شكرًا، تم تسجيلك مسبقًا!','Thank you, you are pre-registered!'),L3('Nous vous contacterons dès l’ouverture de Diasporact, avec votre lien d’invitation.','سنتواصل معك فور افتتاح Diasporact مع رابط الدعوة الخاص بك.','We will contact you as soon as Diasporact opens, with your invitation link.','plain'))+
     '<button class="btn block" data-act="pre-back">'+esc(L3('Retour','رجوع','Back'))+'</button>';
   var ck=CANALS.map(function(k){return '<label class="fbo"><input type="checkbox" name="pr_canal" value="'+k.id+'"><span>'+C(k.n)+'</span></label>';}).join('');
-  return heroBlock(L3('Préinscription','التسجيل المسبق','Pre-registration'),L3('Rejoignez Diasporact dès son ouverture','انضم إلى Diasporact فور افتتاحه','Join Diasporact as soon as it opens'),L3('Laissez-nous votre contact : vous recevrez votre lien d’invitation au lancement.','اترك لنا وسيلة تواصل لتصلك دعوتك عند الإطلاق.','Leave us your contact and you will get your invitation link at launch.'))+
+  return heroBlock(L3('Préinscription','التسجيل المسبق','Pre-registration'),L3('Rejoignez Diasporact dès son ouverture','انضم إلى Diasporact فور افتتاحه','Join Diasporact as soon as it opens'),L3('Laissez-nous votre contact : vous recevrez votre lien d’invitation au lancement.','اترك لنا وسيلة تواصل لتصلك دعوتك عند الإطلاق.','Leave us your contact and you will get your invitation link at launch.'),'plain')+
   '<form data-form="prereg" class="stack" novalidate>'+
   '<div class="field"><label for="pr-fn">'+esc(L3('Prénom (facultatif)','الاسم الأول (اختياري)','First name (optional)'))+'</label><input type="text" id="pr-fn" maxlength="60" autocomplete="given-name"></div>'+
   '<div class="field"><label for="pr-ct">'+esc(L3('E-mail ou numéro WhatsApp','البريد الإلكتروني أو رقم واتساب','Email or WhatsApp number'))+'</label><input type="text" id="pr-ct" maxlength="120" autocomplete="email" autocapitalize="none" spellcheck="false" dir="ltr" inputmode="email"></div>'+
@@ -1142,7 +1142,7 @@ function vNewHelp(){
   '<p class="muted small row">'+ic('lock',14)+' '+T('help_priv')+'</p><p class="fb err" id="nh-err"></p>'+
   '<div class="row"><button type="button" class="btn grow" data-act="back">'+T('cancel')+'</button><button type="submit" class="btn primary grow">'+T('send')+'</button></div></form>';
 }
-function heroBlock(eyebrow,title,sub){return '<section class="hero"><img class="logo" src="logo-large.png" width="260" height="260" alt="Diaspor ACT">'+'<p class="eyebrow">'+eyebrow+'</p><h1>'+title+'</h1><p>'+sub+'</p></section>';}
+function heroBlock(eyebrow,title,sub,cls){return '<section class="hero'+(cls?' '+cls:'')+'"><img class="logo" src="logo-large.png" width="260" height="260" alt="Diaspor ACT">'+'<p class="eyebrow">'+eyebrow+'</p><h1>'+title+'</h1><p>'+sub+'</p></section>';}
 function vLoad(){return heroBlock('','Diasporact',S.fatal?esc(S.fatal):T('loading'));}
 function vInv0(){
   return heroBlock(T('inv_from'),T('inv0_title'),T('inv0_sub'))+(S.auth.err?'<div class="banner">'+ic('lock',18)+'<span>'+esc(S.auth.err)+'</span></div>':'')+
