@@ -777,7 +777,7 @@ function applyData(me,d){
   (function(){var d=document.getElementById('dl-pseudos');if(!d){d=document.createElement('datalist');d.id='dl-pseudos';document.body.appendChild(d);}d.innerHTML=Object.keys(S.pubId).sort().map(function(x){return '<option value="'+esc(x)+'">';}).join('');})();
   S.spkCountries=[];spks.forEach(function(s){if(s.pseudo===me.pseudo)S.spkCountries.push(s.country);});
   S.fb=fbs.map(function(r){return {uid:r.user_id,who:pp[r.user_id]||'',a:r.answers||{},lang:r.lang||'',at:(r.created_at||'').slice(0,16).replace('T',' ')};});
-  S.pre=pres.map(function(r){return {fn:r.first_name||'',ct:r.contact,co:r.country||'',cn:r.canals||[],lang:r.lang||'',at:(r.created_at||'').slice(0,16).replace('T',' ')};});
+  S.pre=pres.map(function(r){return {id:r.id,st:r.status||'pending',code:r.invite_code||'',fn:r.first_name||'',ct:r.contact,co:r.country||'',cn:r.canals||[],lang:r.lang||'',at:(r.created_at||'').slice(0,16).replace('T',' ')};});
   /* canaux */
   canals.forEach(function(row){var k=CANALS.filter(function(x){return x.id===row.id;})[0];
     if(!k){k={id:row.id,ico:row.ico,n:{fr:row.name_fr,ar:row.name_ar},d:{fr:row.desc_fr,ar:row.desc_ar}};CANALS.push(k);}
@@ -1079,9 +1079,13 @@ function preCard(){
 }
 function preAdmin(){
   if(!S.me.admin)return '';
-  return '<section class="card stack s8"><h2 class="h3">'+esc(L3('Préinscriptions','التسجيلات المسبقة','Pre-registrations'))+' ('+(S.pre||[]).length+')</h2><p class="muted small">'+esc(L3('Lien public à diffuser :','الرابط العام للنشر:','Public link to share:'))+'</p><p class="linkbox" dir="ltr" style="overflow-wrap:anywhere">'+esc(appUrl('preinscription'))+'</p>'+
+  return '<section class="card stack s8"><h2 class="h3">'+esc(L3('Préinscriptions','التسجيلات المسبقة','Pre-registrations'))+' ('+(S.pre||[]).length+(function(){var n=(S.pre||[]).filter(function(y){return y.st!=='accepted';}).length;return n?' · '+n+' '+L3('en attente','قيد الانتظار','pending'):'';})()+')</h2><p class="muted small">'+esc(L3('Lien public à diffuser :','الرابط العام للنشر:','Public link to share:'))+'</p><p class="linkbox" dir="ltr" style="overflow-wrap:anywhere">'+esc(appUrl('preinscription'))+'</p>'+
   '<div class="row wrap"><button class="btn sm grow" data-act="pre-copy">'+ic('copy',16)+esc(L3('Copier le lien','نسخ الرابط','Copy link'))+'</button><button class="btn sm grow" data-act="pre-list">'+esc(L3('Voir la liste','عرض القائمة','View list'))+'</button><button class="btn sm grow" data-act="pre-csv">CSV</button></div></section>';
 }
+function preMsg(x,code){var l=x.lang||S.lang,u=appUrl('i/'+code),n=x.fn||'';
+  return l==='ar'?('مرحباً '+n+'، تم قبول تسجيلك المسبق في Diasporact. انضم عبر هذا الرابط الشخصي (صالح 30 يوماً): '+u):l==='en'?('Hello '+n+', your Diasporact pre-registration is accepted. Join with this personal link (valid 30 days): '+u):('Bonjour '+n+', votre préinscription à Diasporact est acceptée. Rejoignez-nous avec ce lien personnel (valable 30 jours) : '+u);}
+function preInviteSheet(x,code){x.code=code;x.st='accepted';var isPhone=/^\+?[0-9 ().-]{8,20}$/.test(x.ct);
+  openSheet(L3('Préinscription acceptée','تم قبول التسجيل المسبق','Pre-registration accepted'),'<p class="muted small">'+esc(L3('Envoyez ce message à ','أرسل هذه الرسالة إلى ','Send this message to '))+'<span dir="ltr">'+esc(x.ct)+'</span></p><p class="linkbox" style="overflow-wrap:anywhere;white-space:pre-line">'+esc(preMsg(x,code))+'</p><div class="row wrap"><button class="btn sm grow" data-act="pre-copy-msg" data-id="'+esc(x.id)+'">'+ic('copy',16)+esc(T('copy'))+'</button>'+(isPhone?'<button class="btn sm primary grow" data-act="pre-wa" data-id="'+esc(x.id)+'">WhatsApp</button>':'')+'</div>');}
 function preCsv(){
   function cell(v){v=v==null?'':Array.isArray(v)?v.join('|'):String(v);if(/^[=+\-@]/.test(v))v="'"+v;return '"'+v.replace(/"/g,'""')+'"';}
   var out=[['date','prenom','contact','pays','interets','langue'].map(cell).join(',')];
@@ -1241,7 +1245,10 @@ var ACT={
  'pre-back':function(){S.preDone=false;clearHash();S.route={name:'inv0',params:{}};render(true);},
  'pre-copy':function(){S._msg=appUrl('preinscription');ACT['copy-msg']();},
  'pre-csv':function(){downloadText('diasporact-preinscriptions.csv',preCsv(),'text/csv;charset=utf-8');},
- 'pre-list':function(){var r=S.pre||[];openSheet(L3('Préinscriptions','التسجيلات المسبقة','Pre-registrations'),r.length?'<div class="card list">'+r.map(function(x){return '<div class="li"><span class="grow t">'+esc(x.fn||'—')+' · <span dir="ltr">'+esc(x.ct)+'</span><br><span class="muted small">'+esc((x.co?x.co+' · ':'')+x.at)+'</span></span></div>';}).join('')+'</div>':'<p class="muted">—</p>');},
+ 'pre-list':function(){var r=S.pre||[];openSheet(L3('Préinscriptions','التسجيلات المسبقة','Pre-registrations'),r.length?'<div class="card list">'+r.map(function(x){var acc=x.st==='accepted';return '<div class="li"><span class="grow t" style="min-width:0;overflow-wrap:anywhere">'+esc(x.fn||'—')+' · <span dir="ltr">'+esc(x.ct)+'</span><br><span class="muted small">'+esc((x.co?x.co+' · ':'')+x.at)+'</span></span>'+(acc?chip(L3('Accepté','مقبول','Accepted'),'green'):'')+'<button class="btn sm'+(acc?'':' primary')+'" data-act="pre-accept" data-id="'+esc(x.id)+'">'+esc(acc?L3('Lien','الرابط','Link'):L3('Accepter','قبول','Accept'))+'</button></div>';}).join('')+'</div>':'<p class="muted">—</p>');},
+ 'pre-accept':function(d){var x=(S.pre||[]).filter(function(y){return y.id===d.id;})[0];if(!x)return;closeSheet(true);mut(function(){return rpc('accept_preregistration',{p_id:d.id});},null,function(code){if(code)preInviteSheet(x,code);});},
+ 'pre-wa':function(d){var x=(S.pre||[]).filter(function(y){return y.id===d.id;})[0];if(!x)return;var digits=x.ct.replace(/[^0-9]/g,'');window.open('https://wa.me/'+digits+'?text='+encodeURIComponent(preMsg(x,x.code)),'_blank','noopener');},
+ 'pre-copy-msg':function(d){var x=(S.pre||[]).filter(function(y){return y.id===d.id;})[0];if(!x)return;S._msg=preMsg(x,x.code);ACT['copy-msg']();},
  'fb-copy':function(){S._msg=appUrl('q');ACT['copy-msg']();},
  'fb-sum':function(){openSheet(L3('Synthèse des retours','ملخص الملاحظات','Feedback summary'),fbSummary());},
  'fb-csv':function(){var blob=new Blob([fbCsv()],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='diasporact-retours-testeurs.csv';document.body.appendChild(a);a.click();setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(url);},1000);},

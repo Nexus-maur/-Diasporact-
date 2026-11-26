@@ -353,4 +353,18 @@ has "R189 écriture directe dans canals refusée" "$(q $G1 "insert into canals(i
 q $A "select create_canal('Admin un','')" >/dev/null; q $A "select create_canal('Admin deux','')" >/dev/null; q $A "select create_canal('Admin trois','')" >/dev/null
 ok "R190 l'admin n'a pas de limite" "$(q $A "select create_canal('Admin quatre','')" | wc -l)" "1"
 
+# acceptation des préinscriptions
+sa "insert into preregistrations(id,first_name,contact,country,canals) values ('99999999-0000-0000-0000-000000000001','Aïcha','aicha@example.com','France','{edu}')" >/dev/null
+PRID=99999999-0000-0000-0000-000000000001
+has "R191 un modérateur ne peut pas accepter une préinscription" "$(q $G1 "select accept_preregistration('$PRID')")" "forbidden"
+PC=$(q $A "select accept_preregistration('$PRID')")
+has "R192 l'admin accepte : lien personnel du canal choisi" "$PC" "edu-"
+ok "R193 la préinscription est marquée acceptée" "$(sa "select status from preregistrations where id='$PRID'" | tr -d ' \n')" "accepted"
+ok "R194 le lien est à usage unique" "$(sa "select max_uses from invites where code='$PC'" | tr -d ' \n')" "1"
+ok "R195 réappeler renvoie le même lien" "$(q $A "select accept_preregistration('$PRID')")" "$PC"
+G4=11111111-aaaa-0000-0000-0000000000a4
+q $G4 "select redeem_invite('$PC','aicha.new','FR')" >/dev/null
+ok "R196 la personne s'inscrit avec son lien et devient membre" "$(q $G4 "select status from canal_members where canal_id='edu' and user_id=me()")" "member"
+has "R197 le lien ne peut pas être réutilisé" "$(q $T3 "select redeem_invite('$PC','autre.perso','FR')")" "invalid_invite"
+
 echo "----"; echo "$pass réussis, $fail échoués"; [ $fail -eq 0 ]

@@ -307,8 +307,12 @@ async function open(mock,hash,opt){
   m=makeMock({session:'u-3'});m.DB.profiles.push({id:'p-adm',auth_uid:'u-3',pseudo:'admin.nkc',country:'Mauritanie',lang:'fr',skills:[],matching:false,show_honor:true,is_admin:true,is_ref:false});
   m.DB.preregistrations.push({id:'x1',first_name:'Aïcha',contact:'aicha@example.com',country:'France',canals:['edu'],lang:'fr',created_at:new Date().toISOString()});
   a=await open(m);await sleep(150);await a.click('[data-act=go-me]');
-  ok(a.txt().includes('Préinscriptions (1)')&&a.txt().includes('#/preinscription'),'N8 l\'admin voit le lien public et le nombre');
+  ok(a.txt().includes('Préinscriptions (1 · 1 en attente)')&&a.txt().includes('#/preinscription'),'N8 l\'admin voit le lien public et le nombre');
   await a.click('[data-act=pre-list]');ok(a.txt().includes('aicha@example.com'),'N9 liste des préinscrits');
+  await a.click('[data-act=pre-accept]');await sleep(250);
+  const pr=m.DB.preregistrations[0];
+  ok(pr.status==='accepted'&&m.DB.invites.some(x=>x.code===pr.invite_code&&x.kind==='join'&&x.max_uses===1),'N9b accepter une préinscription crée un lien personnel à usage unique');
+  ok(a.txt().includes('Préinscription acceptée')&&a.txt().includes('#/i/'+pr.invite_code)&&a.txt().includes('Aïcha'),'N9c le message d\'invitation prêt à envoyer est affiché');
   ok(a.errs.length===0,'N10 aucune erreur JS ('+a.errs.join('|')+')');
   /* O. Lien testeurs */
   m=makeMock({session:'u-3'});m.DB.profiles.push({id:'p-adm',auth_uid:'u-3',pseudo:'admin.nkc',country:'Mauritanie',lang:'fr',skills:[],matching:false,show_honor:true,is_admin:true,is_ref:false});
