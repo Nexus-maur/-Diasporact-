@@ -411,13 +411,13 @@ function memListHtml(cid){
   var q=(S.memQ||'').trim().toLowerCase().replace(/^@/,'');
   var ml=(S.cmem[cid]||[]).filter(Boolean).slice().sort(function(x,y){return x.localeCompare(y);}).filter(function(m){return !q||(m+' '+nameOf(m)).toLowerCase().indexOf(q)>-1;});
   if(!ml.length)return '<p class="empty">'+(q?L3('Aucun résultat.','لا توجد نتائج.','No results.'):L3('Aucun membre pour le moment.','لا يوجد أعضاء بعد.','No members yet.'))+'</p>';
-  return '<div class="card list">'+ml.map(function(m){var r=S.roles[m]||{},nm=nameOf(m),fl=S.flags[m]||'',ism=!!(r.mod&&r.mod.indexOf(cid)>-1);
+  return '<div class="card list">'+ml.map(function(m){var r=S.roles[m]||{},nm=nameOf(m),ism=!!(r.mod&&r.mod.indexOf(cid)>-1);
     var rc=(ism?chip(T('canal_mod'),'green'):'')+(r.speaker?chip(T('r_speaker'),'red'):'')+(r.ref?chip(L3('Référent','مرجعي','Referent')):'');
     var id=esc(cid+'|'+m),can=m!==S.me.pseudo&&!r.speaker;
     var menu=can?'<details class="menu"><summary class="btn sm" aria-label="'+esc(L3('Actions','إجراءات','Actions'))+'">'+ic('more',18)+'</summary><div class="menu-pop">'+
       (!ism||S.me.admin?'<button class="mi" data-act="mem-mod" data-id="'+id+'">'+(ism?L3('Retirer modérateur','إزالة الإشراف','Remove moderator'):L3('Nommer modérateur','تعيين مشرف','Make moderator'))+'</button>':'')+
       (!ism||S.me.admin?'<button class="mi danger" data-act="mem-rm" data-id="'+id+'">'+L3('Retirer du canal','إزالة من القناة','Remove from channel')+'</button>':'')+'</div></details>':'';
-    return '<div class="li">'+av(m)+'<span class="grow" style="min-width:0"><span class="t">'+(nm?esc(nm)+'<br><span class="muted small">@'+esc(m)+'</span>':'@'+esc(m))+'</span></span>'+(fl?'<span aria-hidden="true">'+fl+'</span>':'')+rc+menu+'</div>';}).join('')+'</div>';
+    return '<div class="li">'+av(m)+'<span class="grow" style="min-width:0"><span class="t" style="overflow-wrap:anywhere">'+(nm?esc(nm)+'<br><span class="muted small">@'+esc(m)+'</span>':'@'+esc(m))+'</span>'+(rc?'<span class="row wrap" style="gap:6px;margin-top:6px">'+rc+'</span>':'')+'</span>'+menu+'</div>';}).join('')+'</div>';
 }
 function myProject(p){return p.owner===S.me.pseudo||p.team.indexOf(S.me.pseudo)>-1||p.tasks.some(function(k){return k.who===S.me.pseudo;});}
 function vProjects(){
