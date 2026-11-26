@@ -7,7 +7,8 @@
   "desc_fr": "Créer, financer et développer des activités entre la diaspora et la Mauritanie.",
   "desc_ar": "إنشاء الأنشطة وتمويلها وتطويرها بين الجالية وموريتانيا.",
   "wa_link": null,
-  "sort": 2
+  "sort": 2,
+  "created_by": null
  },
  {
   "id": "san",
@@ -17,7 +18,8 @@
   "desc_fr": "Missions médicales, collectes et soutien aux familles.",
   "desc_ar": "بعثات طبية وحملات جمع وإسناد للأسر.",
   "wa_link": null,
-  "sort": 3
+  "sort": 3,
+  "created_by": null
  },
  {
   "id": "adm",
@@ -27,7 +29,8 @@
   "desc_fr": "Papiers, installation à l’étranger, retour au pays.",
   "desc_ar": "الأوراق والاستقرار في الخارج والعودة إلى الوطن.",
   "wa_link": null,
-  "sort": 4
+  "sort": 4,
+  "created_by": null
  },
  {
   "id": "num",
@@ -37,7 +40,8 @@
   "desc_fr": "Outils, compétences et startups technologiques.",
   "desc_ar": "أدوات ومهارات ومؤسسات ناشئة تقنية.",
   "wa_link": null,
-  "sort": 5
+  "sort": 5,
+  "created_by": null
  },
  {
   "id": "cul",
@@ -47,7 +51,8 @@
   "desc_fr": "Mémoire, langues, arts et événements culturels.",
   "desc_ar": "الذاكرة واللغات والفنون والفعاليات الثقافية.",
   "wa_link": null,
-  "sort": 6
+  "sort": 6,
+  "created_by": null
  },
  {
   "id": "edu",
@@ -57,6 +62,7 @@
   "desc_fr": "Bourses, mentorat, écoles et projets pour la jeunesse mauritanienne.",
   "desc_ar": "منح وإرشاد ومدارس ومشاريع لفائدة الشباب الموريتاني.",
   "wa_link": null,
-  "sort": 1
+  "sort": 1,
+  "created_by": null
  }
 ]

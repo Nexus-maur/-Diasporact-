@@ -1,0 +1,14 @@
+[
+ {
+  "id": "822b807f-56b7-406a-8ac4-bf2379ccab6e",
+  "first_name": "BILL",
+  "contact": "eliehilt@gmail.com",
+  "country": "Mauritanie",
+  "canals": [
+   "edu",
+   "num"
+  ],
+  "lang": "fr",
+  "created_at": "2026-11-25T20:41:49.531302+00:00"
+ }
+]

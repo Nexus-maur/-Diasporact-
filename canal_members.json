@@ -1,1 +1,42 @@
-[]
+[
+ {
+  "canal_id": "inv",
+  "user_id": "50146a43-159d-4f19-a6e0-af0da7e4d369",
+  "status": "member",
+  "is_moderator": true,
+  "is_relay": false,
+  "created_at": "2026-11-25T20:45:31.989036+00:00"
+ },
+ {
+  "canal_id": "edu",
+  "user_id": "50146a43-159d-4f19-a6e0-af0da7e4d369",
+  "status": "member",
+  "is_moderator": true,
+  "is_relay": false,
+  "created_at": "2026-11-25T20:43:59.018126+00:00"
+ },
+ {
+  "canal_id": "edu",
+  "user_id": "15364f31-e944-467f-9cf6-fa8b1d4370d5",
+  "status": "member",
+  "is_moderator": true,
+  "is_relay": false,
+  "created_at": "2026-11-25T23:31:19.873618+00:00"
+ },
+ {
+  "canal_id": "san",
+  "user_id": "15364f31-e944-467f-9cf6-fa8b1d4370d5",
+  "status": "pending",
+  "is_moderator": false,
+  "is_relay": false,
+  "created_at": "2026-11-25T23:41:25.036486+00:00"
+ },
+ {
+  "canal_id": "inv",
+  "user_id": "15364f31-e944-467f-9cf6-fa8b1d4370d5",
+  "status": "pending",
+  "is_moderator": false,
+  "is_relay": false,
+  "created_at": "2026-11-25T23:41:32.076638+00:00"
+ }
+]

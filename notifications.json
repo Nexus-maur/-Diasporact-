@@ -1,5 +1,14 @@
 [
  {
+  "id": "72f3cdf8-f7a9-420b-9c7c-6d179bd992b9",
+  "user_id": "15364f31-e944-467f-9cf6-fa8b1d4370d5",
+  "kind": "welcome",
+  "ref": null,
+  "body": "",
+  "read": true,
+  "created_at": "2026-11-25T23:31:19.873618+00:00"
+ },
+ {
   "id": "39fe504a-780f-4ef7-a552-6734fc7af7e3",
   "user_id": "50146a43-159d-4f19-a6e0-af0da7e4d369",
   "kind": "welcome",
