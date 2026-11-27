@@ -9,6 +9,24 @@
    "num"
   ],
   "lang": "fr",
-  "created_at": "2026-11-25T20:41:49.531302+00:00"
+  "created_at": "2026-11-25T20:41:49.531302+00:00",
+  "status": "pending",
+  "accepted_at": null,
+  "invite_code": null
+ },
+ {
+  "id": "03b79bc3-e912-4595-ba58-069d83537997",
+  "first_name": "Mamadou",
+  "contact": "+22375303215",
+  "country": "Mali",
+  "canals": [
+   "inv",
+   "num"
+  ],
+  "lang": "fr",
+  "created_at": "2026-11-26T15:53:45.201352+00:00",
+  "status": "pending",
+  "accepted_at": null,
+  "invite_code": null
  }
 ]

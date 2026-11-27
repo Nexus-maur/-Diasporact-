@@ -1,8 +1,8 @@
 [
  {
-  "id": "15364f31-e944-467f-9cf6-fa8b1d4370d5",
-  "auth_uid": "6192bcb2-6105-4e3b-abef-ff6fb6f8d074",
-  "pseudo": "a882288a",
+  "id": "dec888b0-1ff5-44e1-b6ab-6f7c6bbc0e38",
+  "auth_uid": "71e7c2f7-0009-4441-824b-3f945c247cdd",
+  "pseudo": "mob",
   "country": "Mali",
   "lang": "fr",
   "skills": [],
@@ -11,10 +11,10 @@
   "show_honor": true,
   "is_admin": false,
   "is_ref": false,
-  "created_at": "2026-11-25T23:31:19.873618+00:00",
+  "created_at": "2026-11-26T16:37:30.982254+00:00",
   "first_name": "",
   "last_name": "",
-  "is_tester": false
+  "is_tester": true
  },
  {
   "id": "50146a43-159d-4f19-a6e0-af0da7e4d369",
@@ -31,6 +31,23 @@
   "created_at": "2026-11-23T11:51:46.116046+00:00",
   "first_name": "Elie",
   "last_name": "Wague",
+  "is_tester": false
+ },
+ {
+  "id": "15364f31-e944-467f-9cf6-fa8b1d4370d5",
+  "auth_uid": "6192bcb2-6105-4e3b-abef-ff6fb6f8d074",
+  "pseudo": "a882288a",
+  "country": "Mali",
+  "lang": "fr",
+  "skills": [],
+  "matching": false,
+  "base": null,
+  "show_honor": true,
+  "is_admin": false,
+  "is_ref": false,
+  "created_at": "2026-11-25T23:31:19.873618+00:00",
+  "first_name": "",
+  "last_name": "",
   "is_tester": false
  }
 ]
