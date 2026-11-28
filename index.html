@@ -30,7 +30,7 @@
   --green:#00843A; --green-ink:#006B2F; --green-soft:#E3F4E9; --on-green:#FFFFFF;
   --yellow:#FFC72C; --yellow-ink:#6B4F00; --yellow-soft:#FFF3C4; --on-yellow:#2B2200;
   --red:#D01C1F; --red-ink:#B3171B; --red-soft:#FCE4E2;
-  --hero-a:#00843A; --hero-b:#00632B; --hero-ink:#FFFFFF; --hero-soft:#EAF8EF;
+  --hero-a:#0F2350; --hero-b:#050D24; --hero-ink:#FFFFFF; --hero-soft:#D9E3F7; --hero-gold:#E9A83A;
   --shadow:0 1px 2px rgba(21,35,27,.05),0 4px 14px rgba(21,35,27,.07);
   --f-display:"Bricolage Grotesque","Noto Sans Arabic",system-ui,sans-serif;
   --f-body:"Inter","Noto Sans Arabic",system-ui,sans-serif;
@@ -41,7 +41,7 @@
   --green:#2BC46F; --green-ink:#5FDB97; --green-soft:#14311F; --on-green:#04210F;
   --yellow:#FFC72C; --yellow-ink:#FFD96A; --yellow-soft:#3A2F0B; --on-yellow:#2B2200;
   --red:#D63638; --red-ink:#FF8A8C; --red-soft:#3E1A1B;
-  --hero-a:#0C5A2C; --hero-b:#083D1E; --hero-ink:#FFFFFF; --hero-soft:#CFEBDA;
+  --hero-a:#0B1B40; --hero-b:#040A1C; --hero-ink:#FFFFFF; --hero-soft:#C9D6EE; --hero-gold:#E9A83A;
   --shadow:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.35);
 }
 *{box-sizing:border-box}
@@ -138,10 +138,10 @@ button.li:hover,button.card:hover{background:var(--surface2)}
 .av.r{background:var(--red);color:#fff}
 
 /* Bandeau d'invitation */
-.hero{position:relative;overflow:hidden;border-radius:24px;padding:30px 18px 28px;background:linear-gradient(var(--red),var(--red)) top/100% 8px no-repeat,linear-gradient(var(--red),var(--red)) bottom/100% 8px no-repeat,linear-gradient(160deg,var(--hero-a),var(--hero-b));color:var(--hero-ink);display:flex;flex-direction:column;gap:10px}
+.hero{position:relative;overflow:hidden;border-radius:24px;padding:30px 18px 28px;background:linear-gradient(var(--hero-gold),var(--hero-gold)) top/100% 6px no-repeat,linear-gradient(var(--hero-gold),var(--hero-gold)) bottom/100% 6px no-repeat,linear-gradient(160deg,var(--hero-a),var(--hero-b));color:var(--hero-ink);display:flex;flex-direction:column;gap:10px}
 .hero::before{content:"";position:absolute;inset:8px 0;pointer-events:none;background-image:
-  repeating-linear-gradient(45deg,rgba(255,199,44,.3) 0 1.5px,transparent 1.5px 30px),
-  repeating-linear-gradient(-45deg,rgba(255,199,44,.3) 0 1.5px,transparent 1.5px 30px)}
+  repeating-linear-gradient(45deg,rgba(233,168,58,.14) 0 1.5px,transparent 1.5px 30px),
+  repeating-linear-gradient(-45deg,rgba(233,168,58,.14) 0 1.5px,transparent 1.5px 30px)}
 .hero>*{position:relative}
 .hero.plain{background:none;overflow:visible;padding-inline:0;color:var(--ink)}.hero.plain::before{display:none}.hero.plain .eyebrow{color:var(--ink2)}.hero.plain p{color:var(--ink2)}
 .hero h1{font:700 27px/1.12 var(--f-display);text-wrap:balance}
