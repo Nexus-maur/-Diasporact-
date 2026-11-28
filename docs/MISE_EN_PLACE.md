@@ -16,10 +16,10 @@ Modifier `config.js` dans le dépôt GitHub : renseigner `url` et `anonKey` (val
 ## 3. Vercel (hébergement)
 1. Créer un compte sur vercel.com, **Add New > Project**, importer le dépôt GitHub. Framework : **Other**. Aucune commande de build. **Deploy**.
 2. **Settings > Environment Variables** : ajouter `SUPABASE_URL`, `SUPABASE_ANON_KEY` (mêmes valeurs publiques), et `CRON_SECRET` (un secret aléatoire). Redéployer.
-3. Contrôle : `https://VOTRE-SITE/api/keepalive` doit répondre 401 sans secret. Le cron quotidien interroge la base pour éviter la mise en pause du plan gratuit.
+3. Contrôle : `https://afrikafo.app/api/keepalive` doit répondre 401 sans secret. Le cron quotidien interroge la base pour éviter la mise en pause du plan gratuit.
 
 ## 4. Premier administrateur
-Ouvrir `https://VOTRE-SITE/#/i/VOTRE-CODE-SECRET`, choisir un pseudo : ce compte est administrateur (le code ne marche qu’une fois). Ensuite, depuis **Profil > Administration**, nommer les modérateurs de canaux ; chaque modérateur génère ensuite les liens d’invitation de son canal et les diffuse dans WhatsApp.
+Ouvrir `https://afrikafo.app/#/i/VOTRE-CODE-SECRET`, choisir un pseudo : ce compte est administrateur (le code ne marche qu’une fois). Ensuite, depuis **Profil > Administration**, nommer les modérateurs de canaux ; chaque modérateur génère ensuite les liens d’invitation de son canal et les diffuse dans WhatsApp.
 
 ## 5. Sauvegarde nocturne (dépôt GitHub privé)
 Dans le dépôt GitHub : **Settings > Secrets and variables > Actions** : ajouter `SUPABASE_URL` et `SUPABASE_SERVICE_KEY` (clé service_role). **Actions > Sauvegarde des données > Run workflow** pour un premier essai : la branche `backup-data` apparaît avec un fichier JSON par table. Le dépôt doit rester **privé** (il contient des données de membres dans cette branche).
@@ -34,3 +34,8 @@ Contrôle : exécuter ce scénario une fois avant l’ouverture (cas INS-10 de l
 ## Tests automatiques
 - Règles de sécurité : `DB="psql … -q -t -A" bash supabase/tests/rls_test.sh` (74 tests, base PostgreSQL de test).
 - Interface : `npm install && npm run test:ui` (50 tests, base simulée).
+
+
+## Adresse de production
+
+Le site est publié sur **https://afrikafo.app** (domaine IONOS rattaché au projet Vercel `-diasporact-v.alpha`). Enregistrement DNS requis chez IONOS : `A` `@` → `216.198.79.1`. Les liens d'invitation sont construits à partir de l'adresse ouverte : ouvrez l'application depuis afrikafo.app pour générer des liens à cette adresse. L'adresse technique `@membre.diasporact.app` (identifiant de connexion interne, aucune boîte mail) ne doit **pas** être modifiée : elle lie les comptes existants.
