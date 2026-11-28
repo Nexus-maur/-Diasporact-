@@ -554,7 +554,7 @@ function render(resetScroll){
   if(!acct&&['load','inv0','inv1','invRec','prereg'].indexOf(r)<0){S.route={name:'inv0',params:{}};r='inv0';p={};}
   root.lang=S.lang;root.dir=S.lang==='ar'?'rtl':'ltr';
   root.setAttribute('data-theme',S.theme==='dark'?'dark':'light');
-  var tc=document.querySelector('meta[name="theme-color"]');if(tc)tc.setAttribute('content',S.theme==='dark'?'#0E1511':'#FFFFFF');
+  var tc=document.querySelector('meta[name="theme-color"]');if(tc)tc.setAttribute('content',S.theme==='dark'?'#060D1F':'#FFFFFF');
   var onb=r.indexOf('inv')===0||r==='load'||r==='prereg',detail=['canal','project','newProject','newHelp','me','feedback'].indexOf(r)>-1&&S.stack.length>0;
   var tb=(detail?'<button class="icon-btn flip" data-act="back" aria-label="'+T('back')+'">'+ic('back',22)+'</button>':logoSvg())+'<h1>'+esc(titleFor(r,p))+'</h1><button class="icon-btn lang-btn" data-act="toggle-lang" aria-label="'+esc(S.lang==='fr'?'English':S.lang==='en'?'العربية':'Français')+'">'+(S.lang==='fr'?'EN':S.lang==='en'?'ع':'FR')+'</button><button class="icon-btn" data-act="toggle-theme" aria-label="'+esc(S.theme==='dark'?t('th_light'):t('th_dark'))+'">'+ic(S.theme==='dark'?'sun':'moon',20)+'</button>'+(acct&&!onb?'<button class="icon-btn me-btn" data-act="go-me" aria-label="'+T('my_account')+'">'+av(S.me.pseudo,32)+'</button>':'');
   $('#topbar').innerHTML=tb;
