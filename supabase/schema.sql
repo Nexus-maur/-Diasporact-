@@ -1,4 +1,4 @@
--- Diasporact V1 — schéma Supabase (PostgreSQL)
+-- AfriKafo V1 — schéma Supabase (PostgreSQL)
 -- À exécuter une seule fois dans Supabase > SQL Editor > New query > Run.
 -- Prérequis : Authentication > Providers > activer « Allow anonymous sign-ins ».
 

@@ -1,4 +1,4 @@
-# Mise en place de Diasporact V1 (Supabase + Vercel + GitHub)
+# Mise en place de AfriKafo V1 (Supabase + Vercel + GitHub)
 
 Durée : environ 45 minutes. Tout se fait depuis un ordinateur.
 

@@ -222,7 +222,7 @@ async function open(mock,hash,opt){
   m.DB.profiles.push({id:'p-sidi.paris',auth_uid:'u-1',pseudo:'sidi.paris',country:'France',lang:'fr',skills:[],matching:false,show_honor:true,is_admin:false,is_ref:false});
   m.DB.canal_members.push({canal_id:'edu',user_id:'p-sidi.paris',status:'member',is_moderator:false,is_relay:false});
   a=await open(m,'',{tour:true});await sleep(900);
-  ok(a.txt().includes('Bienvenue sur Diasporact')&&a.txt().includes('Étape 1 sur 9'),'J1 première connexion : la visite s\'ouvre (9 étapes sans IA)');
+  ok(a.txt().includes('Bienvenue sur AfriKafo')&&a.txt().includes('Étape 1 sur 9'),'J1 première connexion : la visite s\'ouvre (9 étapes sans IA)');
   await a.click('[data-act=tour-next]');ok(a.txt().includes('Étape 2 sur 9')&&a.txt().includes('cinq onglets'),'J2 étape suivante');
   await a.click('[data-act=tour-prev]');ok(a.txt().includes('Étape 1 sur 9'),'J3 étape précédente');
   await a.click('[data-act=tour-next]');await a.click('[data-act=tour-next]');
@@ -323,7 +323,7 @@ async function open(mock,hash,opt){
   const tcode=m.DB.invites.find(x=>x.kind==='tester').code;
   m=makeMock({});m.DB.invites.push({code:tcode,kind:'tester',canal_id:null,active:true,uses:0});
   a=await open(m,'#/i/'+tcode);await sleep(250);
-  ok(a.txt().includes('Testez Diasporact')&&!!a.q('#pseudo'),'O3 le lien testeurs affiche l\'accueil testeur et le choix du pseudo');
+  ok(a.txt().includes('Testez AfriKafo')&&!!a.q('#pseudo'),'O3 le lien testeurs affiche l\'accueil testeur et le choix du pseudo');
   a.set('#pseudo','test.un');await sleep(450);a.set('#pw','motdepasse1');await a.submit('[data-form=pseudo]');await sleep(300);
   ok(m.DB.profiles.some(x=>x.pseudo==='test.un'&&x.is_tester)&&a.txt().includes('@test.un'),'O4 le testeur est inscrit et arrive sur l\'accueil');
   await a.clickText('.tab','Canaux');await sleep(80);

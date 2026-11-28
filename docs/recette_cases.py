@@ -1,4 +1,4 @@
-# Cahier de recette Diasporact V1 : source unique (génère docs/RECETTE.md et le tableau de suivi).
+# Cahier de recette AfriKafo V1 : source unique (génère docs/RECETTE.md et le tableau de suivi).
 # (id, domaine, scénario, rôle/préalable, étapes, résultat attendu, mode, priorité)
 B,M,m='Bloquant','Majeur','Mineur'
 A,H='Auto','Manuel'
@@ -91,8 +91,8 @@ CASES=[
 ('LNG-02','Langues','Thème clair / sombre','Membre','Basculer, recharger.','Choix conservé ; contrastes lisibles.',H,m),
 ('LNG-03','Langues','Contenus en arabe','Modérateur','Publier une annonce et un projet rédigés en arabe.','Affichage RTL correct de leur texte.',H,M),
 # --- Mobile, réseau, PWA
-('MOB-01','Mobile','Installation sur Android','Membre','Chrome Android > Installer l’application.','Icône Diasporact, ouverture plein écran.',H,B),
-('MOB-02','Mobile','Installation sur iPhone','Membre','Safari > Partager > Sur l’écran d’accueil.','Icône Diasporact, ouverture plein écran.',H,B),
+('MOB-01','Mobile','Installation sur Android','Membre','Chrome Android > Installer l’application.','Icône AfriKafo, ouverture plein écran.',H,B),
+('MOB-02','Mobile','Installation sur iPhone','Membre','Safari > Partager > Sur l’écran d’accueil.','Icône AfriKafo, ouverture plein écran.',H,B),
 ('MOB-03','Mobile','Petits écrans','Membre','Tester à 360 px de large et en paysage.','Aucun défilement horizontal ; boutons utilisables au pouce (≥ 44 px).',H,M),
 ('MOB-04','Mobile','Réseau lent (3G)','Membre','Limiter le réseau (3G lente) ; ouvrir l’accueil.','Chargement < 5 s ; messages d’attente clairs.',H,M),
 ('MOB-05','Mobile','Hors ligne','Membre','Couper le réseau ; ouvrir puis agir.','L’application s’ouvre ; message « Connexion impossible » ; aucune perte silencieuse.',H,M),

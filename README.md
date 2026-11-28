@@ -1,4 +1,4 @@
-# Diasporact
+# AfriKafo
 
 Application web mobile (PWA) de la diaspora mauritanienne : canaux modérés, projets et suivi, entraide, annonces officielles, recherche de compétences. WhatsApp reste le lieu de la discussion libre ; ici, uniquement des actions structurées.
 

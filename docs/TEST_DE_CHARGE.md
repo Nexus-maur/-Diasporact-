@@ -1,6 +1,6 @@
 # Test de charge maîtrisé — 23/11/2026
 
-Test léger et contrôlé sur les endpoints publics de Diasporact, pour
+Test léger et contrôlé sur les endpoints publics de AfriKafo, pour
 vérifier la tenue de l'API sous une charge raisonnable, sans viser un déni
 de service destructeur. Réalisé depuis un navigateur réel (conditions
 proches d'un utilisateur), en vagues de 8 à 10 requêtes simultanées

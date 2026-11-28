@@ -1,7 +1,7 @@
 import sys,os,collections
 sys.path.insert(0,os.path.dirname(__file__))
 from recette_cases import CASES
-out=['# Cahier de recette — Diasporact V1','',
+out=['# Cahier de recette — AfriKafo V1','',
 'Objectif : décider de la mise en production sur la base de preuves. Chaque cas est rejoué **sur l’environnement réel** (Supabase + Vercel), même quand il est déjà couvert par un test automatique.','',
 '- **Auto** : déjà couvert par les tests automatiques (`supabase/tests/rls_test.sh`, `tests/smoke6.js`) ; à rejouer à la main sur l’environnement réel.',
 '- **Manuel** : à exécuter par une personne.',

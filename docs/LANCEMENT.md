@@ -1,4 +1,4 @@
-# Checklist de lancement — Diasporact
+# Checklist de lancement — AfriKafo
 
 À cocher dans l'ordre. Les cases « Élie » sont des décisions ou des actions que seul le responsable peut faire ; les autres sont des vérifications techniques. Le détail de chaque test se trouve dans [RECETTE.md](RECETTE.md).
 

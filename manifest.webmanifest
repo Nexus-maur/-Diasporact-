@@ -1,7 +1,7 @@
 {
-  "name": "Diasporact",
-  "short_name": "Diasporact",
-  "description": "Diasporact : canaux, projets, entraide et annonces officielles de la diaspora mauritanienne.",
+  "name": "AfriKafo",
+  "short_name": "AfriKafo",
+  "description": "AfriKafo : canaux, projets, entraide et annonces officielles de la diaspora mauritanienne.",
   "lang": "fr",
   "dir": "auto",
   "start_url": "./",

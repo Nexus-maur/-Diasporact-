@@ -1,4 +1,4 @@
-# Cahier de recette — Diasporact V1
+# Cahier de recette — AfriKafo V1
 
 Objectif : décider de la mise en production sur la base de preuves. Chaque cas est rejoué **sur l’environnement réel** (Supabase + Vercel), même quand il est déjà couvert par un test automatique.
 
@@ -168,8 +168,8 @@ SEC-04, CAN-03 — le reste suit la légende Statut ci-dessous).
 
 | ID | Scénario | Rôle | Étapes | Résultat attendu | Mode | Priorité | Statut |
 |---|---|---|---|---|---|---|---|
-| MOB-01 | Installation sur Android | Membre | Chrome Android > Installer l’application. | Icône Diasporact, ouverture plein écran. | Manuel | Bloquant | À faire |
-| MOB-02 | Installation sur iPhone | Membre | Safari > Partager > Sur l’écran d’accueil. | Icône Diasporact, ouverture plein écran. | Manuel | Bloquant | À faire |
+| MOB-01 | Installation sur Android | Membre | Chrome Android > Installer l’application. | Icône AfriKafo, ouverture plein écran. | Manuel | Bloquant | À faire |
+| MOB-02 | Installation sur iPhone | Membre | Safari > Partager > Sur l’écran d’accueil. | Icône AfriKafo, ouverture plein écran. | Manuel | Bloquant | À faire |
 | MOB-03 | Petits écrans | Membre | Tester à 360 px de large et en paysage. | Aucun défilement horizontal ; boutons utilisables au pouce (≥ 44 px). | Manuel | Majeur | À faire |
 | MOB-04 | Réseau lent (3G) | Membre | Limiter le réseau (3G lente) ; ouvrir l’accueil. | Chargement < 5 s ; messages d’attente clairs. | Manuel | Majeur | À faire |
 | MOB-05 | Hors ligne | Membre | Couper le réseau ; ouvrir puis agir. | L’application s’ouvre ; message « Connexion impossible » ; aucune perte silencieuse. | Manuel | Majeur | À faire |

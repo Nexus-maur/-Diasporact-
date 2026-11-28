@@ -1,13 +1,13 @@
-# Protection des données personnelles (RGPD) — Diasporact
+# Protection des données personnelles (RGPD) — AfriKafo
 
-Document de référence sur la façon dont Diasporact traite les données de ses
+Document de référence sur la façon dont AfriKafo traite les données de ses
 membres, et sur ce qui a été mis en place pour respecter le RGPD. Mis à jour
 le 23/11/2026, à la suite d'un audit de sécurité complet (voir le récapitulatif
 des correctifs en fin de document).
 
 ## 1. Qui fait quoi
 
-Diasporact est opéré par Nexus Mauritanie, qui est **responsable de
+AfriKafo est opéré par Nexus Mauritanie, qui est **responsable de
 traitement** au sens du RGPD. L'hébergement technique est sous-traité à :
 - **Supabase** (base de données, authentification) — région **eu-west-1**
   (Irlande, Union européenne).
@@ -20,14 +20,14 @@ traitement** au sens du RGPD. L'hébergement technique est sous-traité à :
 
 - **Anthropic** (API Claude, société américaine) — **uniquement pour les
   fonctions d'IA de la phase test** (voir section 10). Le texte envoyé n'est
-  pas conservé par Diasporact.
+  pas conservé par AfriKafo.
 
 Le RGPD impose une vigilance particulière sur les transferts hors UE : voir
 section 7.
 
 ## 2. Données collectées
 
-Diasporact applique un principe de **minimisation volontaire** depuis sa
+AfriKafo applique un principe de **minimisation volontaire** depuis sa
 conception : pas d'email, pas de numéro de téléphone. Le nom complet (nom et
 prénom) a été ajouté le 25/11/2026 comme donnée **facultative** : un membre
 qui ne le renseigne pas reste identifié uniquement par son pseudo, comme
@@ -216,7 +216,7 @@ perte) :
 2. **Qualification** : déterminer quelles catégories de données ont pu
    être exposées, pour combien de membres, et sur quelle période (en
    s'appuyant sur les logs Vercel/Supabase disponibles).
-3. **Évaluation du risque** : au vu des données collectées par Diasporact
+3. **Évaluation du risque** : au vu des données collectées par AfriKafo
    (pas d'email, pas de données bancaires), le risque pour les personnes
    est généralement limité, mais chaque incident doit être évalué au cas
    par cas (ex. une fuite de pays de résidence + pseudo peut avoir un
@@ -258,7 +258,7 @@ Le signalement initial d'une faille (par un tiers ou un membre) se fait à
   membre avant de contacter le service d'IA.
 - **Données** : le seul texte envoyé est celui que le testeur choisit de
   traduire ou de coller. Il est transmis à Anthropic (États-Unis) pour obtenir
-  le résultat ; Diasporact ne conserve ni le texte ni la réponse. Une
+  le résultat ; AfriKafo ne conserve ni le texte ni la réponse. Une
   information est affichée avant le premier usage (message de consentement,
   une fois par appareil) et un rappel invite à ne coller que des discussions
   dont les participants acceptent le partage.
