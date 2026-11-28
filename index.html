@@ -241,6 +241,34 @@ textarea{resize:vertical;min-height:84px}
 .lc .url{font-size:12px;color:var(--ink2)}
 .lc button{margin-top:6px;align-self:flex-start;font-weight:700;color:var(--green-ink)}
 
+/* Adaptation aux écrans : téléphone (par défaut), tablette, ordinateur */
+@media (max-width:360px){
+  .tab-l{font-size:10px}.topbar h1{font-size:15px}h1.page{font-size:21px}.hero{padding-inline:12px}.btn.sm{padding:0 9px}
+}
+@media (min-width:640px){
+  .app{max-width:680px}
+  .sheet{max-width:600px}
+  #view{gap:18px}
+  h1.page{font-size:28px}
+  .hero .logo{width:min(300px,50vw)}
+}
+@media (min-width:900px){
+  #proj-list,.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start}
+}
+@media (min-width:1024px){
+  .app{max-width:1120px;display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);column-gap:0;row-gap:10px;padding-block:16px}
+  .topbar{grid-column:1/-1}
+  #view{grid-column:2;grid-row:2;padding-inline:4px 8px}
+  #view>*{width:100%;max-width:860px;margin-inline:auto}
+  .tabbar{grid-column:1;grid-row:2;align-self:start;grid-template-columns:1fr;gap:4px;width:210px;margin-inline-end:24px;padding:8px;position:sticky;top:0}
+  .tab{flex-direction:row;justify-content:flex-start;gap:12px;padding:12px 14px;border-radius:13px}
+  .tab-l{font-size:14px;max-width:none}
+  .tab:hover{background:var(--surface2)}
+  .badge{position:static;margin-inline-start:auto}
+  .toast{bottom:28px}
+  .sheet{max-width:560px;bottom:auto;top:50%;transform:translateY(-50%);border-radius:20px}
+}
+@media (min-width:1400px){.app{max-width:1280px}#view>*{max-width:940px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 
 /* IA simulée */
